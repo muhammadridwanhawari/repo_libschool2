@@ -6,8 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-   public function books()
-{
-    return $this->hasMany(Book::class);
-}
+    protected $fillable = ['name', 'jumlah_buku'];
+
+    /**
+     * Many-to-many: sebuah kategori bisa punya banyak buku
+     */
+    public function books()
+    {
+        return $this->belongsToMany(Book::class, 'book_category');
+    }
 }

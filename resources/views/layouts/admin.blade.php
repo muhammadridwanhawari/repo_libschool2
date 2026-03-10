@@ -8,70 +8,234 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite('resources/css/app.css')
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; }
+
+        /* Sidebar */
+        .admin-sidebar {
+            width: 220px;
+            min-height: 100vh;
+            background: #f6f6f6;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            left: 0; top: 0; bottom: 0;
+            z-index: 100;
+            border-right: 1px solid #e8e8e8;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px 16px;
+        }
+        .sidebar-logo img {
+            width: 80px;
+            height: auto;
+        }
+
+        .sidebar-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .sidebar-user-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .sidebar-user-avatar svg { color: #888; }
+        .sidebar-user-info p { margin: 0; }
+        .sidebar-user-name { font-size: 0.82rem; font-weight: 600; color: #222; }
+        .sidebar-user-role { font-size: 0.7rem; color: #888; }
+
+        /* Nav */
+        .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+        .nav-item {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 20px;
+            font-size: 0.84rem; font-weight: 500;
+            color: #444; text-decoration: none;
+            transition: all 0.15s;
+            cursor: pointer;
+            border: none; background: none; width: 100%; text-align: left;
+        }
+        .nav-item:hover { background: #eaeaea; color: #222; }
+        .nav-item.active { color: #4361ee; font-weight: 600; }
+        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+        /* Dropdown */
+        .nav-group {}
+        .nav-group-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 20px;
+            font-size: 0.84rem; font-weight: 500;
+            color: #444; cursor: pointer;
+            border: none; background: none; width: 100%; text-align: left;
+            transition: all 0.15s;
+        }
+        .nav-group-header:hover { background: #eaeaea; color: #222; }
+        .nav-group-header.active { color: #4361ee; font-weight: 600; }
+        .nav-group-header svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .nav-group-header .chevron {
+            margin-left: auto; width: 14px; height: 14px;
+            transition: transform 0.2s;
+        }
+        .nav-group.open .chevron { transform: rotate(180deg); }
+
+        .nav-sub { display: none; padding-left: 48px; }
+        .nav-group.open .nav-sub { display: block; }
+        .nav-sub a {
+            display: block; padding: 7px 12px;
+            font-size: 0.8rem; color: #666;
+            text-decoration: none; transition: all 0.15s;
+        }
+        .nav-sub a:hover { color: #4361ee; }
+        .nav-sub a.active { color: #4361ee; font-weight: 600; }
+
+        /* Logout */
+        .sidebar-logout {
+            padding: 16px 20px;
+        }
+        .logout-btn {
+            display: block; width: 100%;
+            background: linear-gradient(135deg, #4361ee, #3a56d4);
+            color: #fff; border: none;
+            border-radius: 10px; padding: 11px 0;
+            font-size: 0.84rem; font-weight: 600;
+            cursor: pointer; text-align: center;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover {
+            background: linear-gradient(135deg, #3a56d4, #2f49c0);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(67,97,238,0.3);
+        }
+
+        /* Main content */
+        .admin-main {
+            margin-left: 220px;
+            flex: 1;
+            padding: 24px 32px;
+            min-height: 100vh;
+            background: #fff;
+        }
+
+        /* Alert styles */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
+        }
+        .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+        .alert-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
     </style>
+    @stack('styles')
 </head>
-<body class="bg-slate-100 min-h-screen flex">
+<body style="display:flex; min-height:100vh; background:#fff;">
 
     {{-- Sidebar --}}
-    <aside class="w-[200px] min-h-screen bg-slate-900 flex flex-col py-5 fixed left-0 top-0 bottom-0 z-[100]">
+    <aside class="admin-sidebar">
 
         {{-- Logo --}}
-        <div class="flex items-center gap-3 px-5 pb-5 border-b border-white/[0.08]">
-            <div class="w-10 h-10 rounded-[0.6rem] bg-indigo-500 flex items-center justify-center flex-shrink-0">
-                <svg width="20" height="20" viewBox="0 0 64 64" fill="white" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="18" y="26" width="6" height="20" rx="1.5"/><rect x="26" y="20" width="6" height="26" rx="1.5"/>
-                    <rect x="34" y="24" width="6" height="22" rx="1.5"/><rect x="15" y="46" width="34" height="3.5" rx="1.5"/>
-                </svg>
-            </div>
-            <div>
-                <p class="text-[0.95rem] font-bold text-white">LibSchool</p>
-                <p class="text-[0.65rem] text-slate-400">Admin Panel</p>
-            </div>
+        <div class="sidebar-logo">
+            <img src="{{ asset('images/logo/LOGO.png') }}" alt="LibSchool">
         </div>
 
-        {{-- Info Pengguna --}}
-        <div class="flex items-center gap-2.5 px-5 py-4 border-b border-white/[0.08]">
-            <div class="w-9 h-9 rounded-full bg-indigo-950 flex items-center justify-center text-indigo-300 flex-shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        {{-- User Info --}}
+        <div class="sidebar-user">
+            <div class="sidebar-user-avatar">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                 </svg>
             </div>
-            <div>
-                <p class="text-[0.8rem] font-semibold text-white leading-tight">{{ Auth::user()->name }}</p>
-                <p class="text-[0.68rem] text-slate-400">Administrator</p>
+            <div class="sidebar-user-info">
+                <p class="sidebar-user-name">{{ Auth::user()->name }}</p>
+                <p class="sidebar-user-role">Admin</p>
             </div>
         </div>
 
-        {{-- Menu Navigasi --}}
-        <nav class="py-4 flex-1">
-            <p class="text-[0.65rem] font-bold text-slate-600 px-5 mb-2 uppercase tracking-wider">Utama</p>
-            <a href="{{ route('admin.dashboard') }}"
-               class="flex items-center gap-2.5 px-5 py-2.5 text-[0.82rem] font-medium no-underline transition-all duration-150
-                      {{ request()->routeIs('admin.dashboard') ? 'bg-indigo-500/20 text-indigo-300 font-semibold' : 'text-slate-400 hover:bg-white/[0.06] hover:text-white' }}">
-                <svg class="w-4 h-4 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+        {{-- Navigation --}}
+        <nav class="sidebar-nav">
+            {{-- Dashboard --}}
+            <a href="{{ route('admin.dashboard') }}" class="nav-item {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                 </svg>
                 <span>Dashboard</span>
             </a>
+
+            {{-- Kelola Data --}}
+            <div class="nav-group {{ request()->routeIs('admin.kategori.*') || request()->routeIs('admin.buku.*') || request()->routeIs('admin.peminjaman.*') || request()->routeIs('admin.denda.*') ? 'open' : '' }}">
+                <button class="nav-group-header {{ request()->routeIs('admin.kategori.*') || request()->routeIs('admin.buku.*') || request()->routeIs('admin.peminjaman.*') || request()->routeIs('admin.denda.*') ? 'active' : '' }}" onclick="this.parentElement.classList.toggle('open')">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                    </svg>
+                    <span>Kelola Data</span>
+                    <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="nav-sub">
+                    <a href="{{ route('admin.kategori.index') }}" class="{{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}">Kategori</a>
+                    <a href="{{ route('admin.buku.index') }}" class="{{ request()->routeIs('admin.buku.*') ? 'active' : '' }}">Data Buku</a>
+                    <a href="{{ route('admin.peminjaman.index') }}" class="{{ request()->routeIs('admin.peminjaman.*') ? 'active' : '' }}">Peminjaman</a>
+                    <a href="{{ route('admin.denda.index') }}" class="{{ request()->routeIs('admin.denda.*') ? 'active' : '' }}">Denda</a>
+                </div>
+            </div>
+
+
+            {{-- Kelola Pengguna --}}
+            <div class="nav-group {{ request()->routeIs('admin.pengguna.*') || request()->routeIs('admin.hakakses*') ? 'open' : '' }}">
+                <button class="nav-group-header {{ request()->routeIs('admin.pengguna.*') || request()->routeIs('admin.hakakses*') ? 'active' : '' }}" onclick="this.parentElement.classList.toggle('open')">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    <span>Kelola Pengguna</span>
+                    <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div class="nav-sub">
+                    <a href="{{ route('admin.pengguna.index') }}" class="{{ request()->routeIs('admin.pengguna.*') ? 'active' : '' }}">Data Pengguna</a>
+                    <a href="{{ route('admin.hakakses') }}" class="{{ request()->routeIs('admin.hakakses*') ? 'active' : '' }}">Hak Akses</a>
+                </div>
+            </div>
+
+            {{-- Laporan --}}
+            <a href="{{ route('admin.laporan.index') }}" class="nav-item {{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span>Laporan</span>
+            </a>
         </nav>
 
-        {{-- Tombol Logout --}}
-        <div class="px-5 pt-4">
+        {{-- Logout --}}
+        <div class="sidebar-logout">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit"
-                        class="block w-full bg-white/[0.08] text-slate-400 border-0 rounded-[0.6rem] py-2.5 text-[0.82rem] font-semibold cursor-pointer text-center transition-all duration-200 hover:bg-white/[0.15] hover:text-white">
-                    Logout
-                </button>
+                <button type="submit" class="logout-btn">Logout →</button>
             </form>
         </div>
     </aside>
 
-    {{-- Konten Utama --}}
-    <div class="ml-[200px] flex-1 p-6 min-h-screen">
+    {{-- Main Content --}}
+    <div class="admin-main">
+        @if(session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
         @yield('content')
     </div>
 
+    @stack('scripts')
 </body>
 </html>

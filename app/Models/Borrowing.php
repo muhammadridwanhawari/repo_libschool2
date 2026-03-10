@@ -11,6 +11,21 @@ use App\Models\Fine;
 
 class Borrowing extends Model
 {
+    protected $fillable = [
+        'user_id',
+        'book_id',
+        'borrow_date',
+        'deadline',
+        'return_date',
+        'status',
+    ];
+
+    protected $casts = [
+        'borrow_date' => 'date',
+        'deadline' => 'date',
+        'return_date' => 'date',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -24,5 +39,15 @@ class Borrowing extends Model
     public function fine(): HasOne
     {
         return $this->hasOne(Fine::class);
+    }
+
+    /**
+     * Determine status: if still 'dipinjam' but past deadline, consider 'terlambat'
+     */
+    public function getStatusDisplayAttribute(): string
+    {
+        if ($this->status === 'dikembalikan') return 'dikembalikan';
+        if ($this->deadline && now()->gt($this->deadline)) return 'terlambat';
+        return 'dipinjam';
     }
 }

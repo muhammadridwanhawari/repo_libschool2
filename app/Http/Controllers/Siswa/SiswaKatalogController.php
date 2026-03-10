@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Siswa;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Category;
+use App\Models\Favorite;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SiswaKatalogController extends Controller
 {
@@ -37,6 +39,11 @@ class SiswaKatalogController extends Controller
             $selected = Book::with('category')->find($request->selected);
         }
 
-        return view('siswa.katalog', compact('books', 'categories', 'selected'));
+        // ID buku yang sudah difavoritkan oleh user yang login
+        $favoritedIds = Favorite::where('user_id', Auth::id())
+            ->pluck('book_id')
+            ->toArray();
+
+        return view('siswa.katalog', compact('books', 'categories', 'selected', 'favoritedIds'));
     }
 }

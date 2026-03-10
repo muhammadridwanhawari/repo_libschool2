@@ -278,7 +278,7 @@
                     <img src="public/images/landing/profildev/Ridwan.jpeg" alt="Muhammad Ridwan Hawari" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover">
                     <h3 class="font-bold text-gray-900 mb-1">Muhammad Ridwan Hawari</h3>
                     <p class="text-primary font-semibold mb-2">CEO</p>
-                    <p class="text-gray-600 text-sm">hief Technology Officer </p>
+                    <p class="text-gray-600 text-sm">Chief Technology Officer </p>
                 </div>
                 <div class="bg-white rounded-xl shadow-lg p-8 text-center hover:shadow-2xl transition">
                     <img src="public/images/landing/profildev/Riski.png" alt="Riski Satria" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover">
