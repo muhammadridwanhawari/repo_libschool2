@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Siswa;
 
 use App\Http\Controllers\Controller;
 use App\Models\Book;
+use App\Models\Borrowing;
 use App\Models\Category;
 use App\Models\Favorite;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class SiswaKatalogController extends Controller
         $sort = $request->sort ?? 'title';
         $query->orderBy($sort);
 
-        $books = $query->paginate(12);
+        $books      = $query->paginate(12);
         $categories = Category::all();
 
         // Selected book
@@ -45,5 +46,55 @@ class SiswaKatalogController extends Controller
             ->toArray();
 
         return view('siswa.katalog', compact('books', 'categories', 'selected', 'favoritedIds'));
+    }
+
+    /**
+     * AJAX: Proses peminjaman — generate kode booking
+     */
+    public function pinjam(Request $request, $id)
+    {
+        $book = Book::findOrFail($id);
+
+        // Cek stok buku
+        if ($book->stock < 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Stok buku sudah habis.',
+            ], 422);
+        }
+
+        // Cek apakah siswa sudah punya booking/peminjaman aktif untuk buku ini
+        $existing = Borrowing::where('user_id', Auth::id())
+            ->where('book_id', $id)
+            ->whereIn('status', ['booking', 'dipinjam'])
+            ->first();
+
+        if ($existing) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kamu sudah memiliki peminjaman/booking aktif untuk buku ini.',
+                'booking_code' => $existing->booking_code,
+            ], 422);
+        }
+
+        // Generate kode booking
+        $bookingCode = Borrowing::generateBookingCode();
+
+        // Simpan booking (stok belum dikurangi, penjaga yang akan konfirmasi)
+        Borrowing::create([
+            'user_id'      => Auth::id(),
+            'book_id'      => $id,
+            'booking_code' => $bookingCode,
+            'borrow_date'  => now()->toDateString(),
+            'status'       => 'booking',
+        ]);
+
+        return response()->json([
+            'success'      => true,
+            'booking_code' => $bookingCode,
+            'book_title'   => $book->title,
+            'book_author'  => $book->author,
+            'message'      => 'Kode booking berhasil dibuat! Tunjukkan kode ini kepada penjaga perpustakaan.',
+        ]);
     }
 }

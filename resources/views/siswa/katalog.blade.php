@@ -224,6 +224,62 @@
         padding: 9px 14px; margin-bottom: 12px; font-size: 0.82rem;
     }
 
+    /* === MODAL KODE BOOKING === */
+    .modal-overlay {
+        position: fixed; inset: 0; z-index: 9999;
+        background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .modal-box {
+        background: #fff; border-radius: 20px;
+        padding: 32px 28px; width: 360px; max-width: 92vw;
+        text-align: center; position: relative;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        transform: scale(0.85); transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
+    }
+    .modal-overlay.active .modal-box { transform: scale(1); }
+    .modal-icon {
+        width: 60px; height: 60px; border-radius: 50%;
+        background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto 16px;
+    }
+    .modal-title { font-size: 1.1rem; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
+    .modal-sub { font-size: 0.8rem; color: #888; margin-bottom: 20px; }
+    .modal-book { font-size: 0.82rem; color: #555; font-weight: 600; margin-bottom: 18px;
+        background: #f8f9ff; border-radius: 8px; padding: 8px 14px; }
+    .modal-code-wrap {
+        background: linear-gradient(135deg, #4361ee, #3a56d4);
+        border-radius: 12px; padding: 18px 20px; margin-bottom: 18px;
+    }
+    .modal-code-label { font-size: 0.7rem; color: rgba(255,255,255,0.7); margin-bottom: 6px; letter-spacing: 0.08em; }
+    .modal-code {
+        font-family: 'Courier New', monospace;
+        font-size: 1.5rem; font-weight: 800; color: #fff;
+        letter-spacing: 0.12em;
+    }
+    .modal-copy-btn {
+        background: #4361ee; color: #fff; border: none;
+        border-radius: 8px; padding: 9px 18px;
+        font-size: 0.82rem; font-weight: 600;
+        cursor: pointer; font-family: inherit;
+        transition: background 0.15s; margin-right: 8px;
+    }
+    .modal-copy-btn:hover { background: #3a56d4; }
+    .modal-close-btn {
+        background: #f5f5f5; color: #555; border: none;
+        border-radius: 8px; padding: 9px 18px;
+        font-size: 0.82rem; font-weight: 600;
+        cursor: pointer; font-family: inherit;
+        transition: background 0.15s;
+    }
+    .modal-close-btn:hover { background: #e8e8e8; }
+    .modal-note {
+        font-size: 0.73rem; color: #aaa; margin-top: 14px; line-height: 1.5;
+    }
+
     /* Pagination override */
     .pagination-wrap { margin-top: 14px; }
     nav[aria-label="pagination"] { display: flex; justify-content: flex-start; }
@@ -437,10 +493,8 @@
             <div class="detail-actions">
                 <a href="{{ route('siswa.katalog') }}?selected={{ $selected->id }}" class="btn-detail-view">Tampilkan Detail</a>
                 @if($selected->stock > 0)
-                <form method="POST" action="{{ route('siswa.pinjam', $selected->id) }}" style="flex:1;">
-                    @csrf
-                    <button type="submit" class="btn-pinjam" style="width:100%;">Pinjam</button>
-                </form>
+                <button type="button" class="btn-pinjam" style="flex:1;"
+                    onclick="doPinjam({{ $selected->id }}, '{{ addslashes($selected->title) }}')">Pinjam</button>
                 @else
                 <button class="btn-pinjam" disabled style="opacity:0.5; cursor:not-allowed; flex:1;">Habis</button>
                 @endif
@@ -508,10 +562,8 @@
             <div class="detail-actions">
                 <a href="#" class="btn-detail-view">Tampilkan Detail</a>
                 @if($first->stock > 0)
-                <form method="POST" action="{{ route('siswa.pinjam', $first->id) }}" style="flex:1;">
-                    @csrf
-                    <button type="submit" class="btn-pinjam" style="width:100%;">Pinjam</button>
-                </form>
+                <button type="button" class="btn-pinjam" style="flex:1;"
+                    onclick="doPinjam({{ $first->id }}, '{{ addslashes($first->title) }}')">Pinjam</button>
                 @else
                 <button class="btn-pinjam" disabled style="opacity:0.5; flex:1;">Habis</button>
                 @endif
@@ -550,7 +602,6 @@ function toggleFav(bookId, btn) {
             svg.setAttribute('fill', '#ef4444');
             svg.setAttribute('stroke', '#ef4444');
             btn.title = 'Hapus dari favorit';
-            // Animasi kecil
             btn.style.transform = 'scale(1.3)';
             setTimeout(() => { btn.style.transform = ''; }, 200);
         } else {
@@ -561,7 +612,87 @@ function toggleFav(bookId, btn) {
     })
     .catch(err => console.error('Gagal toggle favorit:', err));
 }
+
+// === PINJAM BUKU via AJAX ===
+const CSRF = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
+
+function doPinjam(bookId, bookTitle) {
+    fetch(`/siswa/pinjam/${bookId}`, {
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': CSRF,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            showBookingModal(data.booking_code, data.book_title);
+        } else {
+            // Sudah punya booking aktif?
+            if (data.booking_code) {
+                showBookingModal(data.booking_code, bookTitle, true);
+            } else {
+                alert('Gagal: ' + data.message);
+            }
+        }
+    })
+    .catch(() => alert('Terjadi kesalahan. Silakan coba lagi.'));
+}
+
+function showBookingModal(code, title, isExisting = false) {
+    document.getElementById('modalBookTitle').textContent = title;
+    document.getElementById('modalBookCode').textContent  = code;
+    document.getElementById('modalStatus').textContent    = isExisting
+        ? 'Kamu sudah memiliki booking aktif untuk buku ini.'
+        : 'Kode booking berhasil dibuat!';
+    document.getElementById('bookingModal').classList.add('active');
+}
+
+function closeBookingModal() {
+    document.getElementById('bookingModal').classList.remove('active');
+}
+
+function copyCode() {
+    const code = document.getElementById('modalBookCode').textContent;
+    navigator.clipboard.writeText(code).then(() => {
+        const btn = document.querySelector('.modal-copy-btn');
+        const orig = btn.textContent;
+        btn.textContent = '✓ Tersalin!';
+        btn.style.background = '#10b981';
+        setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+    });
+}
+
+// Tutup modal jika klik backdrop
+document.getElementById('bookingModal').addEventListener('click', function(e) {
+    if (e.target === this) closeBookingModal();
+});
 </script>
 @endpush
+
+{{-- MODAL POPUP KODE BOOKING --}}
+<div class="modal-overlay" id="bookingModal">
+    <div class="modal-box">
+        <div class="modal-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="#4361ee" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+            </svg>
+        </div>
+        <p class="modal-title">Booking Berhasil! 🎉</p>
+        <p class="modal-sub" id="modalStatus">Kode booking berhasil dibuat!</p>
+        <div class="modal-book" id="modalBookTitle">—</div>
+        <div class="modal-code-wrap">
+            <div class="modal-code-label">KODE BOOKING ANDA</div>
+            <div class="modal-code" id="modalBookCode">—</div>
+        </div>
+        <div>
+            <button class="modal-copy-btn" onclick="copyCode()">📋 Salin Kode</button>
+            <button class="modal-close-btn" onclick="closeBookingModal()">Tutup</button>
+        </div>
+        <p class="modal-note">Tunjukkan kode ini kepada penjaga perpustakaan<br>untuk mengambil buku Anda.</p>
+    </div>
+</div>
 
 @endsection

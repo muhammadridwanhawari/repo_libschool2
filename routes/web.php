@@ -10,6 +10,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Siswa\FavoriteController;
 use App\Http\Controllers\Siswa\SiswaKatalogController;
+use App\Http\Controllers\Siswa\SiswaTransaksiController;
+use App\Http\Controllers\Penjaga\PenjagaPeminjamanController;
+use App\Http\Controllers\Penjaga\PenjagaPengembalianController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -57,9 +60,7 @@ Route::middleware(['auth', 'role:siswa'])
         Route::post('/favorite/toggle/{bookId}', [FavoriteController::class, 'toggle'])->name('favorite.toggle');
         Route::delete('/favorite/{bookId}', [FavoriteController::class, 'destroy'])->name('favorite.destroy');
 
-        Route::get('/transaksi', function () {
-            return view('siswa.transaksi');
-        })->name('transaksi');
+        Route::get('/transaksi', [SiswaTransaksiController::class, 'index'])->name('transaksi');
     });
 
 // ═══════════════════════════════════════
@@ -72,11 +73,18 @@ Route::middleware(['auth', 'role:penjaga'])
         Route::get('/dashboard', function () {
             return view('penjaga.dashboard');
         })->name('dashboard');
+
+        // Peminjaman
+        Route::get('/peminjaman', [PenjagaPeminjamanController::class, 'index'])->name('peminjaman');
+        Route::post('/peminjaman/cari', [PenjagaPeminjamanController::class, 'cariBooking'])->name('peminjaman.cari');
+        Route::post('/peminjaman/konfirmasi', [PenjagaPeminjamanController::class, 'konfirmasi'])->name('peminjaman.konfirmasi');
+
+        // Pengembalian
+        Route::get('/pengembalian', [PenjagaPengembalianController::class, 'index'])->name('pengembalian');
+        Route::post('/pengembalian/kembalikan/{id}', [PenjagaPengembalianController::class, 'kembalikan'])->name('pengembalian.kembalikan');
     });
 
-// ═══════════════════════════════════════
 // ADMIN ROUTE
-// ═══════════════════════════════════════
 Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')

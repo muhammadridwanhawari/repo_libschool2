@@ -14,11 +14,24 @@ class Borrowing extends Model
     protected $fillable = [
         'user_id',
         'book_id',
+        'booking_code',
         'borrow_date',
         'deadline',
         'return_date',
         'status',
     ];
+
+    /**
+     * Generate kode booking unik format: BK-YYYYMMDD-XXXX
+     */
+    public static function generateBookingCode(): string
+    {
+        do {
+            $code = 'BK-' . now()->format('Ymd') . '-' . strtoupper(substr(uniqid(), -4));
+        } while (self::where('booking_code', $code)->exists());
+
+        return $code;
+    }
 
     protected $casts = [
         'borrow_date' => 'date',
@@ -47,6 +60,7 @@ class Borrowing extends Model
     public function getStatusDisplayAttribute(): string
     {
         if ($this->status === 'dikembalikan') return 'dikembalikan';
+        if ($this->status === 'booking') return 'booking';
         if ($this->deadline && now()->gt($this->deadline)) return 'terlambat';
         return 'dipinjam';
     }

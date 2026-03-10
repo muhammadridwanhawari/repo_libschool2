@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Http\Controllers\Penjaga;
+
+use App\Http\Controllers\Controller;
+use App\Models\Book;
+use App\Models\Borrowing;
+use App\Models\Fine;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
+
+class PenjagaPengembalianController extends Controller
+{
+    /**
+     * Halaman utama pengembalian penjaga
+     * Menampilkan tabel peminjaman aktif yang siap dikembalikan
+     */
+    public function index(Request $request)
+    {
+        $search = $request->get('search');
+
+        // Mengambil peminjaman dengan status 'dipinjam' saja
+        $peminjaman = Borrowing::with(['user', 'book'])
+            ->where('status', 'dipinjam')
+            ->when($search, function ($q) use ($search) {
+                $q->where('booking_code', 'like', "%$search%")
+                  ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%$search%"))
+                  ->orWhereHas('book', fn($b) => $b->where('title', 'like', "%$search%"));
+            })
+            ->latest()
+            ->paginate(15);
+
+        // Menghitung denda secara dinamis untuk tampilan (Rp 1.000 per hari keterlambatan)
+        foreach ($peminjaman as $p) {
+            $p->denda_estimasi = 0;
+            $p->hari_terlambat = 0;
+            if ($p->deadline && now()->startOfDay()->gt(Carbon::parse($p->deadline)->startOfDay())) {
+                $p->hari_terlambat = now()->startOfDay()->diffInDays(Carbon::parse($p->deadline)->startOfDay());
+                $p->denda_estimasi = $p->hari_terlambat * 1000;
+            }
+        }
+
+        return view('penjaga.pengembalian', compact('peminjaman', 'search'));
+    }
+
+    /**
+     * Proses pengembalian buku dan kalkulasi denda
+     */
+    public function kembalikan(Request $request, $id)
+    {
+        $borrowing = Borrowing::with('book')->findOrFail($id);
+
+        if ($borrowing->status !== 'dipinjam') {
+            return back()->with('error', 'Status peminjaman ini bukan "dipinjam".');
+        }
+
+        $dendaMessage = "";
+
+        // Hitung denda jika terlambat
+        if ($borrowing->deadline && now()->startOfDay()->gt(Carbon::parse($borrowing->deadline)->startOfDay())) {
+            $hariTerlambat = now()->startOfDay()->diffInDays(Carbon::parse($borrowing->deadline)->startOfDay());
+            $amount = $hariTerlambat * 1000; // Rp 1.000 per hari
+
+            Fine::create([
+                'borrowing_id' => $borrowing->id,
+                'amount'       => $amount,
+                'paid'         => false,
+            ]);
+
+            $dendaMessage = " Terlambat $hariTerlambat hari. Denda Rp " . number_format($amount, 0, ',', '.') . " telah ditambahkan.";
+        }
+
+        $borrowing->update([
+            'status'      => 'dikembalikan',
+            'return_date' => now()->toDateString(),
+        ]);
+
+        // Kembalikan stok buku
+        $borrowing->book->increment('stock');
+
+        return redirect()->route('penjaga.pengembalian')
+            ->with('success', "Buku \"{$borrowing->book->title}\" berhasil dikembalikan." . $dendaMessage);
+    }
+}
