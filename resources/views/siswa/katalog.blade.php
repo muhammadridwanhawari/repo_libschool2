@@ -222,6 +222,18 @@
     <div class="alert-danger">✗ {{ session('error') }}</div>
 @endif
 
+@if($activeCount >= 5)
+<div style="background:#fffbeb; border:1.5px solid #fde68a; border-radius:12px; padding:14px 18px; margin-bottom:20px; display:flex; align-items:flex-start; gap:12px;">
+    <div style="flex-shrink:0; margin-top:2px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#d97706" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+    </div>
+    <div>
+        <div style="font-size:0.88rem; font-weight:700; color:#92400e; margin-bottom:2px;">Batas Pinjaman Aktif Tercapai (5/5)</div>
+        <div style="font-size:0.8rem; color:#b45309; line-height:1.5;">Kamu sudah memiliki 5 pinjaman aktif. Kembalikan salah satu buku terlebih dahulu sebelum dapat meminjam buku baru.</div>
+    </div>
+</div>
+@endif
+
 <div class="katalog-container">
     {{-- Search & Filter Header --}}
     <div class="search-filter-row">

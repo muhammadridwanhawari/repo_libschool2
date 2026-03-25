@@ -66,12 +66,10 @@ class SiswaTransaksiController extends Controller
             ->get();
 
         // ── Stat cards ──────────────────────────────────────────────
-        // Buku Selesai = total dikembalikan
-        $totalSelesai = Borrowing::where('user_id', $userId)
-            ->where('status', 'dikembalikan')
-            ->count();
+        // 1. Buku Dipinjam (Total semua peminjaman by user)
+        $totalBorrowed = Borrowing::where('user_id', $userId)->count();
 
-        // Pernah Terlambat = jumlah peminjaman yang punya fine atau pernah terlambat
+        // 3. Pernah Terlambat = jumlah peminjaman yang punya fine atau pernah terlambat
         $totalTerlambat = Borrowing::where('user_id', $userId)
             ->where(function ($q) {
                 $q->whereHas('fine')
@@ -82,7 +80,19 @@ class SiswaTransaksiController extends Controller
             })
             ->count();
 
-        // Denda yang sudah dicatat di DB
+        // 2. Tepat Waktu = Dikembalikan tapi tidak termasuk kriteria terlambat di atas
+        $totalTepatWaktu = Borrowing::where('user_id', $userId)
+            ->where('status', 'dikembalikan')
+            ->whereDoesntHave('fine')
+            ->where(function($q) {
+                $q->whereColumn('return_date', '<=', 'deadline')
+                  ->orWhereNull('deadline');
+            })
+            ->count();
+
+        // Denda yang sudah dicatat di DB (Lunas + Belum Lunas) untuk Total Denda Semua
+        $totalSemuaDendaDB = abs(\App\Models\Fine::whereHas('borrowing', fn($q) => $q->where('user_id', $userId))
+            ->sum('amount'));
         $dendaDariDB = abs(\App\Models\Fine::whereHas('borrowing', fn($q) => $q->where('user_id', $userId))
             ->where('payment_status', 'unpaid')
             ->sum('amount'));
@@ -100,7 +110,8 @@ class SiswaTransaksiController extends Controller
             return now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($loan->deadline)->startOfDay()) * 2000;
         });
 
-        $totalDenda = $dendaDariDB + $dendaEstimasi;
+        $totalDenda = $dendaDariDB + $dendaEstimasi; // Ini untuk unpaid
+        $totalSemuaDenda = $totalSemuaDendaDB + $dendaEstimasi; // Ini untuk keseluruhan (histori)
 
         // Rincian tagihan = fines yang belum lunas + pinjaman telat tanpa fine
         $unpaidFines = \App\Models\Fine::with('borrowing.book')
@@ -111,14 +122,12 @@ class SiswaTransaksiController extends Controller
         // Pinjaman aktif terlambat tanpa fine (estimasi)
         $lateWithoutFine = $lateLoansEstimasi;
 
-        // Stat lama (masih dipakai di stat cards bawah)
-        $totalBorrowed  = Borrowing::where('user_id', $userId)->count();
         $activeBorrowed = $activeLoans->count();
 
         return view('siswa.riwayat', compact(
             'activeLoans', 'recentHistory',
             'totalBorrowed', 'activeBorrowed', 'totalDenda',
-            'totalSelesai', 'totalTerlambat',
+            'totalTepatWaktu', 'totalTerlambat', 'totalSemuaDenda',
             'unpaidFines', 'lateWithoutFine', 'user'
         ));
     }

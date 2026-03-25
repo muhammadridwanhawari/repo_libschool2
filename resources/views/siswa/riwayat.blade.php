@@ -2,6 +2,64 @@
 
 @section('title', 'Riwayat & Denda')
 
+@push('styles')
+<style>
+    .content-panel {
+        background: #fff; border-radius: 14px;
+        border: 1px solid #eee; overflow: hidden;
+    }
+
+    /* ── Stat Cards ── */
+    .pj-stats {
+        display: grid; grid-template-columns: repeat(4, 1fr);
+        gap: 16px; margin-bottom: 24px;
+    }
+    @media (max-width: 900px) { .pj-stats { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .pj-stats { grid-template-columns: 1fr; } }
+
+    .pj-stat {
+        background: #fff; border-radius: 14px;
+        border: 1.5px solid #e5e7eb;
+        padding: 18px 20px;
+        display: flex; align-items: center; justify-content: space-between;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .pj-stat-label { font-size: 0.68rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 4px; }
+    .pj-stat-value { font-size: 1.9rem; font-weight: 800; margin: 0; line-height: 1; }
+    .pj-stat-icon  { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+    /* Total / Blue */
+    .pj-stat-blue { background: #eff6ff; border-color: #bfdbfe; }
+    .pj-stat-blue .pj-stat-label { color: #2563eb; }
+    .pj-stat-blue .pj-stat-value { color: #1e40af; }
+    .pj-stat-blue .pj-stat-icon  { background: #dbeafe; color: #2563eb; }
+
+    /* Warning / Yellow (Wait) */
+    .pj-stat-wait { background: #fefce8; border-color: #fef08a; }
+    .pj-stat-wait .pj-stat-label  { color: #ca8a04; }
+    .pj-stat-wait .pj-stat-value  { color: #ca8a04; }
+    .pj-stat-wait .pj-stat-icon   { background: #fef08a; }
+
+    /* Success / Green */
+    .pj-stat-ok { background: #f0fdf4; border-color: #bbf7d0; }
+    .pj-stat-ok .pj-stat-label { color: #16a34a; }
+    .pj-stat-ok .pj-stat-value { color: #166534; }
+    .pj-stat-ok .pj-stat-icon  { background: #dcfce7; color: #16a34a; }
+
+    /* Danger / Red */
+    .pj-stat-no { background: #fff1f2; border-color: #fecdd3; }
+    .pj-stat-no .pj-stat-label { color: #dc2626; }
+    .pj-stat-no .pj-stat-value { color: #991b1b; }
+    .pj-stat-no .pj-stat-icon  { background: #fecdd3; color: #dc2626; }
+
+    /* Default / White-Grey */
+    .pj-stat-total { background: #fff; border-color: #e2e8f0; }
+    .pj-stat-total .pj-stat-label { color: #64748b; }
+    .pj-stat-total .pj-stat-value { color: #1e293b; }
+    .pj-stat-total .pj-stat-icon  { background: #f1f5f9; color: #64748b; }
+</style>
+@endpush
+
 @section('content')
 <div class="max-w-5xl mx-auto">
 
@@ -11,178 +69,85 @@
         <p class="text-slate-500 text-[0.875rem] mt-1">Pantau riwayat transaksi dan denda Anda</p>
     </div>
 
-    {{-- Kartu Statistik --}}
-    <div class="grid grid-cols-3 gap-4 mb-6">
+    {{-- ── 4 Stat Cards ─────────────────── --}}
+    <div class="pj-stats">
 
         {{-- Buku Dipinjam --}}
-        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_6px_rgba(0,0,0,0.06)]">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#6366f1" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-[0.75rem] text-slate-400 font-medium">Buku Dipinjam</p>
-                    <p class="text-2xl font-bold text-indigo-950">{{ $totalBorrowed }}</p>
-                </div>
+        <div class="pj-stat pj-stat-blue">
+            <div>
+                <p class="pj-stat-label">Buku Dipinjam</p>
+                <p class="pj-stat-value">{{ $totalBorrowed }}</p>
             </div>
-        </div>
-
-        {{-- Aktif --}}
-        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_6px_rgba(0,0,0,0.06)]">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#ca8a04" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-[0.75rem] text-slate-400 font-medium">Aktif</p>
-                    <p class="text-2xl font-bold text-indigo-950">{{ $activeBorrowed }}</p>
-                </div>
-            </div>
-        </div>
-
-        {{-- Jumlah Denda --}}
-        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_6px_rgba(0,0,0,0.06)]">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#dc2626" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-                    </svg>
-                </div>
-                <div>
-                    <p class="text-[0.75rem] text-slate-400 font-medium">Jumlah Denda</p>
-                    <p class="text-2xl font-bold text-indigo-950">Rp {{ number_format($totalDenda, 0, ',', '.') }}</p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    {{-- Daftar Pinjaman Aktif --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-6">
-        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-            <h2 class="text-[1.05rem] font-bold text-slate-800 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-[#0f5132]">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                </svg>
-                Daftar Pinjaman Aktif
-            </h2>
-            <span class="text-sm font-medium text-slate-400">{{ count($activeLoans) }} buku</span>
-        </div>
-
-        @if($activeLoans->isEmpty())
-        <div class="flex flex-col items-center justify-center py-12">
-            <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#cbd5e1" class="w-8 h-8">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+            <div class="pj-stat-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                 </svg>
             </div>
-            <h3 class="font-bold text-slate-800 mb-1">Belum ada pinjaman aktif</h3>
-            <p class="text-[0.8rem] text-slate-500 mb-6 font-medium">Kunjungi katalog untuk meminjam buku</p>
-            <a href="{{ route('siswa.katalog') }}" class="px-5 py-2.5 bg-[#0f5132] hover:bg-[#0b3c24] text-white rounded-lg font-bold text-[0.82rem] transition-colors">
-                Lihat Katalog Buku
-            </a>
         </div>
-        @else
-        <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                @foreach($activeLoans as $loan)
-                <div class="flex items-start gap-4 p-4 border border-slate-200 rounded-xl hover:border-[#0f5132]/30 hover:shadow-sm transition-all">
-                    <!-- book cover -->
-                    <div class="w-16 h-20 bg-slate-100 rounded flex-shrink-0 flex items-center justify-center overflow-hidden border border-slate-200">
-                        @if($loan->book->cover_image)
-                            <img src="{{ asset('storage/' . $loan->book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
-                        @else
-                            <svg class="w-8 h-8 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
-                        @endif
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <h3 class="font-bold text-slate-800 text-[0.95rem] leading-tight mb-1 truncate">{{ $loan->book->title }}</h3>
-                        <p class="text-[0.75rem] text-slate-500 mb-2">Kode Buku: {{ $loan->book->book_code }}</p>
-                        
-                        <div class="text-[0.75rem] text-slate-600 mb-2 space-y-1">
-                            @if($loan->status === 'booking')
-                                <p><span class="font-medium">Kode Booking:</span> <span class="font-mono bg-slate-100 px-1 py-0.5 rounded">{{ $loan->booking_code }}</span></p>
-                            @else
-                                <p><span class="font-medium">Tanggal Pinjam:</span> {{ $loan->borrow_date ? $loan->borrow_date->format('d M Y') : '-' }}</p>
-                                <p><span class="font-medium">Jatuh Tempo:</span> {{ $loan->deadline ? $loan->deadline->format('d M Y') : '-' }}</p>
-                            @endif
-                        </div>
-                        
-                        <div>
-                            @if($loan->status === 'booking')
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 text-white border border-blue-600/20 rounded-lg text-[0.7rem] font-bold" style="background: linear-gradient(to right, #3b82f6, #2563eb); box-shadow: 0 2px 10px rgba(59,130,246,0.3);">
-                                    <span class="w-1.5 h-1.5 bg-white rounded-full opacity-80"></span> BOOKING
-                                </span>
-                            @else
-                                @php
-                                    $isLate = $loan->status === 'dipinjam' && $loan->deadline && now()->gt($loan->deadline);
-                                @endphp
-                                @if($isLate)
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 text-red-700 rounded-lg text-[0.7rem] font-bold">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> TERLAMBAT
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-yellow-50 text-yellow-700 rounded-lg text-[0.7rem] font-bold">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span> AKTIF
-                                    </span>
-                                @endif
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                @endforeach
+
+        {{-- Tepat Waktu --}}
+        <div class="pj-stat pj-stat-ok">
+            <div>
+                <p class="pj-stat-label">Tepat Waktu</p>
+                <p class="pj-stat-value">{{ $totalTepatWaktu }}</p>
+            </div>
+            <div class="pj-stat-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
             </div>
         </div>
-        @endif
+
+        {{-- Terlambat --}}
+        <div class="pj-stat pj-stat-wait">
+            <div>
+                <p class="pj-stat-label">Terlambat</p>
+                <p class="pj-stat-value">{{ $totalTerlambat }}</p>
+            </div>
+            <div class="pj-stat-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+        </div>
+
+        {{-- Total Denda --}}
+        <div class="pj-stat {{ $totalSemuaDenda > 0 ? 'pj-stat-no' : 'pj-stat-total' }}">
+            <div>
+                <p class="pj-stat-label">Total Denda</p>
+                <p class="pj-stat-value" style="font-size: 1.4rem; padding-top: 5px;">Rp {{ number_format($totalSemuaDenda, 0, ',', '.') }}</p>
+            </div>
+            <div class="pj-stat-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+        </div>
+
     </div>
 
-    {{-- Keterangan Status --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
-        <h3 class="text-[0.95rem] font-bold text-slate-800 mb-4">Keterangan Status</h3>
-        <div class="flex flex-wrap gap-4">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 text-white rounded-lg text-[0.75rem] font-bold w-fit" style="background: linear-gradient(to right, #3b82f6, #2563eb); box-shadow: 0 2px 10px rgba(59,130,246,0.3);">
-                <span class="w-1.5 h-1.5 rounded-full bg-white opacity-80"></span>
-                BOOKING <span class="font-medium text-blue-50">— Menunggu pengambilan di perpustakaan</span>
-            </div>
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-yellow-50 text-yellow-600 rounded-lg text-[0.75rem] font-bold w-fit">
-                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
-                AKTIF <span class="font-medium">— Sedang dipinjam, belum jatuh tempo</span>
-            </div>
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 text-[#0f5132] rounded-lg text-[0.75rem] font-bold w-fit">
-                <span class="w-1.5 h-1.5 rounded-full bg-[#198754]"></span>
-                DIKEMBALIKAN <span class="font-medium">— Buku sudah dikembalikan</span>
-            </div>
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-[0.75rem] font-bold w-fit">
-                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                TERLAMBAT <span class="font-medium">— Melewati batas waktu pengembalian</span>
+
+
+    {{-- Riwayat Peminjaman Panel --}}
+    <div class="content-panel" style="margin-bottom: 24px;">
+        {{-- History Table --}}
+        <div class="px-6 pt-5 pb-2 flex items-center justify-between">
+            <div>
+                <h2 class="font-bold text-slate-800 text-[1rem]">Riwayat Peminjaman</h2>
+                <p class="text-[0.78rem] text-slate-400 mt-0.5">{{ $recentHistory->count() }} data denda atau buku yang dikembalikan</p>
             </div>
         </div>
-    </div>
 
-    {{-- ── Riwayat Peminjaman (Full Width) ───────────────────────────────── --}}
-    <div class="mb-6">
-        <div class="bg-white rounded-2xl shadow-[0_1px_6px_rgba(0,0,0,0.06)] overflow-hidden">
-                {{-- Header --}}
-                <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                    <h2 class="font-bold text-slate-800 text-[1rem]">Riwayat Peminjaman</h2>
-                    <span class="text-[0.75rem] text-slate-400 font-medium">{{ $recentHistory->count() }} data</span>
-                </div>
-                <p class="px-6 pt-3 pb-1 text-[0.78rem] text-slate-400">Menampilkan data buku yang telah dikembalikan</p>
-
-                {{-- Table --}}
-                <div class="overflow-x-auto">
-                    <table class="w-full border-collapse min-w-[700px]">
-                        <thead>
-                            <tr class="bg-slate-50">
-                                <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">BUKU</th>
-                                <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TGL PINJAM</th>
-                                <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TGL KEMBALI</th>
-                                <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">STATUS</th>
-                            </tr>
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse min-w-[700px]">
+                <thead>
+                    <tr class="bg-slate-50">
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">BUKU</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TGL PINJAM</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TGL KEMBALI</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">STATUS</th>
+                        <th class="px-5 py-3 text-right text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">DENDA</th>
+                    </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-50">
                             @forelse ($recentHistory as $loan)
@@ -214,19 +179,17 @@
                                 <td class="px-5 py-3.5 align-middle">
                                     <div class="flex items-center gap-3">
                                         <div class="w-9 h-11 rounded bg-slate-100 flex-shrink-0 overflow-hidden border border-slate-200 flex items-center justify-center">
-                                            @if($loan->book && $loan->book->cover_image)
+                                            @if($loan->book && $loan->book->cover)
+                                                <img src="{{ asset('storage/' . $loan->book->cover) }}" alt="Cover" class="w-full h-full object-cover">
+                                            @elseif($loan->book && $loan->book->cover_image)
                                                 <img src="{{ asset('storage/' . $loan->book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
                                             @else
                                                 <svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
                                             @endif
                                         </div>
                                         <div class="min-w-0">
-                                            <p class="font-semibold text-slate-800 text-[0.82rem] leading-tight truncate max-w-[160px]">
-                                                {{ $loan->book->title ?? '-' }}
-                                            </p>
-                                            <p class="text-[0.7rem] text-slate-400 truncate max-w-[160px]">
-                                                {{ $loan->book->author ?? '' }}
-                                            </p>
+                                            <p class="font-semibold text-slate-800 text-[0.82rem] leading-tight truncate max-w-[160px]">{{ $loan->book->title ?? '-' }}</p>
+                                            <p class="text-[0.7rem] text-slate-400 truncate max-w-[160px]">{{ $loan->book->author ?? '' }}</p>
                                         </div>
                                     </div>
                                 </td>
@@ -237,31 +200,25 @@
                                     {{ $loan->return_date ? $loan->return_date->format('d M Y') : ($loan->deadline ? $loan->deadline->format('d M Y') : '—') }}
                                 </td>
                                 <td class="px-5 py-3.5 align-middle">
-                                    @if($loan->status === 'booking')
-                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dbeafe] text-[#1d4ed8]">BOOKING</span>
-                                    @elseif($isLate)
+                                    @if($isReturnedLate)
                                         <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fee2e2] text-[#dc2626]">TERLAMBAT</span>
-                                    @elseif($isDeadline)
-                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#ffedd5] text-[#ea580c]">DEADLINE</span>
-                                    @elseif($loan->status === 'dipinjam')
-                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fef9c3] text-[#a16207]">AKTIF</span>
-                                    @elseif($loan->status === 'dikembalikan')
-                                        <div class="flex items-center gap-2">
-                                            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dcfce7] text-[#16a34a]">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-[#16a34a] inline-block"></span>Dikembalikan
-                                            </span>
-                                            @if($isReturnedLate)
-                                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fee2e2] text-[#dc2626]">
-                                                    Terlambat
-                                                </span>
-                                            @endif
-                                        </div>
+                                    @else
+                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dcfce7] text-[#16a34a]">TEPAT WAKTU</span>
+                                    @endif
+                                </td>
+                                {{-- Denda --}}
+                                <td class="px-5 py-3.5 text-right align-middle">
+                                    @php $fineAmount = $loan->fine?->amount ?? 0; @endphp
+                                    @if(abs($fineAmount) > 0)
+                                        <span class="font-bold text-[0.78rem] text-red-600">Rp {{ number_format(abs($fineAmount), 0, ',', '.') }}</span>
+                                    @else
+                                        <span class="text-slate-300 text-[0.78rem]">—</span>
                                     @endif
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="4" class="px-5 py-14 text-center">
+                                <td colspan="5" class="px-5 py-14 text-center">
                                     <div class="flex flex-col items-center gap-2">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#cbd5e1" stroke-width="1.5" viewBox="0 0 24 24" class="mb-1">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>

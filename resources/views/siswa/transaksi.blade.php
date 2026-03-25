@@ -129,6 +129,29 @@
 
     </div>
 
+    {{-- Keterangan Status --}}
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
+        <h3 class="text-[0.95rem] font-bold text-slate-800 mb-4">Keterangan Status</h3>
+        <div class="flex flex-wrap gap-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 text-white rounded-lg text-[0.75rem] font-bold w-fit" style="background: linear-gradient(to right, #3b82f6, #2563eb); box-shadow: 0 2px 10px rgba(59,130,246,0.3);">
+                <span class="w-1.5 h-1.5 rounded-full bg-white opacity-80"></span>
+                BOOKING <span class="font-medium text-blue-50">— Menunggu pengambilan di perpustakaan</span>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-yellow-50 text-yellow-600 rounded-lg text-[0.75rem] font-bold w-fit">
+                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
+                AKTIF <span class="font-medium">— Sedang dipinjam, belum jatuh tempo</span>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-orange-50 text-orange-600 rounded-lg text-[0.75rem] font-bold w-fit">
+                <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                DEADLINE <span class="font-medium">— Mendekati batas waktu pengembalian</span>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-700 rounded-lg text-[0.75rem] font-bold w-fit">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                TERLAMBAT <span class="font-medium">— Melewati batas waktu pengembalian</span>
+            </div>
+        </div>
+    </div>
+
     {{-- Tabel --}}
     <div class="bg-white rounded-2xl shadow-[0_1px_6px_rgba(0,0,0,0.06)] overflow-hidden">
         {{-- Header --}}

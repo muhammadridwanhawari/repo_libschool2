@@ -68,7 +68,12 @@ class SiswaKatalogController extends Controller
             ->pluck('book_id')
             ->toArray();
 
-        return view('siswa.katalog', compact('books', 'categories', 'series', 'selected', 'favoritedIds'));
+        // Jumlah pinjaman aktif siswa
+        $activeCount = Borrowing::where('user_id', Auth::id())
+            ->whereIn('status', ['booking', 'dipinjam'])
+            ->count();
+
+        return view('siswa.katalog', compact('books', 'categories', 'series', 'selected', 'favoritedIds', 'activeCount'));
     }
 
     /**
@@ -99,7 +104,12 @@ class SiswaKatalogController extends Controller
             'borrowing', fn($q) => $q->where('user_id', Auth::id())
         )->where('paid', false)->exists();
 
-        return view('siswa.katalog.show', compact('book', 'reviews', 'avgRating', 'myReview', 'isFav', 'hasBorrowed', 'hasUnpaidFine'));
+        // Hitung pinjaman aktif (booking + dipinjam)
+        $activeCount = Borrowing::where('user_id', Auth::id())
+            ->whereIn('status', ['booking', 'dipinjam'])
+            ->count();
+
+        return view('siswa.katalog.show', compact('book', 'reviews', 'avgRating', 'myReview', 'isFav', 'hasBorrowed', 'hasUnpaidFine', 'activeCount'));
     }
 
     /**
@@ -138,6 +148,18 @@ class SiswaKatalogController extends Controller
                 'success' => false,
                 'message' => 'Akun kamu dibatasi karena memiliki tagihan denda yang belum dilunasi. Silakan lunasi denda terlebih dahulu di menu Riwayat & Denda.',
             ], 403);
+        }
+
+        // Cek batas maksimal pinjaman aktif
+        $activeCount = Borrowing::where('user_id', Auth::id())
+            ->whereIn('status', ['booking', 'dipinjam'])
+            ->count();
+
+        if ($activeCount >= 5) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kamu sudah mencapai batas maksimal 5 pinjaman aktif. Kembalikan salah satu buku terlebih dahulu sebelum meminjam buku baru.',
+            ], 422);
         }
 
         // Cek stok buku
