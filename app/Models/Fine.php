@@ -10,6 +10,10 @@ class Fine extends Model
         'borrowing_id',
         'amount',
         'paid',
+        'payment_code',
+        'payment_method',
+        'payment_proof',
+        'payment_status',
     ];
 
     public function borrowing()

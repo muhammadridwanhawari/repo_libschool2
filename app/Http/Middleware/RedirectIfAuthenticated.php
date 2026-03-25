@@ -25,7 +25,7 @@ class RedirectIfAuthenticated
                 return match($role) {
                     'admin'   => redirect()->route('admin.dashboard'),
                     'penjaga' => redirect()->route('penjaga.dashboard'),
-                    'siswa'   => redirect()->route('siswa.dashboard'),
+                    'siswa'   => redirect()->route('siswa.katalog'),
                     default   => redirect('/'),
                 };
             }

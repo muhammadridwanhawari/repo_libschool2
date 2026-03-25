@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.penjaga')
 
 @section('title', 'Kategori')
 
@@ -139,6 +139,7 @@
     .pagination-wrap .active {
         background: #4361ee; color: #fff; border-color: #4361ee;
     }
+    .pagination-wrap nav p.text-sm.text-gray-700 { display: none !important; }
 </style>
 @endpush
 
@@ -217,7 +218,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($categories as $i => $cat)
+                    @forelse ($categories as $i => $cat)
                     <tr>
                         <td>#{{ $categories->firstItem() + $i }}</td>
                         <td>{{ $cat->name }}</td>
@@ -231,7 +232,7 @@
                                     </svg>
                                 </a>
                                 <form action="{{ route('admin.kategori.destroy', $cat->id) }}" method="POST"
-                                      onsubmit="return confirm('Yakin ingin menghapus kategori {{ $cat->name }}?')">
+                                      onsubmit="confirmAction(event, 'Yakin ingin menghapus kategori {{ $cat->name }}?', 'Ya, Hapus', 'Konfirmasi Hapus'); return false;">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn-delete" title="Hapus">

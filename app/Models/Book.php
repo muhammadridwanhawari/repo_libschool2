@@ -12,9 +12,12 @@ class Book extends Model
         'author',
         'publisher',
         'year',
+        'pages',
         'stock',
         'cover',
         'location',
+        'sinopsis',
+        'book_series_id',
     ];
 
     /**
@@ -36,5 +39,15 @@ class Book extends Model
     public function borrowings()
     {
         return $this->hasMany(Borrowing::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(BookReview::class);
+    }
+
+    public function series()
+    {
+        return $this->belongsTo(BookSeries::class, 'book_series_id');
     }
 }

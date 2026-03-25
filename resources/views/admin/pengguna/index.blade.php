@@ -94,6 +94,7 @@
         border: 1px solid #e5e7eb;
     }
     .pagination-wrap .active { background: #4361ee; color: #fff; border-color: #4361ee; }
+    .pagination-wrap nav p.text-sm.text-gray-700 { display: none !important; }
 
     /* ─── MODAL ─────────────────────────────── */
     .modal-overlay {
@@ -222,7 +223,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($users as $user)
+                @forelse ($users as $user)
                 <tr>
                     <td class="td-name">{{ $user->username }}</td>
                     <td>{{ $user->email }}</td>
@@ -254,7 +255,7 @@
                             {{-- Hapus (Admin tidak boleh hapus dirinya sendiri) --}}
                             @if($user->id !== auth()->id())
                             <form action="{{ route('admin.pengguna.destroy', $user->id) }}" method="POST"
-                                  onsubmit="return confirm('Yakin ingin menghapus pengguna {{ $user->username }}?')">
+                                  onsubmit="confirmAction(event, 'Yakin ingin menghapus pengguna {{ $user->username }}?', 'Ya, Hapus', 'Konfirmasi Hapus'); return false;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn-delete" title="Hapus">
@@ -474,10 +475,12 @@ document.getElementById('btnBatalModal').addEventListener('click', closeModal);
 modal.addEventListener('click', function (e) {
     if (e.target === modal) closeModal();
 });
-
-// ─── Buka otomatis jika ada error validasi ───────────────────
-@if($errors->any())
-    openModal();
-@endif
 </script>
+
+@if($errors->any())
+<script>
+// ─── Buka otomatis jika ada error validasi ───────────────────
+    openModal();
+</script>
+@endif
 @endpush

@@ -24,9 +24,19 @@ class PenjagaPeminjamanController extends Controller
         $menungguBooking = Borrowing::where('status', 'booking')->count();
 
         $peminjaman = Borrowing::with(['user', 'book'])
-            ->whereIn('status', ['booking', 'dipinjam'])
+            ->where(function($q) {
+                $q->where('status', 'booking')
+                  ->orWhere(function($sq) {
+                      $sq->where('status', 'dipinjam')
+                         ->where(function($dq) {
+                             $dq->whereNull('deadline')
+                                ->orWhere('deadline', '>=', \Carbon\Carbon::today());
+                         });
+                  });
+            })
+            ->orderByRaw("CASE status WHEN 'booking' THEN 0 ELSE 1 END")
             ->latest()
-            ->paginate(15);
+            ->paginate(10);
 
         return view('penjaga.peminjaman', compact(
             'peminjaman', 'totalBuku', 'sedangDipinjam', 'belumKembali', 'menungguBooking'
@@ -58,6 +68,7 @@ class PenjagaPeminjamanController extends Controller
             'book_stock'   => $borrowing->book->stock,
             'student_name' => $borrowing->user->name,
             'student_email'=> $borrowing->user->email,
+            'duration'     => $borrowing->duration,
         ]);
     }
 
@@ -84,13 +95,13 @@ class PenjagaPeminjamanController extends Controller
         $borrowing->update([
             'status'      => 'dipinjam',
             'borrow_date' => now()->toDateString(),
-            'deadline'    => now()->addDays(7)->toDateString(),
+            'deadline'    => now()->addDays($borrowing->duration ?? 7)->toDateString(),
         ]);
 
         // Kurangi stok buku
         $borrowing->book->decrement('stock');
 
         return redirect()->route('penjaga.peminjaman')
-            ->with('success', "Peminjaman buku \"{$borrowing->book->title}\" berhasil dikonfirmasi! Deadline: " . now()->addDays(7)->format('d M Y'));
+            ->with('success', "Peminjaman buku \"{$borrowing->book->title}\" berhasil dikonfirmasi! Deadline: " . now()->addDays($borrowing->duration ?? 7)->format('d M Y'));
     }
 }

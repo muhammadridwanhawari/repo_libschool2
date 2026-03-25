@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.penjaga')
 
 @section('title', 'Peminjaman')
 
@@ -87,6 +87,7 @@
         color: #666; border: 1px solid #e5e7eb;
     }
     .pagination-wrap .active { background: #4361ee; color: #fff; border-color: #4361ee; }
+    .pagination-wrap nav p.text-sm.text-gray-700 { display: none !important; }
 </style>
 @endpush
 
@@ -121,7 +122,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($borrowings as $p)
+                @forelse ($borrowings as $p)
                 @php
                     $statusDisplay = $p->status_display;
                 @endphp
@@ -137,17 +138,14 @@
                         @if($statusDisplay === 'terlambat')
                             <span class="badge badge-danger">Terlambat</span>
                         @elseif($statusDisplay === 'dipinjam')
-                            <span class="badge badge-warning">Dipinjam</span>
-                        @else
+                            <span class="badge badge-warning">Aktif</span>
+                        @elseif($statusDisplay === 'dikembalikan')
                             <span class="badge badge-success">Dikembalikan</span>
                         @endif
                     </td>
                     <td>
                         <div class="action-btns">
                             <a href="{{ route('admin.peminjaman.show', $p->id) }}" class="btn-detail">Detail</a>
-                            @if($statusDisplay === 'terlambat')
-                                <a href="{{ route('admin.denda.show', $p->id) }}" class="btn-denda">Denda</a>
-                            @endif
                         </div>
                     </td>
                 </tr>

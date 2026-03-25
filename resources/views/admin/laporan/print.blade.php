@@ -7,150 +7,207 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            font-size: 12px; color: #222;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            font-size: 11px; color: #222;
             padding: 20px 30px;
             background: #fff;
         }
 
-        .report-header {
-            text-align: center; margin-bottom: 24px;
-            padding-bottom: 14px; border-bottom: 2px solid #4361ee;
-        }
-        .report-header h1 {
-            font-size: 18px; font-weight: 700; color: #4361ee; margin-bottom: 4px;
-        }
-        .report-header p { font-size: 11px; color: #666; }
+        /* typography */
+        .page-title { font-size: 16px; font-weight: bold; color: #4361ee; margin-bottom: 2px; text-transform: uppercase; }
+        .subtitle { font-size: 9px; color: #666; margin-bottom: 3px; }
+        .sub-info { font-size: 10px; color: #333; font-weight: bold; }
+        .divider { height: 2px; background-color: #4361ee; margin-top: 5px; margin-bottom: 12px; }
 
-        .meta-row {
-            display: flex; gap: 20px; margin-bottom: 16px; flex-wrap: wrap;
+        /* header table (top stats) */
+        .info-table {
+            width: 100%; border-collapse: collapse; margin-bottom: 12px;
+            border: 1px solid #d1d5db;
         }
-        .meta-item { font-size: 11px; color: #555; }
-        .meta-item strong { color: #222; }
+        .info-table td {
+            border: 1px solid #e5e7eb; padding: 8px 12px;
+            vertical-align: top;
+            width: 25%;
+        }
+        .info-label { font-size: 8px; color: #6b7280; text-transform: uppercase; font-weight: bold; margin-bottom: 2px;}
+        .info-value { font-size: 11px; color: #111827; font-weight: bold; }
+        
+        /* big stats row */
+        .stat-table {
+            width: 100%; border-collapse: collapse; margin-bottom: 16px;
+            border: 1px solid #d1d5db;
+        }
+        .stat-table td {
+            border: 1px solid #e5e7eb; padding: 12px;
+            text-align: center; width: 25%;
+        }
+        .stat-number { font-size: 20px; font-weight: bold; margin-bottom: 2px; }
+        .stat-text { font-size: 8px; color: #6b7280; text-transform: uppercase; }
 
-        /* Stat summary */
-        .stat-row {
-            display: flex; gap: 12px; margin-bottom: 20px;
-        }
-        .stat-card {
-            flex: 1; border: 1px solid #e5e7eb; border-radius: 8px;
-            padding: 10px 14px;
-        }
-        .stat-label { font-size: 10px; color: #888; font-weight: 600; text-transform: uppercase; }
-        .stat-value { font-size: 22px; font-weight: 700; margin-top: 2px; }
-        .stat-value.blue { color: #4361ee; }
-        .stat-value.red { color: #ef4444; }
-        .stat-value.green { color: #16a34a; }
+        .text-primary { color: #4361ee; }
+        .text-red { color: #dc2626; }
+        .text-green { color: #16a34a; }
+        .text-blue { color: #0f766e; }
 
-        /* Table */
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        thead tr { background: #4361ee; color: #fff; }
-        th {
-            padding: 8px 10px; font-size: 10px;
-            font-weight: 700; text-align: left;
-            text-transform: uppercase; letter-spacing: 0.5px;
+        /* main data table */
+        .data-table {
+            width: 100%; border-collapse: collapse; margin-bottom: 20px;
         }
-        td {
-            padding: 8px 10px; font-size: 11px;
-            border-bottom: 1px solid #f0f0f0; color: #333;
+        .data-table th {
+            background-color: #4361ee; color: #fff;
+            font-size: 9px; font-weight: bold; text-transform: uppercase;
+            padding: 8px; text-align: left;
         }
-        tr:nth-child(even) td { background: #f8f9ff; }
-
+        .data-table th.center { text-align: center; }
+        .data-table td {
+            padding: 8px; font-size: 10px; color: #374151;
+            border-bottom: 1px solid #f3f4f6;
+            vertical-align: middle;
+        }
+        .data-table tr:nth-child(even) td { background-color: #f9fafb; }
+        
+        .book-list { margin-left: 14px; color: #4b5563; }
+        
+        /* badges for dompdf (inline blocks with padding) */
         .badge {
-            display: inline-block; padding: 2px 10px;
-            border-radius: 20px; font-size: 9px; font-weight: 700;
+            display: inline-block; padding: 3px 8px; 
+            border-radius: 4px; font-size: 8px; font-weight: bold;
         }
-        .badge-danger { background: #fee2e2; color: #dc2626; }
-        .badge-success { background: #d1fae5; color: #059669; }
-        .badge-warning { background: #fef9c3; color: #92400e; }
+        .badge-booking { background-color: #dbeafe; color: #1e40af; }
+        .badge-terlambat { background-color: #fee2e2; color: #991b1b; }
+        .badge-deadline { background-color: #ffedd5; color: #9a3412; }
+        .badge-aktif { background-color: #e0f2fe; color: #075985; border: 1px solid #bae6fd; } /* light blue like Dipinjam */
+        .badge-dikembalikan { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
 
-        .footer {
-            margin-top: 20px; text-align: right;
-            font-size: 10px; color: #888;
-            border-top: 1px solid #e5e7eb; padding-top: 10px;
-        }
-
+        .footer-text { font-size: 8px; color: #9ca3af; margin-top: 30px;}
+        .signature-box { text-align: right; font-size: 10px; color: #374151; width: 250px; float: right; margin-top: -15px; }
+        
         @media print {
-            body { padding: 10px 20px; }
+            body { padding: 10px; }
             .no-print { display: none !important; }
         }
     </style>
 </head>
 <body>
-    {{-- Print / Close action (hidden saat print) --}}
-    <div class="no-print" style="margin-bottom:16px; display:flex; gap:8px;">
-        @if($type === 'print')
-        <button onclick="window.print()"
-            style="background:#4361ee; color:#fff; border:none; border-radius:6px; padding:8px 18px; font-size:12px; font-weight:600; cursor:pointer;">
-            🖨️ Cetak
-        </button>
-        @endif
-        <button onclick="window.close()"
-            style="background:#f3f4f6; color:#444; border:1px solid #ddd; border-radius:6px; padding:8px 18px; font-size:12px; font-weight:600; cursor:pointer;">
-            ✕ Tutup
-        </button>
+    @if($type === 'print')
+    <div class="no-print" style="margin-bottom:16px; padding:10px; background:#f9fafb; border:1px solid #e5e7eb;">
+        <button onclick="window.print()" style="background:#4361ee; color:#fff; border:none; padding:8px 16px; cursor:pointer; font-weight:bold; border-radius:4px; margin-right: 5px;">Cetak Dokumen</button>
+        <button onclick="window.close()" style="background:#fff; color:#374151; border:1px solid #d1d5db; padding:8px 16px; cursor:pointer; font-weight:bold; border-radius:4px;">Tutup</button>
     </div>
+    @endif
 
     {{-- Header --}}
-    <div class="report-header">
-        <h1>Laporan Peminjaman Buku</h1>
-        <p>LibSchool – Sistem Informasi Perpustakaan</p>
-    </div>
+    <div class="page-title">LAPORAN SISTEM PERPUSTAKAAN DIGITAL</div>
+    <div class="subtitle">Dokumen Resmi &mdash; Dicetak Otomatis oleh Sistem</div>
+    <div class="sub-info">Jenis: Peminjaman &nbsp;|&nbsp; Periode: {{ \Carbon\Carbon::parse($from)->format('d/m/Y') }} s/d {{ \Carbon\Carbon::parse($until)->format('d/m/Y') }}</div>
+    
+    <div class="divider"></div>
 
-    {{-- Meta --}}
-    <div class="meta-row">
-        <div class="meta-item">Periode: <strong>{{ $from }}</strong> s/d <strong>{{ $until }}</strong></div>
-        <div class="meta-item">Dicetak: <strong>{{ now()->format('Y-m-d H:i') }}</strong></div>
-    </div>
+    {{-- Info Table --}}
+    <table class="info-table">
+        <tr>
+            <td>
+                <div class="info-label">JENIS LAPORAN</div>
+                <div class="info-value">Peminjaman</div>
+            </td>
+            <td>
+                <div class="info-label">PERIODE</div>
+                <div class="info-value">{{ \Carbon\Carbon::parse($from)->format('d M Y') }} s/d {{ \Carbon\Carbon::parse($until)->format('d M Y') }}</div>
+            </td>
+            <td>
+                <div class="info-label">TOTAL DATA</div>
+                <div class="info-value">{{ $totalPeminjaman }} record</div>
+            </td>
+            <td>
+                <div class="info-label">DICETAK PADA</div>
+                <div class="info-value">{{ now()->format('d M Y, H:i') }} WIB</div>
+            </td>
+        </tr>
+    </table>
 
-    {{-- Stat Summary --}}
-    <div class="stat-row">
-        <div class="stat-card">
-            <div class="stat-label">Total Peminjaman</div>
-            <div class="stat-value blue">{{ $totalPeminjaman }}</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Status Terlambat</div>
-            <div class="stat-value red">{{ $statusTerlambat }}</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-label">Status Dikembalikan</div>
-            <div class="stat-value green">{{ $statusDikembalikan }}</div>
-        </div>
-    </div>
+    {{-- Stats Table --}}
+    <table class="stat-table">
+        <tr>
+            <td>
+                <div class="stat-number text-primary">{{ $totalPeminjaman }}</div>
+                <div class="stat-text">TOTAL TRANSAKSI</div>
+            </td>
+            <td>
+                <div class="stat-number text-red">{{ $statusTerlambat }}</div>
+                <div class="stat-text">TERLAMBAT</div>
+            </td>
+            <td>
+                <div class="stat-number text-green">{{ $statusDikembalikan }}</div>
+                <div class="stat-text">DIKEMBALIKAN</div>
+            </td>
+            <td>
+                <div class="stat-number text-blue">{{ $statusDipinjam }}</div>
+                <div class="stat-text">MASIH DIPINJAM</div>
+            </td>
+        </tr>
+    </table>
 
-    {{-- Table --}}
-    <table>
+    {{-- Data Table --}}
+    <table class="data-table">
         <thead>
             <tr>
-                <th>No</th>
-                <th>Nama Peminjam</th>
-                <th>Judul Buku</th>
-                <th>Tgl Pinjam</th>
-                <th>Deadline</th>
-                <th>Status</th>
-                <th>Denda</th>
+                <th width="5%" class="center">NO</th>
+                <th width="18%">PEMINJAM</th>
+                <th width="25%">BUKU</th>
+                <th width="12%" class="center">TGL PINJAM</th>
+                <th width="12%" class="center">TGL KEMBALI</th>
+                <th width="13%" class="center">STATUS</th>
+                <th width="15%" class="center">DENDA</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($borrowings as $i => $b)
-            @php $sd = $b->status_display; @endphp
+            @forelse ($borrowings as $i => $b)
+            @php
+                $isLate = false;
+                $isDeadline = false;
+                
+                if ($b->status === 'dipinjam' && $b->deadline) {
+                    $deadlineDate = \Carbon\Carbon::parse($b->deadline)->startOfDay();
+                    $today = now()->startOfDay();
+                    $diff = $today->diffInDays($deadlineDate, false);
+                    
+                    if ($diff < 0) {
+                        $isLate = true;
+                    } elseif ($diff >= 0 && $diff <= 1) {
+                        $isDeadline = true;
+                    }
+                }
+            @endphp
             <tr>
-                <td>{{ $i + 1 }}</td>
+                <td class="center">{{ $i + 1 }}</td>
                 <td>{{ $b->user?->name ?? '-' }}</td>
-                <td>{{ $b->book?->title ?? '-' }}</td>
-                <td>{{ $b->borrow_date?->format('Y-m-d') ?? '-' }}</td>
-                <td>{{ $b->deadline?->format('Y-m-d') ?? '-' }}</td>
                 <td>
-                    @if($sd === 'terlambat')
-                        <span class="badge badge-danger">Terlambat</span>
-                    @elseif($sd === 'dikembalikan')
-                        <span class="badge badge-success">Dikembalikan</span>
+                    <ul class="book-list">
+                        <li>{{ $b->book?->title ?? '-' }}</li>
+                    </ul>
+                </td>
+                <td class="center">{{ $b->borrow_date ? $b->borrow_date->format('d/m/Y') : '-' }}</td>
+                <td class="center">
+                    @if($b->status === 'dikembalikan')
+                        {{ $b->updated_at ? $b->updated_at->format('d/m/Y') : '-' }}
                     @else
-                        <span class="badge badge-warning">Dipinjam</span>
+                        -
                     @endif
                 </td>
-                <td>
+                <td class="center">
+                    @if($b->status === 'booking')
+                        <span class="badge badge-booking">Booking</span>
+                    @elseif($isLate)
+                        <span class="badge badge-terlambat">Terlambat</span>
+                    @elseif($isDeadline)
+                        <span class="badge badge-deadline">Deadline</span>
+                    @elseif($b->status === 'dipinjam')
+                        <span class="badge badge-aktif">Dipinjam</span>
+                    @elseif($b->status === 'dikembalikan')
+                        <span class="badge badge-dikembalikan">Dikembalikan</span>
+                    @endif
+                </td>
+                <td class="center">
                     @if($b->fine)
                         Rp. {{ number_format($b->fine->amount, 0, ',', '.') }}
                     @else
@@ -160,22 +217,26 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7" style="text-align:center; padding:20px; color:#999;">
-                    Tidak ada data pada rentang tanggal ini.
-                </td>
+                <td colspan="7" class="center" style="padding: 20px; color:#6b7280;">Tidak ada data peminjaman untuk periode ini.</td>
             </tr>
             @endforelse
         </tbody>
     </table>
 
-    <div class="footer">
-        LibSchool &copy; {{ date('Y') }} – Laporan Peminjaman Buku
+    <div class="footer-text">
+        Dokumen digenerate otomatis oleh Sistem Perpustakaan Digital pada {{ now()->format('d M Y') }} pukul {{ now()->format('H:i') }} WIB
+    </div>
+
+    <div class="signature-box">
+        Admin Perpustakaan,<br>
+        <div style="margin-top: 60px; border-bottom: 1px solid #000; width: 100%;"></div>
+        <p style="text-align: center; margin-top:2px;">(_________________________)</p>
     </div>
 
     @if($type === 'print')
     <script>
         window.addEventListener('load', function() {
-            setTimeout(function() { window.print(); }, 300);
+            setTimeout(function() { window.print(); }, 500);
         });
     </script>
     @endif

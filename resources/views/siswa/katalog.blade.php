@@ -4,293 +4,215 @@
 
 @push('styles')
 <style>
-    /* ===== LAYOUT KATALOG ===== */
-    .katalog-layout {
-        display: grid;
-        grid-template-columns: 1fr 230px;
-        gap: 20px;
-        align-items: start;
+    /* ===== NEW KATALOG LAYOUT ===== */
+    .katalog-container {
+        background: #fff;
+        border-radius: 12px;
+        padding: 32px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.02);
     }
 
-    /* Breadcrumb */
-    .breadcrumb {
-        font-size: 0.8rem; color: #4361ee;
-        margin-bottom: 14px;
-    }
-    .breadcrumb span { color: #888; }
+    .breadcrumb-title { font-size: 1.4rem; font-weight: 800; color: #1e293b; margin-bottom: 4px; }
+    .breadcrumb-subtitle { font-size: 0.85rem; color: #94a3b8; margin-bottom: 24px; }
 
-    /* ===== SEARCH BAR ===== */
-    .search-section {
-        background: #fff; border-radius: 12px;
-        padding: 14px 16px; margin-bottom: 14px;
-        border: 1px solid #eee;
+    .search-filter-row {
+        margin-bottom: 30px;
     }
-    .search-title {
-        font-size: 1.1rem; font-weight: 700;
-        color: #1a1a2e; margin: 0 0 10px;
-        display: flex; align-items: center; justify-content: space-between;
+    .filter-form-wrapper {
+        display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
     }
-    .search-nav-btns { display: flex; gap: 4px; }
-    .search-nav-btns button {
-        width: 26px; height: 26px; border: 1px solid #ddd;
-        border-radius: 50%; background: #fff; cursor: pointer;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 0.75rem; color: #666; transition: all 0.15s;
-    }
-    .search-nav-btns button:hover { background: #f0f3ff; border-color: #4361ee; color: #4361ee; }
 
     .search-input-wrap {
         display: flex; align-items: center; gap: 10px;
-        border: 1px solid #e0e0e0; border-radius: 8px;
-        padding: 9px 14px;
+        border: 1px solid #e2e8f0; border-radius: 8px;
+        padding: 12px 16px; background: #fff; flex: 1; min-width: 300px;
+        transition: border-color 0.2s;
     }
-    .search-input-wrap svg { color: #bbb; flex-shrink: 0; }
+    .search-input-wrap:focus-within { border-color: #6366f1; }
     .search-input-wrap input {
-        flex: 1; border: none; outline: none;
-        font-size: 0.88rem; color: #444; font-family: inherit;
-        background: transparent;
+        border: none; outline: none; width: 100%;
+        font-size: 0.95rem; color: #334155; height: 100%;
     }
+    .search-input-wrap input::placeholder { color: #cbd5e1; }
 
-    /* ===== FILTER BAR ===== */
-    .filter-bar {
-        display: flex; align-items: center; gap: 8px;
-        margin-bottom: 14px; flex-wrap: wrap;
+    .filter-dropdown {
+        border: 1px solid #e2e8f0; border-radius: 8px;
+        padding: 12px 36px 12px 16px; font-size: 0.95rem; color: #475569; font-weight: 500;
+        background: #fff url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="%2394a3b8" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>') no-repeat right 12px center;
+        appearance: none; cursor: pointer; min-width: 170px; outline: none; transition: border-color 0.2s;
     }
-    .filter-btn {
-        display: flex; align-items: center; gap: 5px;
-        padding: 6px 12px; border: 1px solid #ddd;
-        border-radius: 6px; background: #fff;
-        font-size: 0.78rem; font-weight: 500; color: #555;
-        cursor: pointer; font-family: inherit; transition: all 0.15s;
-        text-decoration: none;
+    .filter-dropdown:focus { border-color: #6366f1; }
+
+    @media (max-width: 500px) {
+        .search-input-wrap { min-width: 100%; }
+        .filter-dropdown { min-width: 100%; }
     }
-    .filter-btn:hover { background: #f0f3ff; border-color: #4361ee; color: #4361ee; }
-    .filter-btn.primary { background: #4361ee; color: #fff; border-color: #4361ee; }
-    .filter-btn.primary:hover { background: #3a56d4; }
-    .filter-sort { display: flex; gap: 4px; margin-left: auto; }
 
     /* ===== BOOK GRID ===== */
     .book-grid {
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 12px;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
     }
+    @media (max-width: 1300px) { .book-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 1024px) { .book-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 768px) { .book-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+    @media (max-width: 500px) { .book-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
 
     .book-card {
-        cursor: pointer;
-        border-radius: 8px;
+        background: #fff;
+        border: 1px solid #f1f5f9;
+        border-radius: 12px;
         overflow: hidden;
-        transition: transform 0.15s, box-shadow 0.15s;
+        cursor: pointer;
+        display: flex; flex-direction: column;
+        transition: box-shadow 0.25s, transform 0.25s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+    .book-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 32px rgba(0,0,0,0.08);
+    }
+
+    .book-cover-area {
+        background: #cfe5d5;
+        width: 100%; aspect-ratio: 3/4;
         position: relative;
-        background: #f8f8f8;
-    }
-    .book-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
-    .book-card.selected { box-shadow: 0 0 0 2px #4361ee, 0 4px 16px rgba(67,97,238,0.2); }
-
-    /* Cover */
-    .book-cover {
-        width: 100%; aspect-ratio: 2/3;
-        object-fit: cover; display: block;
-    }
-    .book-cover-placeholder {
-        width: 100%; aspect-ratio: 2/3;
-        background: linear-gradient(135deg, #e8ecff 0%, #c7d2fe 100%);
         display: flex; align-items: center; justify-content: center;
-        flex-direction: column; gap: 4px;
+        overflow: hidden;
     }
-    .book-cover-placeholder span {
-        font-size: 0.6rem; color: #8b9cf4; font-weight: 500;
-        text-align: center; padding: 0 4px;
+    .book-cover-img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .badge-tersedia {
+        position: absolute; top: 12px; left: 12px; z-index: 10;
+        background: #22c55e; color: #fff; border-radius: 9999px;
+        padding: 4px 10px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;
+        display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(34,197,94,0.3);
     }
+    .badge-tersedia .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; opacity: 0.9; }
 
-    /* Favorite icon */
+    .badge-habis {
+        position: absolute; top: 12px; left: 12px; z-index: 10;
+        background: #ef4444; color: #fff; border-radius: 9999px;
+        padding: 4px 10px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;
+        display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(239,68,68,0.3);
+    }
+    .badge-habis .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; opacity: 0.9; }
+
     .fav-btn {
-        position: absolute; top: 5px; right: 5px;
-        width: 22px; height: 22px; border-radius: 50%;
+        position: absolute; top: 12px; right: 12px; z-index: 10;
+        width: 32px; height: 32px; border-radius: 50%;
         background: rgba(255,255,255,0.9); border: none;
         display: flex; align-items: center; justify-content: center;
-        cursor: pointer; transition: all 0.15s;
-        padding: 0;
+        cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    .fav-btn:hover { background: #fff; transform: scale(1.1); }
+    .fav-btn:hover { background: #fff; transform: scale(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 
-    /* Book info */
-    .book-info {
-        padding: 6px 6px 8px;
-        background: #fff;
-    }
-    .book-name {
-        font-size: 0.72rem; font-weight: 600; color: #1a1a2e;
-        line-height: 1.3; margin-bottom: 2px;
-        display: -webkit-box; -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical; overflow: hidden;
-    }
-    .book-author { font-size: 0.63rem; color: #999; }
-
-    /* Stars */
-    .stars { display: flex; gap: 1px; margin-top: 4px; }
-    .star { color: #f59e0b; font-size: 0.7rem; }
-    .star.empty { color: #ddd; }
-
-    /* ===== DETAIL PANEL (kanan) ===== */
-    .detail-panel {
-        background: #fff; border-radius: 12px;
-        border: 1px solid #eee; overflow: hidden;
-        position: sticky; top: 20px;
-    }
-    .detail-cover-wrap {
-        background: #f8f9ff;
+    .hover-overlay {
+        position: absolute; inset: 0; background: rgba(0,0,0,0.15);
         display: flex; align-items: center; justify-content: center;
-        padding: 20px;
-        border-bottom: 1px solid #f0f0f0;
+        opacity: 0; transition: opacity 0.25s ease;
     }
-    .detail-cover {
-        width: 110px; height: 160px; object-fit: cover;
-        border-radius: 6px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    .book-card:hover .hover-overlay { opacity: 1; }
+    
+    .btn-lihat-detail {
+        background: #fff; color: #1e293b; padding: 10px 18px; border-radius: 9999px; font-size: 0.8rem; font-weight: 700;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(15px); transition: transform 0.25s ease;
     }
-    .detail-cover-placeholder {
-        width: 110px; height: 160px;
-        background: linear-gradient(135deg, #e8ecff, #c7d2fe);
-        border-radius: 6px; display: flex; align-items: center;
-        justify-content: center; flex-direction: column; gap: 6px;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    }
-    .detail-cover-placeholder span { font-size: 0.7rem; color: #8b9cf4; font-weight: 500; }
+    .book-card:hover .btn-lihat-detail { transform: translateY(0); }
 
-    .detail-info { padding: 16px; }
-    .detail-title {
-        font-size: 0.95rem; font-weight: 700; color: #1a1a2e;
-        margin: 0 0 4px; line-height: 1.3;
-    }
-    .detail-author { font-size: 0.78rem; color: #888; margin-bottom: 12px; }
-
-    .detail-stars { display: flex; align-items: center; gap: 4px; margin-bottom: 12px; }
-    .detail-star { font-size: 1rem; color: #f59e0b; }
-    .detail-star.empty { color: #e5e7eb; }
-    .detail-rating-num { font-size: 0.82rem; font-weight: 700; color: #333; margin-left: 4px; }
-
-    .detail-stats {
-        display: grid; grid-template-columns: repeat(3, 1fr);
-        gap: 8px; margin-bottom: 14px;
-        border-top: 1px solid #f0f0f0;
-        border-bottom: 1px solid #f0f0f0;
-        padding: 12px 0;
-    }
-    .detail-stat { text-align: center; }
-    .detail-stat-val { font-size: 0.85rem; font-weight: 700; color: #1a1a2e; }
-    .detail-stat-label { font-size: 0.65rem; color: #aaa; margin-top: 1px; }
-
-    .detail-desc {
-        font-size: 0.75rem; color: #666; line-height: 1.6;
-        margin-bottom: 14px; max-height: 90px; overflow: hidden;
-    }
-
-    .detail-actions { display: flex; gap: 8px; }
-    .btn-detail-view {
-        flex: 1; text-align: center;
-        border: 1px solid #ddd; background: #fff; color: #444;
-        border-radius: 7px; padding: 8px 0;
-        font-size: 0.78rem; font-weight: 600;
-        cursor: pointer; font-family: inherit;
-        text-decoration: none; transition: background 0.15s;
-    }
-    .btn-detail-view:hover { background: #f5f5f5; }
-    .btn-pinjam {
-        flex: 1; text-align: center;
-        background: #4361ee; color: #fff;
-        border: none; border-radius: 7px; padding: 8px 0;
-        font-size: 0.78rem; font-weight: 600;
-        cursor: pointer; font-family: inherit;
-        transition: background 0.15s;
-    }
-    .btn-pinjam:hover { background: #3a56d4; }
+    .book-info { padding: 16px; text-align: left; background: #fff; }
+    .book-category { font-size: 0.68rem; font-weight: 800; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .book-title { font-size: 1.05rem; font-weight: 800; color: #1e293b; line-height: 1.3; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .book-author { font-size: 0.8rem; color: #94a3b8; font-weight: 500; }
 
     /* Empty state */
-    .empty-panel {
-        padding: 30px 16px; text-align: center; color: #ccc;
-    }
-    .empty-panel svg { margin-bottom: 10px; opacity: 0.4; }
-    .empty-panel p { font-size: 0.78rem; color: #aaa; margin: 0; }
+    .empty-panel { padding: 60px 16px; text-align: center; color: #94a3b8; grid-column: 1/-1; }
+    .empty-panel svg { margin: 0 auto 10px; opacity: 0.5; }
+    
+    /* Alerts */
+    .alert-success { background: #dcfce7; color: #166534; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 0.9rem; font-weight: 500; }
+    .alert-danger { background: #fee2e2; color: #991b1b; border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 0.9rem; font-weight: 500; }
 
-    /* Alert */
-    .alert-success {
-        background: #d1fae5; color: #065f46;
-        border: 1px solid #a7f3d0; border-radius: 8px;
-        padding: 9px 14px; margin-bottom: 12px; font-size: 0.82rem;
-    }
-    .alert-danger {
-        background: #fee2e2; color: #991b1b;
-        border: 1px solid #fecaca; border-radius: 8px;
-        padding: 9px 14px; margin-bottom: 12px; font-size: 0.82rem;
-    }
-
-    /* === MODAL KODE BOOKING === */
+    /* === MODAL POPUPS === */
     .modal-overlay {
         position: fixed; inset: 0; z-index: 9999;
-        background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
+        background: rgba(15,23,42,0.6); backdrop-filter: blur(4px);
         display: flex; align-items: center; justify-content: center;
-        opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        opacity: 0; pointer-events: none; transition: opacity 0.25s;
     }
     .modal-overlay.active { opacity: 1; pointer-events: all; }
     .modal-box {
         background: #fff; border-radius: 20px;
-        padding: 32px 28px; width: 360px; max-width: 92vw;
-        text-align: center; position: relative;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-        transform: scale(0.85); transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
+        padding: 32px; width: 440px; max-width: 92vw;
+        position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+        transform: scale(0.95) translateY(10px); transition: transform 0.25s cubic-bezier(.34,1.56,.64,1);
     }
-    .modal-overlay.active .modal-box { transform: scale(1); }
+    .modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+    
+    @media (max-width: 500px) {
+        .modal-box { padding: 24px 20px; }
+        .detail-modal-header { flex-direction: column; align-items: center; text-align: center; }
+        .detail-stats-row { justify-content: center; flex-wrap: wrap; }
+    }
+
+    .modal-box.modal-center { text-align: center; width: 380px; }
     .modal-icon {
         width: 60px; height: 60px; border-radius: 50%;
         background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
         display: flex; align-items: center; justify-content: center;
         margin: 0 auto 16px;
     }
-    .modal-title { font-size: 1.1rem; font-weight: 700; color: #1a1a2e; margin-bottom: 4px; }
-    .modal-sub { font-size: 0.8rem; color: #888; margin-bottom: 20px; }
-    .modal-book { font-size: 0.82rem; color: #555; font-weight: 600; margin-bottom: 18px;
-        background: #f8f9ff; border-radius: 8px; padding: 8px 14px; }
-    .modal-code-wrap {
-        background: linear-gradient(135deg, #4361ee, #3a56d4);
-        border-radius: 12px; padding: 18px 20px; margin-bottom: 18px;
-    }
-    .modal-code-label { font-size: 0.7rem; color: rgba(255,255,255,0.7); margin-bottom: 6px; letter-spacing: 0.08em; }
-    .modal-code {
-        font-family: 'Courier New', monospace;
-        font-size: 1.5rem; font-weight: 800; color: #fff;
-        letter-spacing: 0.12em;
-    }
-    .modal-copy-btn {
-        background: #4361ee; color: #fff; border: none;
-        border-radius: 8px; padding: 9px 18px;
-        font-size: 0.82rem; font-weight: 600;
-        cursor: pointer; font-family: inherit;
-        transition: background 0.15s; margin-right: 8px;
-    }
-    .modal-copy-btn:hover { background: #3a56d4; }
-    .modal-close-btn {
-        background: #f5f5f5; color: #555; border: none;
-        border-radius: 8px; padding: 9px 18px;
-        font-size: 0.82rem; font-weight: 600;
-        cursor: pointer; font-family: inherit;
-        transition: background 0.15s;
-    }
-    .modal-close-btn:hover { background: #e8e8e8; }
-    .modal-note {
-        font-size: 0.73rem; color: #aaa; margin-top: 14px; line-height: 1.5;
-    }
+    
+    .detail-modal-header { display: flex; align-items: flex-start; gap: 20px; margin-bottom: 24px; }
+    .detail-modal-cover { width: 100px; height: 140px; border-radius: 8px; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #cfe5d5; flex-shrink: 0; }
+    .detail-modal-info h3 { font-size: 1.25rem; font-weight: 800; color: #1e293b; margin-bottom: 4px; line-height: 1.3;}
+    .detail-modal-info p { font-size: 0.9rem; color: #64748b; margin-bottom: 8px;}
+    .detail-stats-row { display: flex; gap: 12px; margin-bottom: 12px; }
+    .detail-stat-badge { background: #f1f5f9; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; color: #475569; }
+    .detail-modal-desc { font-size: 0.85rem; color: #475569; line-height: 1.6; margin-bottom: 24px; padding-top: 20px; border-top: 1px solid #f1f5f9; }
+    
+    .modal-actions { display: flex; gap: 12px; justify-content: flex-end; }
+    .btn-batal { background: #f1f5f9; color: #475569; border: none; border-radius: 10px; padding: 10px 20px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+    .btn-batal:hover { background: #e2e8f0; }
+    .btn-pinjam-modal { background: #4361ee; color: #fff; border: none; border-radius: 10px; padding: 10px 24px; font-weight: 700; cursor: pointer; transition: background 0.2s; flex: 1;}
+    .btn-pinjam-modal:hover { background: #3a56d4; }
+    .btn-pinjam-modal:disabled { background: #94a3b8; cursor: not-allowed; }
 
-    /* Pagination override */
-    .pagination-wrap { margin-top: 14px; }
-    nav[aria-label="pagination"] { display: flex; justify-content: flex-start; }
+    /* Modal Booking */
+    .modal-title { font-size: 1.25rem; font-weight: 800; color: #1e293b; margin-bottom: 6px; }
+    .modal-sub { font-size: 0.9rem; color: #64748b; margin-bottom: 24px; }
+    .modal-book { font-size: 0.95rem; color: #334155; font-weight: 700; margin-bottom: 16px; background: #f8fafc; border-radius: 10px; padding: 12px; border: 1px solid #e2e8f0;}
+    .modal-code-wrap { background: linear-gradient(135deg, #4361ee, #3a56d4); border-radius: 14px; padding: 24px; margin-bottom: 24px; box-shadow: 0 8px 16px rgba(67,97,238,0.25);}
+    .modal-code-label { font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.8); margin-bottom: 8px; letter-spacing: 1px; }
+    .modal-code { font-family: 'Courier New', monospace; font-size: 2rem; font-weight: 800; color: #fff; letter-spacing: 4px; }
+    .modal-copy-btn { background: #4361ee; color: #fff; border: none; border-radius: 10px; padding: 12px 24px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: background 0.2s; margin-right: 8px; }
+    .modal-copy-btn:hover { background: #3a56d4; }
+
+    /* Pagination */
+    .pagination-wrap {
+        padding: 16px; border-top: 1px solid #f0f0f0;
+        display: flex; align-items: center; gap: 4px;
+        justify-content: center; /* Kept center alignment for catalog grid */
+    }
+    .pagination-wrap a, .pagination-wrap span {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 30px; height: 30px; border-radius: 6px;
+        font-size: 0.8rem; text-decoration: none;
+        color: #666; border: 1px solid #e5e7eb;
+    }
+    .pagination-wrap .active { background: #4361ee; color: #fff; border-color: #4361ee; }
+    .pagination-wrap nav p.text-sm.text-gray-700 { display: none !important; }
+    nav[aria-label="pagination"] { margin-top: 0; }
 </style>
 @endpush
 
 @section('content')
 
-{{-- Breadcrumb --}}
-<div class="breadcrumb">
-    Beranda / <span>Katalog</span>
+<div class="mb-6">
+    <h1 class="text-[1.35rem] font-bold text-indigo-950">Katalog Buku</h1>
+    <p class="text-slate-500 text-[0.875rem] mt-1">Klik pada buku untuk melihat detail dan meminjam</p>
 </div>
 
 @if(session('success'))
@@ -300,279 +222,162 @@
     <div class="alert-danger">✗ {{ session('error') }}</div>
 @endif
 
-<div class="katalog-layout">
-    {{-- KIRI: Utama --}}
-    <div>
-        {{-- Search --}}
-        <div class="search-section">
-            <div class="search-title">
-                <span>Cari Buku / Koleksi</span>
-                <div class="search-nav-btns">
-                    <button>‹</button>
-                    <button>›</button>
-                </div>
+<div class="katalog-container">
+    {{-- Search & Filter Header --}}
+    <div class="search-filter-row">
+        <form method="GET" action="{{ route('siswa.katalog') }}" id="searchFilterForm" class="filter-form-wrapper">
+            {{-- Search Bar --}}
+            <div class="search-input-wrap">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+                </svg>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Judul, Penulis, Sinopsis, atau ISBN...">
             </div>
-            <form method="GET" action="{{ route('siswa.katalog') }}">
-                <div class="search-input-wrap">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-                    </svg>
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Buku..">
-                    {{-- Preserve other filters --}}
-                    @if(request('category')) <input type="hidden" name="category" value="{{ request('category') }}"> @endif
-                    @if(request('sort')) <input type="hidden" name="sort" value="{{ request('sort') }}"> @endif
-                </div>
-            </form>
-        </div>
 
-        {{-- Filter bar --}}
-        <form method="GET" action="{{ route('siswa.katalog') }}" id="filterForm">
-            @if(request('search')) <input type="hidden" name="search" value="{{ request('search') }}"> @endif
-            <div class="filter-bar">
-                {{-- Filter Kategori --}}
-                <select name="category" onchange="document.getElementById('filterForm').submit()"
-                    style="border:1px solid #ddd; border-radius:6px; padding:6px 10px; font-size:0.78rem; font-family:inherit; background:#fff; color:#555; cursor:pointer; outline:none;">
-                    <option value="">≡ Kategori</option>
-                    @foreach($categories as $cat)
-                        <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
-                    @endforeach
-                </select>
+            {{-- Filter Kategori --}}
+            <select name="category" onchange="document.getElementById('searchFilterForm').submit()" class="filter-dropdown">
+                <option value="">Semua Kategori</option>
+                @foreach($categories as $cat)
+                    <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                @endforeach
+            </select>
 
-                {{-- Sort Judul --}}
-                <select name="sort" onchange="document.getElementById('filterForm').submit()"
-                    style="border:1px solid #ddd; border-radius:6px; padding:6px 10px; font-size:0.78rem; font-family:inherit; background:#fff; color:#555; cursor:pointer; outline:none;">
-                    <option value="title" {{ request('sort','title')=='title' ? 'selected':'' }}>≡ Judul</option>
-                    <option value="author" {{ request('sort')=='author' ? 'selected':'' }}>≡ Penulis</option>
-                </select>
+            {{-- Filter Series --}}
+            <select name="series" onchange="document.getElementById('searchFilterForm').submit()" class="filter-dropdown">
+                <option value="">Semua Series</option>
+                @foreach($series as $s)
+                    <option value="{{ $s->id }}" {{ request('series') == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
+                @endforeach
+            </select>
 
-                {{-- Sort Direction --}}
-                <button type="submit" class="filter-btn" title="Urutkan">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M3 6h18M6 12h12M10 18h4"/>
-                    </svg>
-                </button>
-
-                {{-- Filter button --}}
-                <button type="submit" class="filter-btn primary" style="margin-left:auto;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>
-                    </svg>
-                    Filter
-                </button>
-            </div>
+            <select name="sort" onchange="document.getElementById('searchFilterForm').submit()" class="filter-dropdown">
+                <option value="terbaru">Terbaru</option>
+                <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Judul (A-Z)</option>
+            </select>
         </form>
+    </div>
 
-        {{-- Book Grid --}}
-        <div class="book-grid">
-            @forelse($books as $book)
-            <div class="book-card {{ (request('selected') == $book->id) ? 'selected' : '' }}"
-                 onclick="selectBook({{ $book->id }})">
+    {{-- Grid Buku --}}
+    <div class="book-grid">
+        @forelse ($books as $book)
+        <div class="book-card" data-url="{{ route('siswa.katalog.show', $book->id) }}" onclick="window.location.href=this.dataset.url;">
+            {{-- Cover Area --}}
+            <div class="book-cover-area">
+                @if($book->stock > 0)
+                    <div class="badge-tersedia"><div class="dot"></div> TERSEDIA</div>
+                @else
+                    <div class="badge-habis"><div class="dot"></div> HABIS</div>
+                @endif
 
-                {{-- Favorite button (AJAX toggle) --}}
-                @php $isFav = in_array($book->id, $favoritedIds); @endphp
-                <button
-                    class="fav-btn"
-                    id="fav-btn-{{ $book->id }}"
-                    onclick="event.stopPropagation(); toggleFav({{ $book->id }}, this)"
-                    title="{{ $isFav ? 'Hapus dari favorit' : 'Tambah ke favorit' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11"
-                        fill="{{ $isFav ? '#ef4444' : 'none' }}"
-                        stroke="{{ $isFav ? '#ef4444' : '#4361ee' }}"
-                        stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
-                    </svg>
-                </button>
 
-                {{-- Cover --}}
                 @if($book->cover)
-                    <img src="{{ asset('storage/' . $book->cover) }}"
-                         alt="{{ $book->title }}"
-                         class="book-cover"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <div class="book-cover-placeholder" style="display:none;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="#8b9cf4" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
+                    <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->title }}" class="book-cover-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="book-icon-wrapper" style="display:none; color:#84a98c;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
                         </svg>
                     </div>
                 @else
-                    <div class="book-cover-placeholder">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="#8b9cf4" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
+                    <div class="book-icon-wrapper" style="color:#84a98c;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
                         </svg>
-                        <span>{{ Str::limit($book->title, 20) }}</span>
                     </div>
                 @endif
 
-                {{-- Info --}}
-                <div class="book-info">
-                    <p class="book-name">{{ $book->title }}</p>
-                    <p class="book-author">{{ $book->author }}</p>
-                    <div class="stars">
-                        <span class="star">★</span><span class="star">★</span><span class="star">★</span>
-                        <span class="star">★</span><span class="star empty">★</span>
-                    </div>
+                <div class="hover-overlay">
+                    <span class="btn-lihat-detail">Lihat detail: {{ Str::limit($book->title, 20) }}</span>
                 </div>
             </div>
-            @empty
-            <div style="grid-column: 1/-1; text-align:center; padding: 40px; color:#999;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" stroke="#ccc" stroke-width="1.5" viewBox="0 0 24 24" style="margin-bottom:10px;">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
-                </svg>
-                <p style="font-size:0.88rem;">Tidak ada buku ditemukan.</p>
-            </div>
-            @endforelse
-        </div>
 
-        {{-- Pagination --}}
+            {{-- Info Area --}}
+            <div class="book-info">
+                <p class="book-category">{{ $book->categories->isNotEmpty() ? $book->categories->pluck('name')->join(', ') : ($book->category->name ?? 'UMUM') }}</p>
+                <p class="book-title" title="{{ $book->title }}">{{ $book->title }}</p>
+                <p class="book-author">{{ $book->author ?? 'Tidak diketahui' }}</p>
+            </div>
+        </div>
+        @empty
+            <div class="empty-panel">
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+                <p>Tidak ada data buku yang ditemukan.</p>
+            </div>
+        @endforelse
+    </div>
+
+    {{-- Pagination --}}
+    @if($books->hasPages())
         <div class="pagination-wrap">
             {{ $books->withQueryString()->links() }}
         </div>
-    </div>
-
-    {{-- KANAN: Detail Panel --}}
-    <div class="detail-panel" id="detailPanel">
-        @if($selected)
-        {{-- Cover --}}
-        <div class="detail-cover-wrap">
-            @if($selected->cover)
-                <img src="{{ asset('storage/' . $selected->cover) }}"
-                     alt="{{ $selected->title }}" class="detail-cover"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="detail-cover-placeholder" style="display:none;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="#8b9cf4" stroke-width="1.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
-                    </svg>
-                </div>
-            @else
-                <div class="detail-cover-placeholder">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="#8b9cf4" stroke-width="1.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
-                    </svg>
-                    <span>No Cover</span>
-                </div>
-            @endif
-        </div>
-
-        {{-- Info --}}
-        <div class="detail-info">
-            <h3 class="detail-title">{{ $selected->title }}</h3>
-            <p class="detail-author">{{ $selected->author }}</p>
-
-            {{-- Stars --}}
-            <div class="detail-stars">
-                <span class="detail-star">★</span><span class="detail-star">★</span><span class="detail-star">★</span>
-                <span class="detail-star">★</span><span class="detail-star empty">★</span>
-                <span class="detail-rating-num">4.8</span>
-            </div>
-
-            {{-- Stats --}}
-            <div class="detail-stats">
-                <div class="detail-stat">
-                    <div class="detail-stat-val">{{ $selected->stock }}</div>
-                    <div class="detail-stat-label">Stok</div>
-                </div>
-                <div class="detail-stat">
-                    <div class="detail-stat-val">{{ $selected->borrowings()->count() }}</div>
-                    <div class="detail-stat-label">Dipinjam</div>
-                </div>
-                <div class="detail-stat">
-                    <div class="detail-stat-val">{{ $selected->category->name ?? '-' }}</div>
-                    <div class="detail-stat-label">Kategori</div>
-                </div>
-            </div>
-
-            {{-- Desc --}}
-            <p class="detail-desc">
-                {{ $selected->publisher ? 'Penerbit: ' . $selected->publisher . '. ' : '' }}
-                {{ $selected->isbn ? 'ISBN: ' . $selected->isbn . '. ' : '' }}
-                Buku ini tersedia di rak {{ $selected->location ?? 'perpustakaan' }}.
-                Stok tersedia: {{ $selected->stock }} buku.
-            </p>
-
-            {{-- Actions --}}
-            <div class="detail-actions">
-                <a href="{{ route('siswa.katalog') }}?selected={{ $selected->id }}" class="btn-detail-view">Tampilkan Detail</a>
-                @if($selected->stock > 0)
-                <button type="button" class="btn-pinjam" style="flex:1;"
-                    onclick="doPinjam({{ $selected->id }}, '{{ addslashes($selected->title) }}')">Pinjam</button>
-                @else
-                <button class="btn-pinjam" disabled style="opacity:0.5; cursor:not-allowed; flex:1;">Habis</button>
-                @endif
-            </div>
-        </div>
-
-        @else
-        {{-- Default state: belum ada yang dipilih --}}
-        <div class="empty-panel">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
-            </svg>
-            <p>Pilih buku untuk<br>melihat detail</p>
-        </div>
-
-        {{-- Tampilkan buku pertama secara default jika ada --}}
-        @if($books->count() > 0)
-        @php $first = $books->first(); @endphp
-        {{-- Cover --}}
-        <div class="detail-cover-wrap">
-            @if($first->cover)
-                <img src="{{ asset('storage/' . $first->cover) }}" alt="{{ $first->title }}" class="detail-cover"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="detail-cover-placeholder" style="display:none;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="#8b9cf4" stroke-width="1.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
-                    </svg>
-                </div>
-            @else
-                <div class="detail-cover-placeholder">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="#8b9cf4" stroke-width="1.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
-                    </svg>
-                    <span>No Cover</span>
-                </div>
-            @endif
-        </div>
-        <div class="detail-info">
-            <h3 class="detail-title">{{ $first->title }}</h3>
-            <p class="detail-author">{{ $first->author }}</p>
-            <div class="detail-stars">
-                <span class="detail-star">★</span><span class="detail-star">★</span><span class="detail-star">★</span>
-                <span class="detail-star">★</span><span class="detail-star empty">★</span>
-                <span class="detail-rating-num">4.8</span>
-            </div>
-            <div class="detail-stats">
-                <div class="detail-stat">
-                    <div class="detail-stat-val">{{ $first->stock }}</div>
-                    <div class="detail-stat-label">Stok</div>
-                </div>
-                <div class="detail-stat">
-                    <div class="detail-stat-val">{{ $first->borrowings()->count() }}</div>
-                    <div class="detail-stat-label">Dipinjam</div>
-                </div>
-                <div class="detail-stat">
-                    <div class="detail-stat-val">{{ $first->category->name ?? '-' }}</div>
-                    <div class="detail-stat-label">Kategori</div>
-                </div>
-            </div>
-            <p class="detail-desc">
-                {{ $first->publisher ? 'Penerbit: ' . $first->publisher . '. ' : '' }}
-                {{ $first->isbn ? 'ISBN: ' . $first->isbn . '. ' : '' }}
-                Tersedia di rak {{ $first->location ?? 'perpustakaan' }}. Stok: {{ $first->stock }}.
-            </p>
-            <div class="detail-actions">
-                <a href="#" class="btn-detail-view">Tampilkan Detail</a>
-                @if($first->stock > 0)
-                <button type="button" class="btn-pinjam" style="flex:1;"
-                    onclick="doPinjam({{ $first->id }}, '{{ addslashes($first->title) }}')">Pinjam</button>
-                @else
-                <button class="btn-pinjam" disabled style="opacity:0.5; flex:1;">Habis</button>
-                @endif
-            </div>
-        </div>
-        @endif
-    </div>
     @endif
 </div>
+
+{{-- MODAL DETAIL BUKU --}}
+@if($selected)
+<div class="modal-overlay" id="detailModal">
+    <div class="modal-box">
+        <div class="detail-modal-header">
+            @if($selected->cover)
+                <img src="{{ asset('storage/' . $selected->cover) }}" class="detail-modal-cover" alt="Cover">
+            @else
+                <div class="detail-modal-cover" style="display:flex;align-items:center;justify-content:center;color:#84a98c;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+            @endif
+            <div class="detail-modal-info">
+                <h3>{{ $selected->title }}</h3>
+                <p>{{ $selected->author }}</p>
+                <div class="detail-stats-row">
+                    <span class="detail-stat-badge">Kategori: {{ $selected->categories->isNotEmpty() ? $selected->categories->pluck('name')->join(', ') : ($selected->category->name ?? 'Umum') }}</span>
+                    <span class="detail-stat-badge">Stok: {{ $selected->stock }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="detail-modal-desc">
+            <strong>Penerbit:</strong> {{ $selected->publisher ?? '-' }}<br>
+            <strong>ISBN:</strong> {{ $selected->isbn ?? '-' }}<br>
+            <strong>Rak Lokasi:</strong> {{ $selected->location ?? 'Belum ditentukan' }}<br><br>
+            <strong>Sinopsis:</strong><br>
+            {{ $selected->sinopsis ?? 'Tidak ada sinopsis tersedia untuk buku ini.' }}
+        </div>
+
+        <div class="modal-actions">
+            <button class="btn-batal" onclick="closeDetailModal()">Batal</button>
+            @if($selected->stock > 0)
+                <button class="btn-pinjam-modal" onclick="doPinjam('{{ $selected->id }}', '{{ addslashes($selected->title) }}')">Pinjam Buku</button>
+            @else
+                <button class="btn-pinjam-modal" disabled>Stok Habis</button>
+            @endif
+        </div>
+    </div>
+</div>
+@endif
+
+{{-- MODAL KODE BOOKING --}}
+<div class="modal-overlay" id="bookingModal">
+    <div class="modal-box modal-center">
+        <div class="modal-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="#4361ee" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
+        </div>
+        <p class="modal-title">Booking Berhasil! 🎉</p>
+        <p class="modal-sub" id="modalStatus">Kode booking berhasil dibuat!</p>
+        <div class="modal-book" id="modalBookTitle">—</div>
+        <div class="modal-code-wrap">
+            <div class="modal-code-label">KODE BOOKING ANDA</div>
+            <div class="modal-code" id="modalBookCode">—</div>
+        </div>
+        <div>
+            <button class="modal-copy-btn" onclick="copyCode()">📋 Salin Kode</button>
+            <button class="btn-batal" onclick="closeBookingModal()">Tutup</button>
+        </div>
+    </div>
+</div>
+
+@endsection
 
 @push('scripts')
 <script>
@@ -580,6 +385,24 @@ function selectBook(bookId) {
     const url = new URL(window.location.href);
     url.searchParams.set('selected', bookId);
     window.location.href = url.toString();
+}
+
+// Buka Modal Detail Secara Otomatis Jika Ada parameter ?selected
+document.addEventListener("DOMContentLoaded", function() {
+    const isSelected = "{{ $selected ? '1' : '' }}" === "1";
+    if (isSelected) {
+        document.getElementById('detailModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+});
+
+function closeDetailModal() {
+    document.getElementById('detailModal').classList.remove('active');
+    document.body.style.overflow = '';
+    // Hapus parameter ?selected dari URL
+    const url = new URL(window.location.href);
+    url.searchParams.delete('selected');
+    window.history.pushState({}, '', url);
 }
 
 // Toggle favorit via AJAX (tanpa reload halaman)
@@ -602,7 +425,7 @@ function toggleFav(bookId, btn) {
             svg.setAttribute('fill', '#ef4444');
             svg.setAttribute('stroke', '#ef4444');
             btn.title = 'Hapus dari favorit';
-            btn.style.transform = 'scale(1.3)';
+            btn.style.transform = 'scale(1.2)';
             setTimeout(() => { btn.style.transform = ''; }, 200);
         } else {
             svg.setAttribute('fill', 'none');
@@ -617,6 +440,11 @@ function toggleFav(bookId, btn) {
 const CSRF = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
 
 function doPinjam(bookId, bookTitle) {
+    // Tutup detail modal
+    if(document.getElementById('detailModal')) {
+        document.getElementById('detailModal').classList.remove('active');
+    }
+
     fetch(`/siswa/pinjam/${bookId}`, {
         method: 'POST',
         headers: {
@@ -630,7 +458,6 @@ function doPinjam(bookId, bookTitle) {
         if (data.success) {
             showBookingModal(data.booking_code, data.book_title);
         } else {
-            // Sudah punya booking aktif?
             if (data.booking_code) {
                 showBookingModal(data.booking_code, bookTitle, true);
             } else {
@@ -648,10 +475,12 @@ function showBookingModal(code, title, isExisting = false) {
         ? 'Kamu sudah memiliki booking aktif untuk buku ini.'
         : 'Kode booking berhasil dibuat!';
     document.getElementById('bookingModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
 function closeBookingModal() {
     document.getElementById('bookingModal').classList.remove('active');
+    document.body.style.overflow = '';
 }
 
 function copyCode() {
@@ -664,35 +493,5 @@ function copyCode() {
         setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
     });
 }
-
-// Tutup modal jika klik backdrop
-document.getElementById('bookingModal').addEventListener('click', function(e) {
-    if (e.target === this) closeBookingModal();
-});
 </script>
 @endpush
-
-{{-- MODAL POPUP KODE BOOKING --}}
-<div class="modal-overlay" id="bookingModal">
-    <div class="modal-box">
-        <div class="modal-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="#4361ee" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
-            </svg>
-        </div>
-        <p class="modal-title">Booking Berhasil! 🎉</p>
-        <p class="modal-sub" id="modalStatus">Kode booking berhasil dibuat!</p>
-        <div class="modal-book" id="modalBookTitle">—</div>
-        <div class="modal-code-wrap">
-            <div class="modal-code-label">KODE BOOKING ANDA</div>
-            <div class="modal-code" id="modalBookCode">—</div>
-        </div>
-        <div>
-            <button class="modal-copy-btn" onclick="copyCode()">📋 Salin Kode</button>
-            <button class="modal-close-btn" onclick="closeBookingModal()">Tutup</button>
-        </div>
-        <p class="modal-note">Tunjukkan kode ini kepada penjaga perpustakaan<br>untuk mengambil buku Anda.</p>
-    </div>
-</div>
-
-@endsection

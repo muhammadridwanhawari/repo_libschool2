@@ -10,8 +10,8 @@ class LaporanController extends Controller
 {
     public function index(Request $request)
     {
-        $from  = $request->get('from', Carbon::now()->startOfMonth()->format('Y-m-d'));
-        $until = $request->get('until', Carbon::now()->format('Y-m-d'));
+        $from  = $request->input('from', Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $until = $request->input('until', Carbon::now()->format('Y-m-d'));
 
         $query = Borrowing::with(['user', 'book', 'fine'])
             ->whereBetween('borrow_date', [$from, $until]);
@@ -24,12 +24,13 @@ class LaporanController extends Controller
             ->get();
 
         $totalPeminjaman   = $allInRange->count();
-        $statusTerlambat   = $allInRange->filter(fn($b) => $b->status_display === 'terlambat')->count();
+        $statusTerlambat   = $allInRange->filter(fn($b) => $b->fine !== null)->count();
         $statusDikembalikan = $allInRange->filter(fn($b) => $b->status === 'dikembalikan')->count();
+        $statusDipinjam   = $allInRange->filter(fn($b) => $b->status === 'dipinjam')->count();
 
         return view('admin.laporan.index', compact(
             'borrowings', 'from', 'until',
-            'totalPeminjaman', 'statusTerlambat', 'statusDikembalikan'
+            'totalPeminjaman', 'statusTerlambat', 'statusDikembalikan', 'statusDipinjam'
         ));
     }
 
@@ -38,9 +39,9 @@ class LaporanController extends Controller
      */
     public function export(Request $request)
     {
-        $from  = $request->get('from', Carbon::now()->startOfMonth()->format('Y-m-d'));
-        $until = $request->get('until', Carbon::now()->format('Y-m-d'));
-        $type  = $request->get('type', 'print'); // print | pdf | excel
+        $from  = $request->input('from', Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $until = $request->input('until', Carbon::now()->format('Y-m-d'));
+        $type  = $request->input('type', 'print'); // print | pdf | excel
 
         $borrowings = Borrowing::with(['user', 'book', 'fine'])
             ->whereBetween('borrow_date', [$from, $until])
@@ -48,8 +49,9 @@ class LaporanController extends Controller
             ->get();
 
         $totalPeminjaman    = $borrowings->count();
-        $statusTerlambat    = $borrowings->filter(fn($b) => $b->status_display === 'terlambat')->count();
+        $statusTerlambat    = $borrowings->filter(fn($b) => $b->fine !== null)->count();
         $statusDikembalikan = $borrowings->filter(fn($b) => $b->status === 'dikembalikan')->count();
+        $statusDipinjam     = $borrowings->filter(fn($b) => $b->status === 'dipinjam')->count();
 
         if ($type === 'excel') {
             // Export sebagai CSV (bisa dibuka di Excel)
@@ -80,10 +82,19 @@ class LaporanController extends Controller
             return response()->stream($callback, 200, $headers);
         }
 
-        // Untuk print dan PDF: tampilkan view cetak
+        if ($type === 'pdf') {
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.laporan.print', compact(
+                'borrowings', 'from', 'until',
+                'totalPeminjaman', 'statusTerlambat', 'statusDikembalikan', 'statusDipinjam', 'type'
+            ));
+            $pdf->setPaper('A4', 'landscape');
+            return $pdf->download('laporan-peminjaman-' . $from . '-sd-' . $until . '.pdf');
+        }
+
+        // Untuk print: tampilkan view cetak
         return view('admin.laporan.print', compact(
             'borrowings', 'from', 'until',
-            'totalPeminjaman', 'statusTerlambat', 'statusDikembalikan', 'type'
+            'totalPeminjaman', 'statusTerlambat', 'statusDikembalikan', 'statusDipinjam', 'type'
         ));
     }
 }

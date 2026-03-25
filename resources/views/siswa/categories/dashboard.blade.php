@@ -32,9 +32,9 @@
 
         {{-- Grid Buku --}}
         <div class="books-grid">
-            @forelse($books as $book)
+            @forelse ($books as $book)
                 <div class="book-card {{ isset($selected) && $selected->id == $book->id ? 'active' : '' }}"
-                     onclick="selectBook({{ $book->id }})">
+                     data-id="{{ $book->id }}" onclick="selectBook(this.dataset.id)">
                     <div class="book-cover">
                         @if($book->cover)
                             <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->title }}">

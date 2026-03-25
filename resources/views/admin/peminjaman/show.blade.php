@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.penjaga')
 
 @section('title', 'Detail Peminjaman')
 
@@ -98,8 +98,8 @@
                 @if($st === 'terlambat')
                     <span class="badge badge-danger">Terlambat</span>
                 @elseif($st === 'dipinjam')
-                    <span class="badge badge-warning">Dipinjam</span>
-                @else
+                    <span class="badge badge-warning">Aktif</span>
+                @elseif($st === 'dikembalikan')
                     <span class="badge badge-success">Dikembalikan</span>
                 @endif
             </span>
@@ -107,8 +107,8 @@
 
         @if($peminjaman->status_display === 'terlambat' && $peminjaman->deadline)
         @php
-            $hariTerlambat = now()->diffInDays($peminjaman->deadline);
-            $dendaPerHari = 1000;
+            $hariTerlambat = now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($peminjaman->deadline)->startOfDay());
+            $dendaPerHari = 2000;
             $totalDenda = $hariTerlambat * $dendaPerHari;
         @endphp
         <div class="fine-box">

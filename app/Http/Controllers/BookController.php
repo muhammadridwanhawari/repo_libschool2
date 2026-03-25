@@ -11,8 +11,8 @@ class BookController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->get('search');
-        $books = Book::with('categories')
+        $search = $request->input('search');
+        $books = Book::with(['categories', 'series'])
             ->when($search, function ($q) use ($search) {
                 $q->where('title', 'like', "%$search%")
                   ->orWhere('author', 'like', "%$search%")
@@ -22,8 +22,16 @@ class BookController extends Controller
             ->paginate(10);
 
         $categories = Category::all();
+        $series = \App\Models\BookSeries::all();
 
-        return view('admin.buku.index', compact('books', 'categories', 'search'));
+        return view('admin.buku.index', compact('books', 'categories', 'series', 'search'));
+    }
+
+    public function create()
+    {
+        $categories = Category::all();
+        $series = \App\Models\BookSeries::all();
+        return view('admin.buku.create', compact('categories', 'series'));
     }
 
     public function store(Request $request)
@@ -34,8 +42,11 @@ class BookController extends Controller
             'stock'        => 'required|integer|min:0',
             'author'       => 'nullable|string|max:255',
             'publisher'    => 'nullable|string|max:255',
+            'pages'        => 'nullable|integer|min:1',
             'location'     => 'nullable|string|max:100',
+            'sinopsis'     => 'nullable|string',
             'cover'        => 'nullable|image|max:2048',
+            'book_series_id' => 'nullable|exists:book_series,id',
             'category_ids' => 'required|array|min:1',
             'category_ids.*' => 'exists:categories,id',
         ]);
@@ -51,9 +62,12 @@ class BookController extends Controller
             'isbn'      => $request->isbn,
             'author'    => $request->author ?? '-',
             'publisher' => $request->publisher,
+            'pages'     => $request->pages,
             'stock'     => $request->stock,
             'cover'     => $coverPath,
+            'book_series_id' => $request->book_series_id,
             'location'  => $request->location,
+            'sinopsis'  => $request->sinopsis,
         ]);
 
         // Attach ke pivot table
@@ -76,8 +90,11 @@ class BookController extends Controller
             'stock'        => 'required|integer|min:0',
             'author'       => 'nullable|string|max:255',
             'publisher'    => 'nullable|string|max:255',
+            'pages'        => 'nullable|integer|min:1',
             'location'     => 'nullable|string|max:100',
+            'sinopsis'     => 'nullable|string',
             'cover'        => 'nullable|image|max:2048',
+            'book_series_id' => 'nullable|exists:book_series,id',
             'category_ids' => 'nullable|array',
             'category_ids.*' => 'exists:categories,id',
         ]);
@@ -85,7 +102,7 @@ class BookController extends Controller
         // Simpan kategori lama untuk sync hitungan
         $oldCategoryIds = $buku->categories()->pluck('categories.id')->toArray();
 
-        $data = $request->only(['title', 'isbn', 'author', 'publisher', 'stock', 'location']);
+        $data = $request->only(['title', 'isbn', 'author', 'publisher', 'pages', 'stock', 'book_series_id', 'location', 'sinopsis']);
 
         if ($request->hasFile('cover')) {
             if ($buku->cover) {

@@ -19,24 +19,28 @@ class PenjagaPengembalianController extends Controller
     {
         $search = $request->get('search');
 
-        // Mengambil peminjaman dengan status 'dipinjam' saja
+        // Mengambil peminjaman dengan status 'dipinjam' saja yang belum terlambat
         $peminjaman = Borrowing::with(['user', 'book'])
             ->where('status', 'dipinjam')
+            ->where(function($q) {
+                $q->whereNull('deadline')
+                  ->orWhere('deadline', '>=', \Carbon\Carbon::today());
+            })
             ->when($search, function ($q) use ($search) {
                 $q->where('booking_code', 'like', "%$search%")
                   ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%$search%"))
                   ->orWhereHas('book', fn($b) => $b->where('title', 'like', "%$search%"));
             })
             ->latest()
-            ->paginate(15);
+            ->paginate(10);
 
-        // Menghitung denda secara dinamis untuk tampilan (Rp 1.000 per hari keterlambatan)
+        // Menghitung denda secara dinamis untuk tampilan (Rp 2.000 per hari keterlambatan)
         foreach ($peminjaman as $p) {
             $p->denda_estimasi = 0;
             $p->hari_terlambat = 0;
             if ($p->deadline && now()->startOfDay()->gt(Carbon::parse($p->deadline)->startOfDay())) {
                 $p->hari_terlambat = now()->startOfDay()->diffInDays(Carbon::parse($p->deadline)->startOfDay());
-                $p->denda_estimasi = $p->hari_terlambat * 1000;
+                $p->denda_estimasi = $p->hari_terlambat * 2000;
             }
         }
 
@@ -59,7 +63,7 @@ class PenjagaPengembalianController extends Controller
         // Hitung denda jika terlambat
         if ($borrowing->deadline && now()->startOfDay()->gt(Carbon::parse($borrowing->deadline)->startOfDay())) {
             $hariTerlambat = now()->startOfDay()->diffInDays(Carbon::parse($borrowing->deadline)->startOfDay());
-            $amount = $hariTerlambat * 1000; // Rp 1.000 per hari
+            $amount = $hariTerlambat * 2000; // Rp 2.000 per hari
 
             Fine::create([
                 'borrowing_id' => $borrowing->id,
@@ -80,5 +84,25 @@ class PenjagaPengembalianController extends Controller
 
         return redirect()->route('penjaga.pengembalian')
             ->with('success', "Buku \"{$borrowing->book->title}\" berhasil dikembalikan." . $dendaMessage);
+    }
+
+    /**
+     * Halaman Riwayat Transaksi untuk Penjaga
+     * Menampilkan semua data peminjaman (termasuk yang sudah dikembalikan)
+     */
+    public function riwayat(Request $request)
+    {
+        $search = $request->get('search');
+
+        $riwayat = Borrowing::with(['user', 'book', 'fine'])
+            ->when($search, function ($q) use ($search) {
+                $q->where('booking_code', 'like', "%$search%")
+                  ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%$search%"))
+                  ->orWhereHas('book', fn($b) => $b->where('title', 'like', "%$search%"));
+            })
+            ->latest()
+            ->paginate(10);
+
+        return view('penjaga.riwayat', compact('riwayat', 'search'));
     }
 }

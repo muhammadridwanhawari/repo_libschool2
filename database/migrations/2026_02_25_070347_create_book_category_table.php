@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -18,11 +19,11 @@ return new class extends Migration
 
         // Migrate existing category_id data to pivot table
         if (Schema::hasColumn('books', 'category_id')) {
-            \DB::table('books')
+            DB::table('books')
                 ->whereNotNull('category_id')
                 ->get(['id', 'category_id'])
                 ->each(function ($book) {
-                    \DB::table('book_category')->insertOrIgnore([
+                    DB::table('book_category')->insertOrIgnore([
                         'book_id'     => $book->id,
                         'category_id' => $book->category_id,
                         'created_at'  => now(),

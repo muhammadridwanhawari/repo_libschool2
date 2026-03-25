@@ -63,7 +63,6 @@
                         <label class="block text-[0.85rem] font-semibold text-gray-700 mb-1.5">Nama Lengkap</label>
                         <input type="text" name="name" autocomplete="off"
                                class="w-full border-[1.5px] border-gray-200 rounded-[0.6rem] px-4 py-2.5 text-[0.875rem] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/15 placeholder-slate-300"
-                               placeholder="e.g. Riski Satria"
                                value="{{ old('name') }}" required>
                     </div>
 
@@ -71,7 +70,6 @@
                         <label class="block text-[0.85rem] font-semibold text-gray-700 mb-1.5">NIK</label>
                         <input type="text" name="nik" autocomplete="off"
                                class="w-full border-[1.5px] border-gray-200 rounded-[0.6rem] px-4 py-2.5 text-[0.875rem] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/15 placeholder-slate-300"
-                               placeholder="e.g. 1050241708900001"
                                value="{{ old('nik') }}" required>
                     </div>
 
@@ -79,7 +77,6 @@
                         <label class="block text-[0.85rem] font-semibold text-gray-700 mb-1.5">Nama pengguna</label>
                         <input type="text" name="username" autocomplete="off"
                                class="w-full border-[1.5px] border-gray-200 rounded-[0.6rem] px-4 py-2.5 text-[0.875rem] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/15 placeholder-slate-300"
-                               placeholder="e.g. alfianchii"
                                value="{{ old('username') }}" required>
                     </div>
 
@@ -87,7 +84,6 @@
                         <label class="block text-[0.85rem] font-semibold text-gray-700 mb-1.5">Email</label>
                         <input type="email" name="email" autocomplete="off"
                                class="w-full border-[1.5px] border-gray-200 rounded-[0.6rem] px-4 py-2.5 text-[0.875rem] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/15 placeholder-slate-300"
-                               placeholder="e.g. alhan.ganteng@gmail.com"
                                value="{{ old('email') }}" required>
                     </div>
 
@@ -95,7 +91,6 @@
                         <label class="block text-[0.85rem] font-semibold text-gray-700 mb-1.5">Telepon</label>
                         <input type="text" name="telepon" autocomplete="off"
                                class="w-full border-[1.5px] border-gray-200 rounded-[0.6rem] px-4 py-2.5 text-[0.875rem] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/15 placeholder-slate-300"
-                               placeholder="e.g. 082384763478"
                                value="{{ old('telepon') }}" required>
                     </div>
 
@@ -111,7 +106,7 @@
                         <div class="relative">
                             <input type="password" name="password" id="password" autocomplete="new-password"
                                    class="w-full border-[1.5px] border-gray-200 rounded-[0.6rem] px-4 py-2.5 pr-11 text-[0.875rem] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/15 placeholder-slate-300"
-                                   placeholder="e.g. 4kuBu7uhM3dk1t" required>
+                                   required>
                             <button type="button"
                                     class="absolute right-3 top-1/2 -translate-y-1/2 bg-transparent border-0 cursor-pointer text-gray-400 flex items-center p-0 hover:text-gray-600"
                                     onclick="togglePassword('password', this)">

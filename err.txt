@@ -1,0 +1,26 @@
+
+   INFO  Running migrations.  
+
+  2026_03_22_000002_make_users_optional_fields_nullable  19.66ms FAIL
+
+   Illuminate\Database\QueryException 
+
+  SQLSTATE[42000]: Syntax error or access violation: 1061 Duplicate key name 'users_nik_unique' (Connection: mysql, Host: 127.0.0.1, Port: 3306, Database: libschool, SQL: alter table `users` add unique `users_nik_unique`(`nik`))
+
+  at vendor\laravel\framework\src\Illuminate\Database\Connection.php:838
+    834▕             $exceptionType = $this->isUniqueConstraintError($e)
+    835▕                 ? UniqueConstraintViolationException::class
+    836▕                 : QueryException::class;
+    837▕ 
+  ➜ 838▕             throw new $exceptionType(
+    839▕                 $this->getNameWithReadWriteType(),
+    840▕                 $query,
+    841▕                 $this->prepareBindings($bindings),
+    842▕                 $e,
+
+  1   vendor\laravel\framework\src\Illuminate\Database\Connection.php:584
+      PDOException::("SQLSTATE[42000]: Syntax error or access violation: 1061 Duplicate key name 'users_nik_unique'")
+
+  2   vendor\laravel\framework\src\Illuminate\Database\Connection.php:584
+      PDOStatement::execute()
+

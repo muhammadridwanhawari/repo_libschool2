@@ -9,9 +9,14 @@ class BorrowingController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->get('search');
+        $search = $request->input('search');
 
-        $borrowings = Borrowing::with(['user', 'book'])
+        $borrowings = Borrowing::with(['user', 'book', 'fine'])
+            ->where(function($q) {
+                $q->where('status', 'dikembalikan')
+                  ->orWhereNull('deadline')
+                  ->orWhere('deadline', '>=', \Carbon\Carbon::today());
+            })
             ->when($search, function ($q) use ($search) {
                 $q->whereHas('user', fn($u) => $u->where('name', 'like', "%$search%"))
                   ->orWhereHas('book', fn($b) => $b->where('title', 'like', "%$search%"));

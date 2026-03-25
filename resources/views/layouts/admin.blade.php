@@ -69,7 +69,6 @@
         .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
 
         /* Dropdown */
-        .nav-group {}
         .nav-group-header {
             display: flex; align-items: center; gap: 10px;
             padding: 10px 20px;
@@ -134,6 +133,23 @@
         }
         .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
         .alert-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        /* Custom Status Badges to match design */
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            min-width: 100px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            border: none;
+        }
+        .badge-warning { background-color: #F0EEB6 !important; color: #A69B00 !important; } /* Aktif */
+        .badge-danger { background-color: #F8B2B4 !important; color: #CC0D0C !important; } /* Terlambat */
+        .badge-success { background-color: #C6F7B9 !important; color: #2EA800 !important; } /* Dikembalikan */
+        .badge-primary { background-color: #86A2FE !important; color: #2F11D3 !important; } /* Booking */
     </style>
     @stack('styles')
 </head>
@@ -171,8 +187,8 @@
             </a>
 
             {{-- Kelola Data --}}
-            <div class="nav-group {{ request()->routeIs('admin.kategori.*') || request()->routeIs('admin.buku.*') || request()->routeIs('admin.peminjaman.*') || request()->routeIs('admin.denda.*') ? 'open' : '' }}">
-                <button class="nav-group-header {{ request()->routeIs('admin.kategori.*') || request()->routeIs('admin.buku.*') || request()->routeIs('admin.peminjaman.*') || request()->routeIs('admin.denda.*') ? 'active' : '' }}" onclick="this.parentElement.classList.toggle('open')">
+            <div class="nav-group {{ request()->routeIs('admin.kategori.*') || request()->routeIs('admin.series.*') || request()->routeIs('admin.buku.*') || request()->routeIs('admin.peminjaman.*') || request()->routeIs('admin.denda.*') || request()->routeIs('admin.pengajuan.*') ? 'open' : '' }}">
+                <button class="nav-group-header {{ request()->routeIs('admin.kategori.*') || request()->routeIs('admin.series.*') || request()->routeIs('admin.buku.*') || request()->routeIs('admin.peminjaman.*') || request()->routeIs('admin.denda.*') || request()->routeIs('admin.pengajuan.*') ? 'active' : '' }}" onclick="this.parentElement.classList.toggle('open')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
@@ -183,16 +199,18 @@
                 </button>
                 <div class="nav-sub">
                     <a href="{{ route('admin.kategori.index') }}" class="{{ request()->routeIs('admin.kategori.*') ? 'active' : '' }}">Kategori</a>
+                    <a href="{{ route('admin.series.index') }}" class="{{ request()->routeIs('admin.series.*') ? 'active' : '' }}">Series Buku</a>
                     <a href="{{ route('admin.buku.index') }}" class="{{ request()->routeIs('admin.buku.*') ? 'active' : '' }}">Data Buku</a>
                     <a href="{{ route('admin.peminjaman.index') }}" class="{{ request()->routeIs('admin.peminjaman.*') ? 'active' : '' }}">Peminjaman</a>
                     <a href="{{ route('admin.denda.index') }}" class="{{ request()->routeIs('admin.denda.*') ? 'active' : '' }}">Denda</a>
+                    <a href="{{ route('admin.pengajuan.index') }}" class="{{ request()->routeIs('admin.pengajuan.*') ? 'active' : '' }}">Pengajuan Buku</a>
                 </div>
             </div>
 
 
             {{-- Kelola Pengguna --}}
-            <div class="nav-group {{ request()->routeIs('admin.pengguna.*') || request()->routeIs('admin.hakakses*') ? 'open' : '' }}">
-                <button class="nav-group-header {{ request()->routeIs('admin.pengguna.*') || request()->routeIs('admin.hakakses*') ? 'active' : '' }}" onclick="this.parentElement.classList.toggle('open')">
+            <div class="nav-group {{ request()->routeIs('admin.pengguna.*') || request()->routeIs('admin.hakakses*') || request()->routeIs('admin.verifikasi*') ? 'open' : '' }}">
+                <button class="nav-group-header {{ request()->routeIs('admin.pengguna.*') || request()->routeIs('admin.hakakses*') || request()->routeIs('admin.verifikasi*') ? 'active' : '' }}" onclick="this.parentElement.classList.toggle('open')">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
                     </svg>
@@ -204,6 +222,7 @@
                 <div class="nav-sub">
                     <a href="{{ route('admin.pengguna.index') }}" class="{{ request()->routeIs('admin.pengguna.*') ? 'active' : '' }}">Data Pengguna</a>
                     <a href="{{ route('admin.hakakses') }}" class="{{ request()->routeIs('admin.hakakses*') ? 'active' : '' }}">Hak Akses</a>
+                    <a href="{{ route('admin.verifikasi') }}" class="{{ request()->routeIs('admin.verifikasi*') ? 'active' : '' }}">Verifikasi Anggota</a>
                 </div>
             </div>
 
@@ -236,6 +255,7 @@
         @yield('content')
     </div>
 
+    @include('components.confirm-modal')
     @stack('scripts')
 </body>
 </html>

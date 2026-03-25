@@ -25,52 +25,79 @@
     </div>
     @endif
 
+@push('styles')
+<style>
+    /* Stat Cards (Laporan Admin Style) */
+    .stat-cards {
+        display: grid; grid-template-columns: repeat(3, 1fr);
+        gap: 16px; margin-bottom: 24px;
+    }
+    .stat-card {
+        background: #fff; border-radius: 14px;
+        padding: 20px 24px; border: 1.5px solid #e5e7eb;
+        display: flex; align-items: center; justify-content: space-between;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+    .stat-card-label { font-size: 0.8rem; color: #666; margin: 0 0 4px; font-weight: 500; }
+    .stat-card-value { font-size: 2rem; font-weight: 700; color: #222; margin: 0; }
+    .stat-card-value.danger { color: #ef4444; }
+    .stat-card-value.warning { color: #f59e0b; }
+    .stat-card-value.purple { color: #8b5cf6; }
+    .stat-card-icon {
+        width: 44px; height: 44px;
+        display: flex; align-items: center; justify-content: center;
+        border-radius: 50%; flex-shrink: 0;
+    }
+    .stat-card:nth-child(1) .stat-card-icon { background: #eef0ff; color: #4361ee; }
+    .stat-card:nth-child(2) .stat-card-icon { background: #fef3c7; color: #f59e0b; }
+    .stat-card:nth-child(3) .stat-card-icon { background: #ede9fe; color: #8b5cf6; }
+
+    /* Pagination */
+    .pagination-wrap {
+        padding: 16px; border-top: 1px solid #f0f0f0;
+        display: flex; align-items: center; gap: 4px;
+    }
+    .pagination-wrap a, .pagination-wrap span {
+        display: inline-flex; align-items: center; justify-content: center;
+        width: 30px; height: 30px; border-radius: 6px;
+        font-size: 0.8rem; text-decoration: none;
+        color: #666; border: 1px solid #e5e7eb;
+    }
+    .pagination-wrap .active { background: #4361ee; color: #fff; border-color: #4361ee; }
+    .pagination-wrap nav p.text-sm.text-gray-700 { display: none !important; }
+</style>
+@endpush
+
     {{-- Statistik --}}
-    <div class="grid grid-cols-4 gap-4 mb-6">
-        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_6px_rgba(0,0,0,0.06)]">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#0ea5e9" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
-                </div>
-                <div>
-                    <p class="text-[0.72rem] text-slate-400 font-medium">Total Buku</p>
-                    <p class="text-2xl font-bold text-sky-950">{{ $totalBuku }}</p>
-                </div>
+    <div class="stat-cards">
+        <div class="stat-card">
+            <div class="stat-card-info">
+                <p class="stat-card-label">Total Buku</p>
+                <p class="stat-card-value">{{ $totalBuku }}</p>
+            </div>
+            <div class="stat-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
             </div>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_6px_rgba(0,0,0,0.06)]">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#ca8a04" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-                <div>
-                    <p class="text-[0.72rem] text-slate-400 font-medium">Sedang Dipinjam</p>
-                    <p class="text-2xl font-bold text-sky-950">{{ $sedangDipinjam }}</p>
-                </div>
+        <div class="stat-card">
+            <div class="stat-card-info">
+                <p class="stat-card-label">Aktif</p>
+                <p class="stat-card-value warning">{{ $sedangDipinjam }}</p>
+            </div>
+            <div class="stat-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             </div>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_6px_rgba(0,0,0,0.06)]">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#7c3aed" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
-                </div>
-                <div>
-                    <p class="text-[0.72rem] text-slate-400 font-medium">Menunggu Konfirmasi</p>
-                    <p class="text-2xl font-bold text-sky-950">{{ $menungguBooking }}</p>
-                </div>
+        <div class="stat-card">
+            <div class="stat-card-info">
+                <p class="stat-card-label">Menunggu Konfirmasi</p>
+                <p class="stat-card-value purple">{{ $menungguBooking }}</p>
+            </div>
+            <div class="stat-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
             </div>
         </div>
-        <div class="bg-white rounded-2xl p-5 shadow-[0_1px_6px_rgba(0,0,0,0.06)]">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#dc2626" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-                </div>
-                <div>
-                    <p class="text-[0.72rem] text-slate-400 font-medium">Terlambat</p>
-                    <p class="text-2xl font-bold text-sky-950">{{ $belumKembali }}</p>
-                </div>
-            </div>
-        </div>
+
     </div>
 
     {{-- Input Kode Booking --}}
@@ -90,7 +117,9 @@
             >
             <button
                 onclick="cariBooking()"
-                class="bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-xl px-6 py-3 text-[0.88rem] transition-colors flex items-center gap-2"
+                class="text-white font-semibold rounded-xl px-6 py-3 text-[0.88rem] transition-colors flex items-center gap-2"
+                style="background:#4361ee;"
+                onmouseover="this.style.background='#3a56d4'" onmouseout="this.style.background='#4361ee'"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
                 Cari
@@ -121,10 +150,11 @@
                     @csrf
                     <input type="hidden" name="borrowing_id" id="previewBorrowingId">
                     <button type="submit"
-                        class="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold rounded-xl py-3 text-[0.9rem] transition-colors flex items-center justify-center gap-2"
+                        class="w-full text-white font-semibold rounded-xl py-3 text-[0.9rem] transition-colors flex items-center justify-center gap-2"
+                        style="background:#4361ee;" onmouseover="this.style.background='#3a56d4'" onmouseout="this.style.background='#4361ee'"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                        Konfirmasi Pinjam (Deadline +7 Hari)
+                        <span id="labelKonfirmasiPinjam">Konfirmasi Pinjam (Deadline +7 Hari)</span>
                     </button>
                 </form>
             </div>
@@ -139,77 +169,133 @@
 
     {{-- Tabel Peminjaman Aktif --}}
     <div class="bg-white rounded-2xl shadow-[0_1px_6px_rgba(0,0,0,0.06)] overflow-hidden">
-        <div class="px-6 py-4 border-b border-slate-100">
-            <p class="text-[0.95rem] font-bold text-sky-950">Daftar Peminjaman Aktif</p>
-            <p class="text-[0.78rem] text-slate-400 mt-0.5">Booking & sedang dipinjam</p>
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h2 class="font-bold text-slate-800 text-[1rem]">Daftar Peminjaman Aktif</h2>
+            <span class="text-[0.75rem] text-slate-400 font-medium">{{ $peminjaman->total() }} data</span>
         </div>
+        <p class="px-6 pt-3 pb-1 text-[0.78rem] text-slate-400">Booking & sedang dipinjam</p>
 
         <div class="overflow-x-auto">
-            <table class="w-full text-[0.82rem]">
+            <table class="w-full border-collapse min-w-[800px]">
                 <thead>
-                    <tr class="bg-slate-50 border-b border-slate-100">
-                        <th class="text-left px-5 py-3 font-semibold text-slate-500">Kode Booking</th>
-                        <th class="text-left px-5 py-3 font-semibold text-slate-500">Buku</th>
-                        <th class="text-left px-5 py-3 font-semibold text-slate-500">Siswa</th>
-                        <th class="text-left px-5 py-3 font-semibold text-slate-500">Tgl Pinjam</th>
-                        <th class="text-left px-5 py-3 font-semibold text-slate-500">Deadline</th>
-                        <th class="text-left px-5 py-3 font-semibold text-slate-500">Status</th>
-                        <th class="text-center px-5 py-3 font-semibold text-slate-500">Aksi</th>
+                    <tr class="bg-slate-50">
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">KODE BOOKING</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">BUKU</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">SISWA</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TGL PINJAM</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">DEADLINE</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">STATUS</th>
+                        <th class="px-5 py-3 text-center text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">AKSI</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
-                    @forelse($peminjaman as $p)
-                    <tr class="hover:bg-slate-50/50 transition-colors">
-                        <td class="px-5 py-3.5">
-                            <span class="font-mono font-semibold text-sky-600 bg-sky-50 rounded-md px-2 py-0.5 text-[0.78rem]">
-                                {{ $p->booking_code ?? '—' }}
+                    @forelse ($peminjaman as $p)
+                    @php
+                        $isLate = false;
+                        $isDeadline = false;
+                        
+                        if ($p->status === 'dipinjam' && $p->deadline) {
+                            $deadlineDate = \Carbon\Carbon::parse($p->deadline)->startOfDay();
+                            $today = now()->startOfDay();
+                            $diff = $today->diffInDays($deadlineDate, false);
+                            
+                            if ($diff < 0) {
+                                $isLate = true;
+                            } elseif ($diff >= 0 && $diff <= 1) {
+                                $isDeadline = true;
+                            }
+                        }
+                    @endphp
+                    <tr class="hover:bg-slate-50/60 transition-colors">
+                        {{-- Kode Booking --}}
+                        <td class="px-5 py-3.5 align-middle">
+                            @if($p->booking_code)
+                            <span class="font-mono text-[0.75rem] text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                                {{ $p->booking_code }}
                             </span>
+                            @else
+                            <span class="text-slate-400 text-[0.8rem]">—</span>
+                            @endif
                         </td>
-                        <td class="px-5 py-3.5">
-                            <p class="font-semibold text-slate-700 leading-tight">{{ Str::limit($p->book->title, 30) }}</p>
-                            <p class="text-slate-400 text-[0.75rem]">{{ $p->book->author }}</p>
+                        {{-- Buku --}}
+                        <td class="px-5 py-3.5 align-middle">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-11 rounded bg-slate-100 flex-shrink-0 overflow-hidden border border-slate-200 flex items-center justify-center">
+                                    @if($p->book && $p->book->cover)
+                                        <img src="{{ asset('storage/' . $p->book->cover) }}" alt="Cover" class="w-full h-full object-cover">
+                                    @elseif($p->book && $p->book->cover_image)
+                                        <img src="{{ asset('storage/' . $p->book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
+                                    @else
+                                        <svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                                    @endif
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="font-semibold text-slate-800 text-[0.82rem] leading-tight truncate max-w-[150px]">
+                                        {{ $p->book->title ?? '-' }}
+                                    </p>
+                                    <p class="text-[0.7rem] text-slate-400 truncate max-w-[150px]">
+                                        {{ $p->book->author ?? '' }}
+                                    </p>
+                                </div>
+                            </div>
                         </td>
-                        <td class="px-5 py-3.5">
-                            <p class="font-medium text-slate-700">{{ $p->user->name }}</p>
-                            <p class="text-slate-400 text-[0.75rem]">{{ $p->user->email }}</p>
+                        {{-- Siswa --}}
+                        <td class="px-5 py-3.5 align-middle">
+                            <p class="font-semibold text-slate-800 text-[0.82rem] leading-tight truncate max-w-[150px]">
+                                {{ $p->user->name ?? '-' }}
+                            </p>
+                            <p class="text-[0.7rem] text-slate-400 truncate max-w-[150px]">
+                                {{ $p->user->email ?? '' }}
+                            </p>
                         </td>
-                        <td class="px-5 py-3.5 text-slate-500">
+                        {{-- Tgl Pinjam --}}
+                        <td class="px-5 py-3.5 text-slate-500 text-[0.78rem] align-middle">
                             {{ $p->borrow_date ? $p->borrow_date->format('d M Y') : '—' }}
                         </td>
-                        <td class="px-5 py-3.5 text-slate-500">
+                        {{-- Deadline --}}
+                        <td class="px-5 py-3.5 text-slate-500 text-[0.78rem] align-middle">
                             @if($p->deadline)
-                                <span class="{{ $p->status === 'dipinjam' && now()->gt($p->deadline) ? 'text-red-500 font-semibold' : '' }}">
+                                <span class="{{ $isLate ? 'text-red-500 font-semibold' : '' }}">
                                     {{ $p->deadline->format('d M Y') }}
                                 </span>
                             @else
                                 <span class="text-slate-300">—</span>
                             @endif
                         </td>
-                        <td class="px-5 py-3.5">
+                        {{-- Status --}}
+                        <td class="px-5 py-3.5 align-middle">
                             @if($p->status === 'booking')
-                                <span class="bg-violet-50 text-violet-600 border border-violet-100 rounded-full px-2.5 py-0.5 text-[0.72rem] font-semibold">Booking</span>
-                            @elseif($p->status === 'dipinjam' && $p->deadline && now()->gt($p->deadline))
-                                <span class="bg-red-50 text-red-600 border border-red-100 rounded-full px-2.5 py-0.5 text-[0.72rem] font-semibold">Terlambat</span>
-                            @else
-                                <span class="bg-yellow-50 text-yellow-600 border border-yellow-100 rounded-full px-2.5 py-0.5 text-[0.72rem] font-semibold">Dipinjam</span>
+                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dbeafe] text-[#1d4ed8]">BOOKING</span>
+                            @elseif($isLate)
+                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fee2e2] text-[#dc2626]">TERLAMBAT</span>
+                            @elseif($isDeadline)
+                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#ffedd5] text-[#ea580c]">DEADLINE</span>
+                            @elseif($p->status === 'dipinjam')
+                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fef9c3] text-[#a16207]">AKTIF</span>
                             @endif
                         </td>
-                        <td class="px-5 py-3.5 text-center">
+                        {{-- Aksi --}}
+                        <td class="px-5 py-3.5 text-center align-middle">
                             @if($p->status === 'dipinjam')
-                                <span class="text-slate-300">—</span>
+                                <span class="text-slate-300 text-[0.8rem]">—</span>
                             @else
-                            <button
-                                onclick="isiKodeBooking('{{ $p->booking_code }}')"
-                                class="bg-sky-500 hover:bg-sky-600 text-white text-[0.75rem] font-semibold rounded-lg px-3 py-1.5 transition-colors"
-                            >Proses</button>
+                                <button
+                                    onclick="isiKodeBooking('{{ $p->booking_code }}')"
+                                    class="text-white text-[0.75rem] font-semibold rounded-lg px-3 py-1.5 transition-colors"
+                                    style="background:#4361ee;" onmouseover="this.style.background='#3a56d4'" onmouseout="this.style.background='#4361ee'"
+                                >Proses</button>
                             @endif
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-5 py-10 text-center text-slate-400 text-[0.85rem]">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#cbd5e1" stroke-width="1.5" viewBox="0 0 24 24" class="mx-auto mb-2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
-                            Tidak ada peminjaman aktif saat ini.
+                        <td colspan="7" class="px-5 py-14 text-center">
+                            <div class="flex flex-col items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#cbd5e1" stroke-width="1.5" viewBox="0 0 24 24" class="mb-1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
+                                </svg>
+                                <p class="text-slate-400 text-[0.85rem]">Tidak ada peminjaman aktif saat ini.</p>
+                            </div>
                         </td>
                     </tr>
                     @endforelse
@@ -218,7 +304,7 @@
         </div>
 
         @if($peminjaman->hasPages())
-        <div class="px-6 py-4 border-t border-slate-100">
+        <div class="pagination-wrap">
             {{ $peminjaman->links() }}
         </div>
         @endif
@@ -254,6 +340,7 @@ function cariBooking() {
             document.getElementById('previewStudent').textContent = data.student_name;
             document.getElementById('previewEmail').textContent   = data.student_email;
             document.getElementById('previewBorrowingId').value   = data.id;
+            document.getElementById('labelKonfirmasiPinjam').textContent = `Konfirmasi Pinjam (Deadline +${data.duration || 7} Hari)`;
             document.getElementById('previewBooking').classList.remove('hidden');
         } else {
             document.getElementById('previewErrorMsg').textContent = data.message;

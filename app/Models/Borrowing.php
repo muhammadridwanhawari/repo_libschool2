@@ -17,6 +17,7 @@ class Borrowing extends Model
         'booking_code',
         'borrow_date',
         'deadline',
+        'duration',
         'return_date',
         'status',
     ];
@@ -59,7 +60,15 @@ class Borrowing extends Model
      */
     public function getStatusDisplayAttribute(): string
     {
-        if ($this->status === 'dikembalikan') return 'dikembalikan';
+        if ($this->status === 'dikembalikan') {
+            if ($this->return_date && $this->deadline && \Carbon\Carbon::parse($this->return_date)->startOfDay()->gt(\Carbon\Carbon::parse($this->deadline)->startOfDay())) {
+                return 'terlambat';
+            }
+            if ($this->relationLoaded('fine') && $this->fine) {
+                return 'terlambat';
+            }
+            return 'dikembalikan';
+        }
         if ($this->status === 'booking') return 'booking';
         if ($this->deadline && now()->gt($this->deadline)) return 'terlambat';
         return 'dipinjam';

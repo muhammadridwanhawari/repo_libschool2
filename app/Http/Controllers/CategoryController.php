@@ -12,7 +12,7 @@ class CategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->get('search');
+        $search = $request->input('search');
 
         $categories = Category::withCount('books')
             ->when($search, function ($query) use ($search) {
@@ -24,7 +24,7 @@ class CategoryController extends Controller
         // For edit mode
         $editCategory = null;
         if ($request->has('edit')) {
-            $editCategory = Category::find($request->get('edit'));
+            $editCategory = Category::find($request->input('edit'));
         }
 
         return view('admin.kategori.index', compact('categories', 'search', 'editCategory'));

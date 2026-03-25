@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends(auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.penjaga')
 
 @section('title', 'Data Buku')
 
@@ -13,15 +13,19 @@
         justify-content: space-between; margin-bottom: 20px;
     }
     .btn-tambah {
-        background: #4361ee; color: #fff;
+        background: linear-gradient(135deg, #4361ee, #3a56d4); color: #fff;
         border: none; border-radius: 8px;
         padding: 10px 18px; font-size: 0.85rem;
         font-weight: 600; cursor: pointer;
         font-family: inherit; text-decoration: none;
         display: inline-flex; align-items: center; gap: 6px;
-        transition: background 0.2s;
+        transition: all 0.2s;
     }
-    .btn-tambah:hover { background: #3a56d4; color: #fff; }
+    .btn-tambah:hover {
+        background: linear-gradient(135deg, #3a56d4, #2f49c0);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(67,97,238,0.3);
+    }
 
     /* Search */
     .search-wrap {
@@ -112,6 +116,7 @@
         color: #666; border: 1px solid #e5e7eb;
     }
     .pagination-wrap .active { background: #4361ee; color: #fff; border-color: #4361ee; }
+    .pagination-wrap nav p.text-sm.text-gray-700 { display: none !important; }
 
     /* Alert */
     .alert-success {
@@ -207,13 +212,17 @@
     }
     .btn-batal:hover { background: #f5f5f5; }
     .btn-simpan {
-        background: #4361ee; color: #fff;
+        background: linear-gradient(135deg, #4361ee, #3a56d4); color: #fff;
         border: none; border-radius: 8px;
         padding: 9px 24px; font-size: 0.85rem;
         font-weight: 600; cursor: pointer; font-family: inherit;
-        transition: background 0.2s;
+        transition: all 0.2s;
     }
-    .btn-simpan:hover { background: #3a56d4; }
+    .btn-simpan:hover {
+        background: linear-gradient(135deg, #3a56d4, #2f49c0);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(67,97,238,0.3);
+    }
 </style>
 @endpush
 
@@ -225,7 +234,7 @@
         <a href="{{ route('admin.dashboard') }}">Kelola Data</a>
         <span> / Data Buku</span>
     </div>
-    <button class="btn-tambah" onclick="openModal()">+ Tambah Buku</button>
+    <a href="{{ route('admin.buku.create') }}" class="btn-tambah">+ Tambah Buku</a>
 </div>
 
 @if(session('success'))
@@ -259,7 +268,7 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($books as $buku)
+            @forelse ($books as $buku)
             <tr>
                 <td>
                     @if($buku->cover)
@@ -291,18 +300,19 @@
                 <td>{{ $buku->location ?? '-' }}</td>
                 <td>
                     <div class="action-btns">
-                        {{-- Tombol Edit (buka modal edit) --}}
-                        <button class="btn-edit" title="Edit"
-                            onclick="openEditModal(
-                                {{ $buku->id }},
-                                '{{ addslashes($buku->title) }}',
-                                '{{ addslashes($buku->isbn ?? '') }}',
-                                {{ $buku->stock }},
-                                '{{ addslashes($buku->author ?? '') }}',
-                                '{{ addslashes($buku->publisher ?? '') }}',
-                                '{{ addslashes($buku->location ?? '') }}',
-                                [{{ $buku->categories->pluck('id')->join(',') }}]
-                            )">
+                        <button type="button" class="btn-edit btn-edit-buku" title="Edit"
+                            data-id="{{ $buku->id }}"
+                            data-title="{{ $buku->title }}"
+                            data-isbn="{{ $buku->isbn ?? '' }}"
+                            data-stock="{{ $buku->stock }}"
+                            data-author="{{ $buku->author ?? '' }}"
+                            data-publisher="{{ $buku->publisher ?? '' }}"
+                            data-pages="{{ $buku->pages ?? '' }}"
+                            data-series="{{ $buku->book_series_id ?? '' }}"
+                            data-location="{{ $buku->location ?? '' }}"
+                            data-sinopsis="{{ $buku->sinopsis ?? '' }}"
+                            data-categories="{{ $buku->categories->pluck('id')->join(',') }}"
+                        >
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
                                 <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
@@ -310,7 +320,7 @@
                         </button>
                         {{-- Tombol Hapus --}}
                         <form action="{{ route('admin.buku.destroy', $buku->id) }}" method="POST"
-                              onsubmit="return confirm('Yakin ingin menghapus buku {{ addslashes($buku->title) }}?')">
+                              onsubmit="confirmAction(event, 'Yakin ingin menghapus buku {{ addslashes($buku->title) }}?', 'Ya, Hapus', 'Konfirmasi Hapus'); return false;">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn-delete" title="Hapus">
@@ -338,74 +348,6 @@
         {{ $books->appends(['search' => $search])->links() }}
     </div>
     @endif
-</div>
-
-{{-- ============ MODAL TAMBAH BUKU ============ --}}
-<div class="modal-overlay" id="modalTambah">
-    <div class="modal">
-        <h2>Tambah Buku Baru</h2>
-        <form action="{{ route('admin.buku.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="modal-body">
-                {{-- Kiri --}}
-                <div class="modal-left">
-                    <div class="form-group">
-                        <label>Judul Buku <span class="required">*</span></label>
-                        <input type="text" name="title" required placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label>ISBN</label>
-                        <input type="text" name="isbn" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label>Stok <span class="required">*</span></label>
-                        <input type="number" name="stock" min="0" required placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label>Penulis</label>
-                        <input type="text" name="author" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label>Penerbit</label>
-                        <input type="text" name="publisher" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label>Lokasi Rak</label>
-                        <input type="text" name="location" placeholder="">
-                    </div>
-                </div>
-
-                {{-- Kanan --}}
-                <div class="modal-right">
-                    <div class="form-group">
-                        <label>Kategori <span class="required">*</span></label>
-                        <div class="kategori-box" id="tambahKategoriBox">
-                            @foreach($categories as $cat)
-                                <button type="button" class="kat-btn"
-                                    data-id="{{ $cat->id }}"
-                                    onclick="toggleKat(this, 'tambah')">
-                                    {{ $cat->name }}
-                                </button>
-                            @endforeach
-                        </div>
-                        <div id="tambahKatInputs"></div>
-                        <div class="kat-hint">Klik untuk memilih kategori !</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Sampul Buku</label>
-                        <div class="file-input-wrap">
-                            <input type="file" name="cover" accept="image/*">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="modal-footer">
-                <button type="button" class="btn-batal" onclick="closeModal()">Batal</button>
-                <button type="submit" class="btn-simpan">Simpan</button>
-            </div>
-        </form>
-    </div>
 </div>
 
 {{-- ============ MODAL EDIT BUKU ============ --}}
@@ -438,6 +380,10 @@
                         <input type="text" name="publisher" id="editPublisher">
                     </div>
                     <div class="form-group">
+                        <label>Jumlah Halaman</label>
+                        <input type="number" name="pages" id="editPages" min="1">
+                    </div>
+                    <div class="form-group">
                         <label>Lokasi Rak</label>
                         <input type="text" name="location" id="editLocation">
                     </div>
@@ -463,6 +409,20 @@
                             <input type="file" name="cover" accept="image/*">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label>Series Buku</label>
+                        <select name="book_series_id" id="editSeries" style="width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.85rem; font-family: inherit; outline: none; background: #fff;">
+                            <option value="">-- Tidak Ada --</option>
+                            @foreach($series as $s)
+                                <option value="{{ $s->id }}">{{ $s->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>Sinopsis</label>
+                    <textarea name="sinopsis" id="editSinopsis" rows="5" style="width: 100%; padding: 12px 16px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.9rem; font-family: inherit; outline: none; transition: border 0.2s; box-sizing: border-box; resize: vertical; min-height: 120px;"></textarea>
                 </div>
             </div>
             <div class="modal-footer">
@@ -510,36 +470,29 @@
         syncKatInputs(mode);
     }
 
-    // ======= MODAL TAMBAH =======
-    function openModal() {
-        clearKatSelection('tambah');
-        document.getElementById('modalTambah').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-    function closeModal() {
-        document.getElementById('modalTambah').classList.remove('active');
-        document.body.style.overflow = '';
-    }
-    document.getElementById('modalTambah').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
-
     // ======= MODAL EDIT =======
-    function openEditModal(id, title, isbn, stock, author, publisher, location, categoryIds) {
-        const route = '{{ route("admin.buku.update", ":id") }}'.replace(':id', id);
-        document.getElementById('editForm').action = route;
-        document.getElementById('editTitle').value    = title;
-        document.getElementById('editIsbn').value     = isbn;
-        document.getElementById('editStock').value    = stock;
-        document.getElementById('editAuthor').value   = author;
-        document.getElementById('editPublisher').value = publisher;
-        document.getElementById('editLocation').value = location;
-        // Set selected categories (array)
-        const ids = Array.isArray(categoryIds) ? categoryIds.filter(Boolean) : (categoryIds ? [categoryIds] : []);
-        setKatSelection('edit', ids.map(String));
-        document.getElementById('modalEdit').classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
+    document.querySelectorAll('.btn-edit-buku').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const route = '{{ route("admin.buku.update", ":id") }}'.replace(':id', id);
+            document.getElementById('editForm').action = route;
+            document.getElementById('editTitle').value    = this.dataset.title;
+            document.getElementById('editIsbn').value     = this.dataset.isbn;
+            document.getElementById('editStock').value    = this.dataset.stock;
+            document.getElementById('editAuthor').value   = this.dataset.author;
+            document.getElementById('editPublisher').value = this.dataset.publisher;
+            document.getElementById('editPages').value    = this.dataset.pages;
+            document.getElementById('editSeries').value   = this.dataset.series;
+            document.getElementById('editLocation').value = this.dataset.location;
+            document.getElementById('editSinopsis').value = this.dataset.sinopsis;
+            // Set selected categories (array)
+            const categoryIds = this.dataset.categories;
+            const ids = typeof categoryIds === 'string' && categoryIds !== '' ? categoryIds.split(',') : [];
+            setKatSelection('edit', ids);
+            document.getElementById('modalEdit').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
     function closeEditModal() {
         document.getElementById('modalEdit').classList.remove('active');
         document.body.style.overflow = '';
@@ -547,12 +500,8 @@
     document.getElementById('modalEdit').addEventListener('click', function(e) {
         if (e.target === this) closeEditModal();
     });
-
-    // Re-open modal pada error validasi
-    @if($errors->any())
-        openModal();
-    @endif
 </script>
+
 @endpush
 
 @endsection

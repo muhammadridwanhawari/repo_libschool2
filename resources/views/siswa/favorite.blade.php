@@ -16,55 +16,87 @@
         border-radius: 8px; padding: 9px 14px; margin-bottom: 14px; font-size: 0.82rem;
     }
 
-    /* Grid buku favorit */
-    .fav-grid {
+    /* ===== BOOK GRID (from Katalog) ===== */
+    .book-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 14px;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
     }
+    @media (max-width: 1300px) { .book-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 1024px) { .book-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 768px) { .book-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+    @media (max-width: 500px) { .book-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
 
-    .fav-card {
-        background: #fff; border-radius: 10px;
-        border: 1px solid #eee; overflow: hidden;
+    .book-card {
+        background: #fff;
+        border: 1px solid #f1f5f9;
+        border-radius: 12px;
+        overflow: hidden;
+        cursor: pointer;
+        display: flex; flex-direction: column;
+        transition: box-shadow 0.25s, transform 0.25s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         position: relative;
-        transition: transform 0.15s, box-shadow 0.15s;
     }
-    .fav-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .book-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 16px 32px rgba(0,0,0,0.08);
+    }
 
-    .fav-cover {
-        width: 100%; aspect-ratio: 2/3; object-fit: cover; display: block;
-    }
-    .fav-cover-placeholder {
-        width: 100%; aspect-ratio: 2/3;
-        background: linear-gradient(135deg, #e8ecff, #c7d2fe);
+    .book-cover-area {
+        background: #cfe5d5;
+        width: 100%; aspect-ratio: 3/4;
+        position: relative;
         display: flex; align-items: center; justify-content: center;
-        flex-direction: column; gap: 4px;
+        overflow: hidden;
     }
-    .fav-cover-placeholder span { font-size: 0.6rem; color: #8b9cf4; font-weight: 500; text-align: center; padding: 0 6px; }
-
-    .fav-info { padding: 8px; background: #fff; }
-    .fav-title { font-size: 0.75rem; font-weight: 600; color: #1a1a2e; line-height: 1.3; margin-bottom: 2px;
-        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .fav-author { font-size: 0.65rem; color: #aaa; margin-bottom: 8px; }
-
-    .fav-actions { display: flex; gap: 6px; }
-    .btn-pinjam-sm {
-        flex: 1; background: #4361ee; color: #fff; border: none;
-        border-radius: 5px; padding: 5px 0; font-size: 0.68rem;
-        font-weight: 600; cursor: pointer; font-family: inherit;
+    .book-cover-img { width: 100%; height: 100%; object-fit: cover; }
+    
+    .badge-tersedia {
+        position: absolute; top: 12px; left: 12px; z-index: 10;
+        background: #22c55e; color: #fff; border-radius: 9999px;
+        padding: 4px 10px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;
+        display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(34,197,94,0.3);
     }
-    .btn-pinjam-sm:hover { background: #3a56d4; }
+    .badge-tersedia .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; opacity: 0.9; }
 
-    /* Tombol hapus favorit (ikon hati merah) */
-    .btn-unfav {
-        position: absolute; top: 5px; right: 5px;
-        width: 24px; height: 24px; border-radius: 50%;
-        background: rgba(255,255,255,0.95); border: none;
+    .badge-habis {
+        position: absolute; top: 12px; left: 12px; z-index: 10;
+        background: #ef4444; color: #fff; border-radius: 9999px;
+        padding: 4px 10px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;
+        display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(239,68,68,0.3);
+    }
+    .badge-habis .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; opacity: 0.9; }
+
+    .fav-btn {
+        position: absolute; top: 12px; right: 12px; z-index: 11;
+        width: 32px; height: 32px; border-radius: 50%;
+        background: rgba(255,255,255,0.9); border: none;
         display: flex; align-items: center; justify-content: center;
-        cursor: pointer; transition: all 0.15s; padding: 0;
-        box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+        cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        padding: 0;
     }
-    .btn-unfav:hover { transform: scale(1.1); background: #fff1f2; }
+    .fav-btn:hover { background: #fff; transform: scale(1.1); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+    .hover-overlay {
+        position: absolute; inset: 0; background: rgba(0,0,0,0.15);
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; transition: opacity 0.25s ease;
+        z-index: 5;
+    }
+    .book-card:hover .hover-overlay { opacity: 1; }
+    
+    .btn-lihat-detail {
+        background: #fff; color: #1e293b; padding: 10px 18px; border-radius: 9999px; font-size: 0.8rem; font-weight: 700;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(15px); transition: transform 0.25s ease;
+    }
+    .book-card:hover .btn-lihat-detail { transform: translateY(0); }
+
+    .book-info { padding: 16px; text-align: left; background: #fff; }
+    .book-category { font-size: 0.68rem; font-weight: 800; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .book-title { font-size: 1.05rem; font-weight: 800; color: #1e293b; line-height: 1.3; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .book-author { font-size: 0.8rem; color: #94a3b8; font-weight: 500; }
 
     /* Empty state */
     .empty-state {
@@ -85,11 +117,9 @@
 
 @section('content')
 
-<div class="breadcrumb">Beranda / <span>Favorit</span></div>
-
-<div class="page-header">
-    <h1>Buku Favorit</h1>
-    <p>Koleksi buku yang kamu tandai sebagai favorit</p>
+<div class="mb-6">
+    <h1 class="text-[1.35rem] font-bold text-indigo-950">Buku Favorit</h1>
+    <p class="text-slate-500 text-[0.875rem] mt-1">Koleksi buku yang kamu tandai sebagai favorit</p>
 </div>
 
 @if(session('success'))
@@ -106,53 +136,54 @@
         <a href="{{ route('siswa.katalog') }}" class="btn-goto-katalog">Jelajahi Katalog</a>
     </div>
 @else
-    <div class="fav-grid">
+    <div class="book-grid">
         @foreach($favorites as $fav)
         @php $book = $fav->book; @endphp
-        <div class="fav-card">
+        <div class="book-card" data-url="{{ route('siswa.katalog.show', $book->id) }}" onclick="window.location.href=this.dataset.url;">
+            
             {{-- Tombol hapus favorit --}}
-            <form method="POST" action="{{ route('siswa.favorite.destroy', $book->id) }}" style="display:inline;">
+            <form method="POST" action="{{ route('siswa.favorite.destroy', $book->id) }}" style="position: absolute; top: 12px; right: 12px; z-index: 11;">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn-unfav" title="Hapus dari favorit">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="#ef4444" stroke="#ef4444" stroke-width="1" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                <button type="submit" class="fav-btn" title="Hapus dari favorit" onclick="event.stopPropagation();">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#ef4444" stroke="#ef4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                     </svg>
                 </button>
             </form>
 
-            {{-- Cover --}}
-            @if($book->cover)
-                <img src="{{ asset('storage/' . $book->cover) }}"
-                     alt="{{ $book->title }}" class="fav-cover"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="fav-cover-placeholder" style="display:none;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="#8b9cf4" stroke-width="1.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
-                    </svg>
-                </div>
-            @else
-                <div class="fav-cover-placeholder">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" stroke="#8b9cf4" stroke-width="1.5" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
-                    </svg>
-                    <span>{{ Str::limit($book->title, 20) }}</span>
-                </div>
-            @endif
+            {{-- Cover Area --}}
+            <div class="book-cover-area">
+                @if($book->stock > 0)
+                    <div class="badge-tersedia"><div class="dot"></div> TERSEDIA</div>
+                @else
+                    <div class="badge-habis"><div class="dot"></div> HABIS</div>
+                @endif
 
-            {{-- Info --}}
-            <div class="fav-info">
-                <p class="fav-title">{{ $book->title }}</p>
-                <p class="fav-author">{{ $book->author }}</p>
-                <div class="fav-actions">
-                    @if($book->stock > 0)
-                    <form method="POST" action="{{ route('siswa.pinjam', $book->id) }}" style="flex:1;">
-                        @csrf
-                        <button type="submit" class="btn-pinjam-sm" style="width:100%;">Pinjam</button>
-                    </form>
-                    @else
-                    <button class="btn-pinjam-sm" disabled style="opacity:0.5; cursor:not-allowed; flex:1;">Habis</button>
-                    @endif
+                @if($book->cover)
+                    <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->title }}" class="book-cover-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="book-icon-wrapper" style="display:none; color:#84a98c;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+                        </svg>
+                    </div>
+                @else
+                    <div class="book-icon-wrapper" style="color:#84a98c;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                        </svg>
+                    </div>
+                @endif
+
+                <div class="hover-overlay">
+                    <span class="btn-lihat-detail">Lihat detail: {{ Str::limit($book->title, 20) }}</span>
                 </div>
+            </div>
+
+            {{-- Info Area --}}
+            <div class="book-info">
+                <p class="book-category">{{ $book->categories->isNotEmpty() ? $book->categories->pluck('name')->join(', ') : ($book->category->name ?? 'UMUM') }}</p>
+                <p class="book-title" title="{{ $book->title }}">{{ $book->title }}</p>
+                <p class="book-author">{{ $book->author ?? 'Tidak diketahui' }}</p>
             </div>
         </div>
         @endforeach

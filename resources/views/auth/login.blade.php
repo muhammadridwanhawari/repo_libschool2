@@ -64,7 +64,6 @@
                     <label for="username" class="block text-[0.875rem] font-semibold text-indigo-950 mb-1.5">Nama</label>
                     <input type="text" name="username" id="username"
                            class="w-full border-[1.5px] border-gray-200 rounded-[0.65rem] px-4 py-2.5 text-[0.875rem] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/15 placeholder-slate-300"
-                           placeholder="e.g. ikyyskibidi"
                            value=""
                            autocomplete="off"
                            required autofocus>
@@ -76,7 +75,6 @@
                     <div class="relative">
                         <input type="password" name="password" id="password"
                                class="w-full border-[1.5px] border-gray-200 rounded-[0.65rem] px-4 py-2.5 pr-11 text-[0.875rem] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/15 placeholder-slate-300"
-                               placeholder="e.g. 4kuBu7uhM3dk1t"
                                autocomplete="new-password"
                                required>
                         <button type="button"

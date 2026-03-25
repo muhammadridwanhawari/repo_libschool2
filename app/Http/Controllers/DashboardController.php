@@ -18,8 +18,8 @@ class DashboardController extends Controller
         $totalBuku = Book::count();
         $totalPengguna = User::count();
         $peminjamanAktif = Borrowing::where('status', 'dipinjam')->count();
-        $totalDenda = Fine::where('paid', false)->sum('amount') ?? 0;
-        $peminjaman = Borrowing::with('user')->latest()->paginate(10);
+        $totalDenda = Fine::where('paid', true)->sum('amount') ?? 0;
+        $peminjaman = Borrowing::with(['user', 'fine'])->latest()->paginate(10);
 
         return view('admin.dashboard', compact(
             'totalBuku',

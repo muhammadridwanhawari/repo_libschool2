@@ -13,7 +13,7 @@ class UserController extends Controller
     // ─── Data Pengguna ───────────────────────────────────────────
     public function index(Request $request)
     {
-        $search = $request->get('search');
+        $search = $request->input('search');
 
         $users = User::when($search, function ($q) use ($search) {
             $q->where('name', 'like', "%$search%")
@@ -46,10 +46,10 @@ class UserController extends Controller
             'role'          => $request->role,
             'password'      => Hash::make($request->password),
             'name'          => $request->name ?? $request->username,
-            'nik'           => $request->nik ?? '',
-            'telepon'       => $request->telepon ?? '',
+            'nik'           => $request->filled('nik') ? $request->nik : null,
+            'telepon'       => $request->filled('telepon') ? $request->telepon : null,
             'gender'        => $request->gender ?? 'Laki-laki',
-            'tanggal_lahir' => $request->tanggal_lahir ?? now()->toDateString(),
+            'tanggal_lahir' => $request->tanggal_lahir ?: null,
         ]);
 
         return redirect()->route('admin.pengguna.index')
@@ -89,7 +89,7 @@ class UserController extends Controller
 
     public function destroy(User $pengguna): RedirectResponse
     {
-        if ($pengguna->id === auth()->id()) {
+        if ($pengguna->id === \Illuminate\Support\Facades\Auth::id()) {
             return redirect()->route('admin.pengguna.index')
                 ->with('error', 'Tidak dapat menghapus akun sendiri.');
         }
@@ -117,5 +117,63 @@ class UserController extends Controller
 
         return redirect()->route('admin.hakakses')
             ->with('success', 'Hak akses berhasil diperbarui.');
+    }
+
+    // ─── Verifikasi Anggota ───────────────────────────────────────
+    public function verifikasi(Request $request)
+    {
+        $search    = $request->input('search');
+        $tanggal   = $request->input('tanggal');
+        $urutan    = $request->input('urutan', 'terbaru');
+
+        $siswaQuery = User::where('role', 'siswa');
+
+        // Statistik
+        $totalPending = (clone $siswaQuery)->where('is_verified', false)->count();
+        $totalAktif   = (clone $siswaQuery)->where('is_verified', true)->count();
+        $totalDitolak = 0; // bisa dikembangkan di masa depan
+
+        // Daftar pending dengan filter
+        $pending = User::where('role', 'siswa')
+            ->where('is_verified', false)
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($q2) use ($search) {
+                    $q2->where('name', 'like', "%$search%")
+                       ->orWhere('username', 'like', "%$search%")
+                       ->orWhere('email', 'like', "%$search%")
+                       ->orWhere('telepon', 'like', "%$search%");
+                });
+            })
+            ->when($tanggal, function ($q) use ($tanggal) {
+                $q->whereDate('created_at', $tanggal);
+            })
+            ->when($urutan === 'terlama', function ($q) {
+                $q->orderBy('created_at', 'asc');
+            }, function ($q) {
+                $q->orderBy('created_at', 'desc');
+            })
+            ->paginate(10)
+            ->appends($request->all());
+
+        return view('admin.verifikasi.index', compact(
+            'pending', 'totalPending', 'totalAktif', 'totalDitolak',
+            'search', 'tanggal', 'urutan'
+        ));
+    }
+
+    public function verifikasiUpdate(User $pengguna): RedirectResponse
+    {
+        if ($pengguna->role !== 'siswa') {
+            return redirect()->route('admin.verifikasi')
+                ->with('error', 'Hanya akun siswa yang dapat diverifikasi.');
+        }
+
+        $pengguna->update([
+            'is_verified' => true,
+            'verified_at' => now(),
+        ]);
+
+        return redirect()->route('admin.verifikasi')
+            ->with('success', "Akun @{$pengguna->username} berhasil diverifikasi.");
     }
 }
