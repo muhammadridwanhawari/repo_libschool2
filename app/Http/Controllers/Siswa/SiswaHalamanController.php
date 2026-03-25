@@ -93,7 +93,7 @@ class SiswaHalamanController extends Controller
             ->whereNotNull('deadline')
             ->get()
             ->filter(function ($loan) {
-                $deadlineDate = \Carbon\Carbon::parse($loan->deadline)->startOfDay();
+                $deadlineDate = Carbon::parse($loan->deadline)->startOfDay();
                 $diff = now()->startOfDay()->diffInDays($deadlineDate, false);
                 return $diff <= 1; // 1 (H-1), 0 (Hari Ini), < 0 (Telat)
             });

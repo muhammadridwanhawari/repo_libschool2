@@ -102,7 +102,7 @@ class SiswaTransaksiController extends Controller
             ->where('user_id', $userId)
             ->where('status', 'dipinjam')
             ->whereNotNull('deadline')
-            ->whereDate('deadline', '<', now())
+            ->whereDate('deadline', '<', now()->toDateString())
             ->doesntHave('fine')
             ->get();
 

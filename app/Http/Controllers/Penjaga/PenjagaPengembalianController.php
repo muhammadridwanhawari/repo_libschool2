@@ -17,14 +17,14 @@ class PenjagaPengembalianController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->get('search');
+        $search = $request->input('search');
 
         // Mengambil peminjaman dengan status 'dipinjam' saja yang belum terlambat
         $peminjaman = Borrowing::with(['user', 'book'])
             ->where('status', 'dipinjam')
             ->where(function($q) {
                 $q->whereNull('deadline')
-                  ->orWhere('deadline', '>=', \Carbon\Carbon::today());
+                  ->orWhere('deadline', '>=', Carbon::today());
             })
             ->when($search, function ($q) use ($search) {
                 $q->where('booking_code', 'like', "%$search%")
@@ -92,7 +92,7 @@ class PenjagaPengembalianController extends Controller
      */
     public function riwayat(Request $request)
     {
-        $search = $request->get('search');
+        $search = $request->input('search');
 
         $riwayat = Borrowing::with(['user', 'book', 'fine'])
             ->when($search, function ($q) use ($search) {

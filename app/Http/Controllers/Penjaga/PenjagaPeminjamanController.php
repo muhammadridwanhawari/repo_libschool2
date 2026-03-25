@@ -63,11 +63,11 @@ class PenjagaPeminjamanController extends Controller
             'success'      => true,
             'id'           => $borrowing->id,
             'booking_code' => $borrowing->booking_code,
-            'book_title'   => $borrowing->book->title,
-            'book_author'  => $borrowing->book->author,
-            'book_stock'   => $borrowing->book->stock,
-            'student_name' => $borrowing->user->name,
-            'student_email'=> $borrowing->user->email,
+            'book_title'   => $borrowing->book?->title,
+            'book_author'  => $borrowing->book?->author,
+            'book_stock'   => $borrowing->book?->stock,
+            'student_name' => $borrowing->user?->name,
+            'student_email'=> $borrowing->user?->email,
             'duration'     => $borrowing->duration,
         ]);
     }

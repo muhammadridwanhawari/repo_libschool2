@@ -382,7 +382,7 @@
 
     {{-- Right: Book Info --}}
     <div class="detail-right">
-        <span class="book-kategori-tag">{{ $book->category->name ?? 'Umum' }}</span>
+        <span class="book-kategori-tag">{{ $book->categories->isNotEmpty() ? $book->categories->pluck('name')->join(', ') : ($book->category->name ?? 'UMUM') }}</span>
         <h1 class="book-title-main">{{ $book->title }}</h1>
         <p class="book-author-main">{{ $book->author }}</p>
 

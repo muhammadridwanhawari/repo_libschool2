@@ -272,7 +272,7 @@
     }
     .hof-book-cover-2 { border: 2px solid #cbd5e1; }
     .hof-book-cover-3 { border: 2px solid #fdba74; }
-    .hof-book-icon { font-size: 2rem; }\n
+    .hof-book-icon { font-size: 2rem; }
     .hof-empty { text-align: center; padding: 20px 0; color: #94a3b8; font-size: 0.85rem; }
 </style>
 @endpush
@@ -302,15 +302,23 @@
                 $diff = now()->startOfDay()->diffInDays($deadlineDate, false);
                 $isLate = $diff < 0;
             @endphp
-            <div @if($isLate) style="background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #dc2626; padding: 16px 20px; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);" @else style="background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #ea580c; padding: 16px 20px; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);" @endif>
-                <div style="color: {{ $isLate ? '#dc2626' : '#ea580c' }}; gap: 10px; flex-shrink: 0; margin-top: 2px;">
+            @php
+                $bgStyle = $isLate 
+                    ? 'background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #dc2626; padding: 16px 20px; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);' 
+                    : 'background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #ea580c; padding: 16px 20px; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);';
+                $iconColor = $isLate ? '#dc2626' : '#ea580c';
+                $titleColor = $isLate ? '#991b1b' : '#9a3412';
+                $textColor = $isLate ? '#b91c1c' : '#c2410c';
+            @endphp
+            <div {!! 'style="' . $bgStyle . '"' !!}>
+                <div {!! 'style="color: ' . $iconColor . '; gap: 10px; flex-shrink: 0; margin-top: 2px;"' !!}>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 </div>
                 <div>
-                    <h3 style="margin: 0 0 4px; font-size: 0.95rem; font-weight: 800; color: {{ $isLate ? '#991b1b' : '#9a3412' }};">
+                    <h3 {!! 'style="margin: 0 0 4px; font-size: 0.95rem; font-weight: 800; color: ' . $titleColor . ';"' !!}>
                         {{ $isLate ? 'Buku Terlambat!' : 'Peringatan Deadline!' }}
                     </h3>
-                    <p style="margin: 0; font-size: 0.85rem; color: {{ $isLate ? '#b91c1c' : '#c2410c' }};">
+                    <p {!! 'style="margin: 0; font-size: 0.85rem; color: ' . $textColor . ';"' !!}>
                         Masa pinjam buku <strong>{{ $loan->book->title ?? 'Tidak diketahui' }}</strong> 
                         @if($isLate)
                             sudah terlewat. Segera kembalikan ke perpustakaan untuk menghindari penumpukan denda.
