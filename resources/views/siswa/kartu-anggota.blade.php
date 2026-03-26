@@ -268,7 +268,7 @@
             <div class="card-info-grid">
                 <div class="card-info-item">
                     <div class="label">Nama Lengkap</div>
-                    <div class="value">{{ $user->name }}</div>
+                    <div class="value">{{ $user->username }}</div>
                 </div>
                 <div class="card-info-item">
                     <div class="label">Username</div>

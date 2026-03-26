@@ -200,7 +200,7 @@
                 @endif
             </div>
             <div>
-                <p class="user-name">{{ Auth::user()->name }}</p>
+                <p class="user-name">{{ Auth::user()->username }}</p>
                 <p class="user-role">Siswa</p>
             </div>
         </div>

@@ -27,7 +27,7 @@ class SiswaProfilController extends Controller
         $user = Auth::user();
 
         $validated = $request->validate([
-            'name'     => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id],
             'email'    => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'telepon'  => ['nullable', 'string', 'max:20'],
         ]);

@@ -63,7 +63,7 @@ class RegisteredUserController extends Controller
         return match($role) {
             'admin'   => redirect()->route('admin.dashboard'),
             'penjaga' => redirect()->route('penjaga.dashboard'),
-            default   => redirect()->route('siswa.katalog'),
+            default   => redirect()->route('siswa.halaman'),
         };
     }
 }

@@ -63,9 +63,9 @@
     .hero-points-label { font-size: 0.72rem; color: rgba(255,255,255,0.7); font-weight: 600; margin-top: 2px; }
     @media (max-width: 600px) { .hero-card { flex-wrap: wrap; padding: 24px; } .hero-points-badge { width: 100%; justify-content: center; } }
 
-    /* ── Hall of Fame Podium (Dark Navy) ── */
+    /* ── Hall of Fame Podium ── */
     .hof-card {
-        background: linear-gradient(160deg, #0f172a 0%, #1e2d4f 60%, #1a3a6b 100%);
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #4361ee 100%);
         border-radius: 20px;
         padding: 28px 32px 20px;
         border: 1px solid rgba(99,130,255,0.2);
@@ -129,37 +129,39 @@
     }
 
     .hof-rank-badge {
-        display: inline-block; padding: 3px 14px; border-radius: 20px;
-        font-size: 0.75rem; font-weight: 900; margin-top: 4px;
+        display: inline-block; padding: 4px 16px; border-radius: 20px;
+        font-size: 0.75rem; font-weight: 900; margin-top: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .hof-rank-1 { background: linear-gradient(90deg, #b45309, #fbbf24); color: #fff; box-shadow: 0 2px 8px rgba(251,191,36,0.4); }
-    .hof-rank-2 { background: rgba(100,116,139,0.3); color: #94a3b8; border: 1px solid rgba(100,116,139,0.5); }
-    .hof-rank-3 { background: rgba(180,83,9,0.2); color: #d97706; border: 1px solid rgba(180,83,9,0.4); }
+    .hof-rank-1 { background: linear-gradient(90deg, #d97706, #fbbf24); color: #fff; border: none; box-shadow: 0 4px 16px rgba(251,191,36,0.4); }
+    .hof-rank-2 { background: rgba(255,255,255,0.2); color: #f8fafc; border: 1px solid rgba(255,255,255,0.4); backdrop-filter: blur(4px); }
+    .hof-rank-3 { background: rgba(251,146,60,0.2); color: #fffedd; border: 1px solid rgba(251,146,60,0.4); backdrop-filter: blur(4px); }
 
     .hof-name {
-        font-size: 0.78rem; font-weight: 800; color: rgba(255,255,255,0.9);
+        font-size: 0.85rem; font-weight: 800; color: #fff;
         text-align: center; white-space: nowrap; overflow: hidden;
         text-overflow: ellipsis; max-width: 90px;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.15);
     }
-    .hof-name-1 { color: #fff; font-size: 0.85rem; }
-    .hof-score { font-size: 0.72rem; color: rgba(255,255,255,0.45); font-weight: 600; }
+    .hof-name-1 { font-size: 0.95rem; }
+    
     .hof-points-pill {
         display: flex; align-items: center; gap: 4px;
-        padding: 2px 10px; border-radius: 20px;
-        font-size: 0.68rem; font-weight: 800; margin-top: 2px;
-        background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3);
+        padding: 4px 12px; border-radius: 20px;
+        font-size: 0.72rem; font-weight: 800; margin-top: 2px;
+        background: rgba(251,191,36,0.25); color: #fef08a; border: 1px solid rgba(251,191,36,0.5);
     }
-    .hof-points-pill-2 { background: rgba(100,116,139,0.2); color: #94a3b8; border: 1px solid rgba(100,116,139,0.3); }
-    .hof-points-pill-3 { background: rgba(217,119,6,0.15); color: #f59e0b; border: 1px solid rgba(217,119,6,0.3); }
+    .hof-points-pill-2 { background: rgba(255,255,255,0.15); color: #f1f5f9; border: 1px solid rgba(255,255,255,0.35); }
+    .hof-points-pill-3 { background: rgba(251,146,60,0.2); color: #fed7aa; border: 1px solid rgba(251,146,60,0.4); }
 
     .hof-podium-base {
-        width: 100%; border-radius: 12px 12px 4px 4px; margin-top: 12px;
+        width: 100%; border-radius: 12px 12px 4px 4px; margin-top: 14px;
+        backdrop-filter: blur(8px);
     }
-    .hof-base-1 { background: linear-gradient(180deg, rgba(251,191,36,0.25), rgba(251,191,36,0.1)); height: 70px; border: 1px solid rgba(251,191,36,0.3); }
-    .hof-base-2 { background: linear-gradient(180deg, rgba(100,116,139,0.2), rgba(100,116,139,0.08)); height: 50px; border: 1px solid rgba(100,116,139,0.3); }
-    .hof-base-3 { background: linear-gradient(180deg, rgba(180,83,9,0.2), rgba(180,83,9,0.08)); height: 40px; border: 1px solid rgba(180,83,9,0.3); }
+    .hof-base-1 { background: linear-gradient(180deg, rgba(226,232,240,0.35), rgba(226,232,240,0.05)); height: 75px; border: 1px solid rgba(226,232,240,0.5); border-bottom: none; box-shadow: inset 0 2px 10px rgba(226,232,240,0.2); }
+    .hof-base-2 { background: linear-gradient(180deg, rgba(203,213,225,0.25), rgba(203,213,225,0.05)); height: 55px; border: 1px solid rgba(203,213,225,0.4); border-bottom: none; box-shadow: inset 0 2px 10px rgba(203,213,225,0.15); }
+    .hof-base-3 { background: linear-gradient(180deg, rgba(148,163,184,0.2), rgba(148,163,184,0.05)); height: 45px; border: 1px solid rgba(148,163,184,0.35); border-bottom: none; box-shadow: inset 0 2px 10px rgba(148,163,184,0.1); }
 
-    .hof-empty { text-align: center; padding: 30px 0; color: rgba(255,255,255,0.35); font-size: 0.85rem; }
+    .hof-empty { text-align: center; padding: 30px 0; color: rgba(255,255,255,0.6); font-size: 0.9rem; font-weight: 500; }
 
     /* ── Book Grid & Cards ── */
     .book-grid {
@@ -262,21 +264,21 @@
 
 @php
     $user = auth()->user();
-    $initials = collect(explode(' ', strtoupper($user->name)))->map(fn($w) => $w[0] ?? '')->take(2)->join('');
+    $initials = collect(explode(' ', strtoupper($user->username)))->map(fn($w) => $w[0] ?? '')->take(2)->join('');
 @endphp
 
 {{-- ── HERO PROFILE CARD ── --}}
 <div class="hero-card">
     <div class="hero-avatar">
         @if($user->avatar)
-            <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->name }}">
+            <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->username }}">
         @else
             {{ $initials }}
         @endif
     </div>
     <div class="hero-info">
         <p class="hero-greeting">Selamat Datang 👋</p>
-        <h1 class="hero-name">{{ $user->name }}</h1>
+        <h1 class="hero-name">{{ $user->username }}</h1>
         <p class="hero-sub">Jelajahi buku dan pantau aktivitas perpustakaan Anda di bulan {{ $now->translatedFormat('F Y') }}.</p>
     </div>
     <div class="hero-points-badge">
@@ -450,11 +452,11 @@
 
 <div class="peringkat-container" style="margin-top: 24px;">
     {{-- Buku Terfavorit (Grid of 5 Books) --}}
-    <div class="hof-title" style="margin-bottom: 12px; font-size: 1.25rem;">
+    <div class="hof-title-light" style="margin-bottom: 12px; font-size: 1.25rem;">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="#4361ee" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
         Buku Terfavorit Bulan Ini
     </div>
-    <div class="hof-subtitle" style="margin-top:-6px; margin-bottom: 24px;">5 Buku paling sering dipinjam bulan {{ $now->translatedFormat('F Y') }}</div>
+    <div class="hof-subtitle-light" style="margin-top:-6px; margin-bottom: 24px;">5 Buku paling sering dipinjam bulan {{ $now->translatedFormat('F Y') }}</div>
 
     @if($topBooks->isEmpty())
         <div class="hof-empty" style="padding: 40px; background: #f8fafc; border-radius: 12px;">Belum ada peminjaman buku bulan ini.</div>

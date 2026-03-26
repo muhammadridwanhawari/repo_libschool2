@@ -291,7 +291,7 @@
 {{-- ═══ FOTO PROFIL ═══ --}}
 <div class="avatar-card">
     @php
-        $initials = collect(explode(' ', Auth::user()->name))
+        $initials = collect(explode(' ', Auth::user()->username))
             ->map(fn($w) => strtoupper($w[0] ?? ''))
             ->take(2)->join('');
     @endphp
@@ -342,9 +342,9 @@
                 @csrf
                 @method('PATCH')
                 <div class="form-group">
-                    <label for="name">Nama Lengkap</label>
-                    <input type="text" id="name" name="name" class="form-control {{ $errors->has('name') ? 'is-invalid' : '' }}" value="{{ old('name', $user->name) }}" required>
-                    @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                    <label for="username">Nama Pengguna</label>
+                    <input type="text" id="username" name="username" class="form-control {{ $errors->has('username') ? 'is-invalid' : '' }}" value="{{ old('username', $user->username) }}" required>
+                    @error('username') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
@@ -446,8 +446,8 @@
             <div class="member-id">{{ $memberId }}</div>
             <div class="card-info-grid">
                 <div class="card-info-item">
-                    <div class="label">Nama Lengkap</div>
-                    <div class="value">{{ $user->name }}</div>
+                    <div class="label">Nama Pengguna</div>
+                    <div class="value">{{ $user->username }}</div>
                 </div>
                 <div class="card-info-item">
                     <div class="label">Username</div>
