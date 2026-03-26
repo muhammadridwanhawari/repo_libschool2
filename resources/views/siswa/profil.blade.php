@@ -1,6 +1,6 @@
 @extends('layouts.siswa')
 
-@section('title', 'Profil Saya')
+@section('title', 'Pengaturan')
 
 @push('styles')
 <style>
@@ -258,7 +258,7 @@
 
 @section('content')
 <div class="mb-6">
-    <h1 class="text-[1.35rem] font-bold text-indigo-950">Profil Saya</h1>
+    <h1 class="text-[1.35rem] font-bold text-indigo-950">Pengaturan</h1>
     <p class="text-slate-500 text-[0.875rem] mt-1">Kelola informasi akun dan lihat kartu anggota Anda</p>
 </div>
 
