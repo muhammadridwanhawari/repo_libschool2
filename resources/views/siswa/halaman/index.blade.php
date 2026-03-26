@@ -16,6 +16,7 @@
         position: relative;
         overflow: hidden;
         box-shadow: 0 10px 40px rgba(37,99,235,0.3);
+        min-width: 0;
     }
     .hero-card::before {
         content: '';
@@ -45,10 +46,10 @@
         box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
     .hero-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .hero-info { flex: 1; position: relative; z-index: 1; }
+    .hero-info { flex: 1; position: relative; z-index: 1; min-width: 0; }
     .hero-greeting { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 4px; letter-spacing: 0.3px; }
-    .hero-name { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.2; }
-    .hero-sub { font-size: 0.82rem; color: rgba(255,255,255,0.65); }
+    .hero-name { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.2; word-break: break-word; }
+    .hero-sub { font-size: 0.82rem; color: rgba(255,255,255,0.65); word-break: break-word; overflow-wrap: break-word; }
     .hero-points-badge {
         display: flex; align-items: center; gap: 8px;
         background: rgba(255,255,255,0.12);
@@ -61,7 +62,12 @@
     .hero-points-icon { font-size: 1.5rem; }
     .hero-points-val { font-size: 1.4rem; font-weight: 900; color: #fbbf24; line-height: 1; }
     .hero-points-label { font-size: 0.72rem; color: rgba(255,255,255,0.7); font-weight: 600; margin-top: 2px; }
-    @media (max-width: 600px) { .hero-card { flex-wrap: wrap; padding: 24px; } .hero-points-badge { width: 100%; justify-content: center; } }
+    @media (max-width: 600px) {
+        .hero-card { flex-direction: column; align-items: flex-start; padding: 20px; gap: 16px; }
+        .hero-avatar { width: 60px; height: 60px; font-size: 1.5rem; }
+        .hero-name { font-size: 1.25rem; }
+        .hero-points-badge { width: 100%; justify-content: center; }
+    }
 
     /* ── Hall of Fame Podium ── */
     .hof-card {
@@ -170,10 +176,19 @@
         gap: 20px;
         margin-bottom: 30px;
     }
-    @media (max-width: 1300px) { .book-grid { grid-template-columns: repeat(4, 1fr); } }
-    @media (max-width: 1024px) { .book-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 768px) { .book-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
-    @media (max-width: 500px) { .book-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+    @media (max-width: 1300px) { .book-grid { gap: 16px; } }
+    @media (max-width: 1024px) { .book-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; } }
+    @media (max-width: 768px) { .book-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; } }
+    @media (max-width: 500px) { 
+        .book-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 16px; }
+        .book-info { padding: 8px; }
+        .book-title { font-size: 0.6rem; margin-bottom: 2px; }
+        .book-author { font-size: 0.5rem; }
+        .book-category { font-size: 0.4rem; margin-bottom: 2px; }
+        .badge-tersedia, .badge-habis { padding: 2px 4px; font-size: 0.4rem; top: 4px; right: 4px; }
+        .badge-tersedia .dot, .badge-habis .dot { width: 3px; height: 3px; }
+        .btn-lihat-detail { padding: 4px 6px; font-size: 0.45rem; }
+    }
 
     .book-card {
         background: #fff; border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden;
@@ -220,43 +235,23 @@
     }
     .book-card:hover .btn-lihat-detail { transform: translateY(0); }
 
-    /* ── Aksi Cepat ── */
-    .quick-actions-section {
-        background: #f8f9fb; border-radius: 14px;
-        padding: 24px; border: 1px solid #eee; margin-bottom: 28px;
-    }
-    .quick-actions-section h3 { font-size: 1rem; font-weight: 800; color: #1e293b; margin: 0 0 16px; }
-    .quick-actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-    @media (max-width: 900px) { .quick-actions-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 500px) { .quick-actions-grid { grid-template-columns: 1fr; } }
-    .quick-action-card {
-        background: #fff; border-radius: 12px; padding: 20px;
-        border: 1px solid #e5e7eb; display: flex; flex-direction: column;
-        align-items: center; justify-content: center; gap: 12px;
-        text-decoration: none; color: #444; transition: all 0.2s;
-    }
-    .quick-action-card:hover {
-        border-color: #4361ee; box-shadow: 0 4px 12px rgba(67,97,238,0.1);
-        transform: translateY(-2px); color: #4361ee;
-    }
-    .quick-action-icon {
-        width: 48px; height: 48px; border-radius: 12px;
-        display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-    }
-    .quick-action-card:hover .quick-action-icon { background: #4361ee; color: #fff; }
-    .quick-action-title { font-size: 0.9rem; font-weight: 600; text-align: center; margin: 0; }
-    .icon-katalog { background: #eef0ff; color: #4361ee; }
-    .icon-peminjaman { background: #ede9fe; color: #8b5cf6; }
-    .icon-riwayat { background: #fef3c7; color: #f59e0b; }
-    .icon-pengajuan { background: #dcfce7; color: #22c55e; }
+
 
     /* ── Section title for Buku Terfavorit ── */
     .hof-title-light {
         font-size: 1.25rem; font-weight: 800; color: #1e293b;
         display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
     }
+    .hof-title-light svg { transition: all 0.2s; }
     .hof-subtitle-light { font-size: 0.78rem; color: #94a3b8; margin-top: -4px; margin-bottom: 24px; }
     .peringkat-container { background: #fff; border-radius: 16px; padding: 28px 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+    
+    @media (max-width: 500px) {
+        .peringkat-container { padding: 16px; }
+        .hof-title-light { font-size: 0.95rem; }
+        .hof-title-light svg { width: 16px; height: 16px; }
+        .hof-subtitle-light { font-size: 0.65rem; margin-bottom: 16px; }
+    }
 </style>
 @endpush
 
@@ -312,8 +307,8 @@
             @endphp
             @php
                 $bgStyle = $isLate 
-                    ? 'background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #dc2626; padding: 16px 20px; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);' 
-                    : 'background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #ea580c; padding: 16px 20px; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);';
+                    ? 'background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #dc2626; padding: 14px 16px; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; min-width: 0;' 
+                    : 'background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #ea580c; padding: 14px 16px; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; min-width: 0;';
                 $iconColor = $isLate ? '#dc2626' : '#ea580c';
                 $titleColor = $isLate ? '#991b1b' : '#9a3412';
                 $textColor = $isLate ? '#b91c1c' : '#c2410c';
@@ -342,36 +337,6 @@
     </div>
 @endif
 
-{{-- Aksi Cepat --}}
-<div class="quick-actions-section">
-    <h3>Aksi Cepat</h3>
-    <div class="quick-actions-grid">
-        <a href="{{ route('siswa.katalog') }}" class="quick-action-card">
-            <div class="quick-action-icon icon-katalog">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-            </div>
-            <p class="quick-action-title">Katalog Buku</p>
-        </a>
-        <a href="{{ route('siswa.transaksi') }}" class="quick-action-card">
-            <div class="quick-action-icon icon-peminjaman">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-            </div>
-            <p class="quick-action-title">Peminjaman</p>
-        </a>
-        <a href="{{ route('siswa.riwayat') }}" class="quick-action-card">
-            <div class="quick-action-icon icon-riwayat">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </div>
-            <p class="quick-action-title">Riwayat & Denda</p>
-        </a>
-        <a href="{{ route('siswa.pengajuan') }}" class="quick-action-card">
-            <div class="quick-action-icon icon-pengajuan">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
-            </div>
-            <p class="quick-action-title">Pengajuan Buku</p>
-        </a>
-    </div>
-</div>
 
 {{-- ── Top 3 Peminjam ── --}}
 <div style="margin-bottom: 24px;">

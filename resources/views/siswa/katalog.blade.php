@@ -254,18 +254,7 @@
                 @endforeach
             </select>
 
-            {{-- Filter Series --}}
-            <select name="series" onchange="document.getElementById('searchFilterForm').submit()" class="filter-dropdown">
-                <option value="">Semua Series</option>
-                @foreach($series as $s)
-                    <option value="{{ $s->id }}" {{ request('series') == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
-                @endforeach
-            </select>
 
-            <select name="sort" onchange="document.getElementById('searchFilterForm').submit()" class="filter-dropdown">
-                <option value="terbaru">Terbaru</option>
-                <option value="title" {{ request('sort') == 'title' ? 'selected' : '' }}>Judul (A-Z)</option>
-            </select>
         </form>
     </div>
 

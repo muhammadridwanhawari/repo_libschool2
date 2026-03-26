@@ -37,25 +37,12 @@ class SiswaKatalogController extends Controller
             });
         }
 
-        // Filter by series
-        if ($request->series) {
-            $query->where('book_series_id', $request->series);
-        }
 
-        // Out of stock terkahir
-        $query->orderByRaw('stock <= 0 ASC');
-
-        // Sort
-        $sort = $request->sort ?? 'title';
-        if ($sort === 'terbaru') {
-            $query->latest();
-        } else {
-            $query->orderBy($sort);
-        }
+        // Sort: stock habis paling bawah, lalu A-Z
+        $query->orderByRaw('stock <= 0 ASC')->orderBy('title');
 
         $books      = $query->paginate(10);
         $categories = Category::all();
-        $series     = \App\Models\BookSeries::all();
 
         // Selected book
         $selected = null;
@@ -73,7 +60,7 @@ class SiswaKatalogController extends Controller
             ->whereIn('status', ['booking', 'dipinjam'])
             ->count();
 
-        return view('siswa.katalog', compact('books', 'categories', 'series', 'selected', 'favoritedIds', 'activeCount'));
+        return view('siswa.katalog', compact('books', 'categories', 'selected', 'favoritedIds', 'activeCount'));
     }
 
     /**

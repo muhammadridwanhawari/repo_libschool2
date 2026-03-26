@@ -10,7 +10,7 @@
     @vite('resources/css/app.css')
     <style>
         * { box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; background: #f1f3f6; min-height: 100vh; display: flex; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; background: #f1f3f6; min-height: 100vh; display: flex; overflow-x: hidden; }
 
         /* ===== SIDEBAR ===== */
         .sidebar {
@@ -116,6 +116,8 @@
             flex: 1;
             padding: 20px 24px;
             min-height: 100vh;
+            min-width: 0;
+            overflow-x: hidden;
         }
 
         /* ===== MOBILE HEADER & OVERLAY ===== */

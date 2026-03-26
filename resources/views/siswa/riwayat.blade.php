@@ -15,7 +15,7 @@
         gap: 16px; margin-bottom: 24px;
     }
     @media (max-width: 900px) { .pj-stats { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 500px) { .pj-stats { grid-template-columns: 1fr; } }
+    @media (max-width: 480px)  { .pj-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; } }
 
     .pj-stat {
         background: #fff; border-radius: 14px;
