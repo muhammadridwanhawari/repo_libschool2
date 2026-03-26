@@ -27,9 +27,11 @@ class PenjagaPengembalianController extends Controller
                   ->orWhere('deadline', '>=', Carbon::today());
             })
             ->when($search, function ($q) use ($search) {
-                $q->where('booking_code', 'like', "%$search%")
-                  ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%$search%"))
-                  ->orWhereHas('book', fn($b) => $b->where('title', 'like', "%$search%"));
+                $q->where(function ($subQ) use ($search) {
+                    $subQ->where('booking_code', 'like', "%$search%")
+                         ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%$search%"))
+                         ->orWhereHas('book', fn($b) => $b->where('title', 'like', "%$search%"));
+                });
             })
             ->latest()
             ->paginate(10);
@@ -59,6 +61,7 @@ class PenjagaPengembalianController extends Controller
         }
 
         $dendaMessage = "";
+        $hariTerlambat = 0;
 
         // Hitung denda jika terlambat
         if ($borrowing->deadline && now()->startOfDay()->gt(Carbon::parse($borrowing->deadline)->startOfDay())) {
@@ -81,6 +84,12 @@ class PenjagaPengembalianController extends Controller
 
         // Kembalikan stok buku
         $borrowing->book->increment('stock');
+
+        // Award poin kepada siswa
+        if ($borrowing->user) {
+            $poin = ($hariTerlambat > 0) ? 5 : 10;
+            $borrowing->user->increment('points', $poin);
+        }
 
         return redirect()->route('penjaga.pengembalian')
             ->with('success', "Buku \"{$borrowing->book->title}\" berhasil dikembalikan." . $dendaMessage);

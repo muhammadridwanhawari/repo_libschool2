@@ -41,20 +41,20 @@ class SiswaHalamanController extends Controller
             return null;
         })->filter();
 
-        // Top 3 Siswa
-        $topStudents = DB::table('borrowings')
-            ->join('users', 'borrowings.user_id', '=', 'users.id')
-            ->select('users.id', 'users.name', 'users.avatar', DB::raw('COUNT(borrowings.id) as total_borrowed'))
-            ->where('users.role', 'siswa')
-            ->whereMonth('borrow_date', $month)
-            ->whereYear('borrow_date', $year)
-            ->groupBy('users.id', 'users.name', 'users.avatar')
-            ->orderByDesc('total_borrowed')
+        // Top 3 Siswa berdasarkan poin
+        $topStudents = DB::table('users')
+            ->select('id', 'name', 'avatar', 'points',
+                DB::raw('(SELECT COUNT(*) FROM borrowings WHERE borrowings.user_id = users.id AND MONTH(borrow_date) = ' . $month . ' AND YEAR(borrow_date) = ' . $year . ') as total_borrowed')
+            )
+            ->where('role', 'siswa')
+            ->where('points', '>', 0)
+            ->orderByDesc('points')
             ->limit(3)
             ->get();
 
         // Data Stat Cards untuk Auth User
         $userId = Auth::id();
+        $userPoints = \App\Models\User::find($userId)->points ?? 0;
         
         $totalSelesai = Borrowing::where('user_id', $userId)
             ->where('status', 'dikembalikan')
@@ -101,7 +101,7 @@ class SiswaHalamanController extends Controller
         return view('siswa.halaman.index', compact(
             'topBooks', 'topStudents', 'now', 
             'totalSelesai', 'activeBorrowed', 'totalDenda', 'deadlineLoans',
-            'hasUnpaidFine'
+            'hasUnpaidFine', 'userPoints'
         ));
     }
 }

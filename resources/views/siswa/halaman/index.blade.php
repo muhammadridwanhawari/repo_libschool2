@@ -4,18 +4,164 @@
 
 @push('styles')
 <style>
-    .peringkat-container {
-        background: #fff;
-        border-radius: 12px;
-        padding: 32px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+    /* ── Hero Profile Card ── */
+    .hero-card {
+        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #4361ee 100%);
+        border-radius: 20px;
+        padding: 32px 36px;
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        margin-bottom: 28px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(37,99,235,0.3);
+    }
+    .hero-card::before {
+        content: '';
+        position: absolute;
+        top: -60px; right: -60px;
+        width: 240px; height: 240px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.06);
+    }
+    .hero-card::after {
+        content: '';
+        position: absolute;
+        bottom: -80px; left: 40px;
+        width: 200px; height: 200px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.04);
+    }
+    .hero-avatar {
+        width: 80px; height: 80px;
+        border-radius: 50%;
+        border: 3px solid rgba(255,255,255,0.5);
+        background: rgba(255,255,255,0.15);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 2rem; font-weight: 900; color: #fff;
+        flex-shrink: 0; overflow: hidden;
+        position: relative; z-index: 1;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .hero-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .hero-info { flex: 1; position: relative; z-index: 1; }
+    .hero-greeting { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 4px; letter-spacing: 0.3px; }
+    .hero-name { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.2; }
+    .hero-sub { font-size: 0.82rem; color: rgba(255,255,255,0.65); }
+    .hero-points-badge {
+        display: flex; align-items: center; gap: 8px;
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 50px;
+        padding: 10px 20px;
+        position: relative; z-index: 1;
+        flex-shrink: 0;
+    }
+    .hero-points-icon { font-size: 1.5rem; }
+    .hero-points-val { font-size: 1.4rem; font-weight: 900; color: #fbbf24; line-height: 1; }
+    .hero-points-label { font-size: 0.72rem; color: rgba(255,255,255,0.7); font-weight: 600; margin-top: 2px; }
+    @media (max-width: 600px) { .hero-card { flex-wrap: wrap; padding: 24px; } .hero-points-badge { width: 100%; justify-content: center; } }
+
+    /* ── Hall of Fame Podium (Dark Navy) ── */
+    .hof-card {
+        background: linear-gradient(160deg, #0f172a 0%, #1e2d4f 60%, #1a3a6b 100%);
+        border-radius: 20px;
+        padding: 28px 32px 20px;
+        border: 1px solid rgba(99,130,255,0.2);
+        box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+        position: relative; overflow: hidden;
+    }
+    .hof-card::before {
+        content: '';
+        position: absolute; top: -60px; right: -60px;
+        width: 200px; height: 200px; border-radius: 50%;
+        background: radial-gradient(circle, rgba(67,97,238,0.12) 0%, transparent 70%);
+    }
+    .hof-title {
+        font-size: 1.2rem; font-weight: 800; color: #fff;
+        display: flex; align-items: center; justify-content: center; gap: 10px;
+        margin-bottom: 4px;
+        letter-spacing: -0.3px;
+    }
+    .hof-subtitle { font-size: 0.78rem; color: rgba(255,255,255,0.45); text-align: center; margin-bottom: 28px; }
+
+    .hof-podium {
+        display: grid;
+        grid-template-columns: 1fr 1.15fr 1fr;
+        align-items: flex-end;
+        gap: 12px;
+    }
+    .hof-player { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .hof-player-center { position: relative; top: -20px; }
+
+    .crown {
+        font-size: 1.6rem; margin-bottom: -4px;
+        filter: drop-shadow(0 0 10px rgba(255,183,0,0.8));
+        animation: float 2s ease-in-out infinite;
+    }
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
     }
 
-    /* Typography */
-    .breadcrumb-title { font-size: 1.4rem; font-weight: 800; color: #1e293b; margin-bottom: 4px; }
-    .breadcrumb-subtitle { font-size: 0.85rem; color: #94a3b8; margin-bottom: 24px; }
+    .hof-avatar {
+        width: 64px; height: 64px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.3rem; font-weight: 900; letter-spacing: -1px;
+        color: #fff; position: relative;
+    }
+    .hof-avatar-sm { width: 54px; height: 54px; font-size: 1.1rem; }
+    .hof-avatar-1 {
+        background: linear-gradient(135deg, #4361ee, #6366f1);
+        border: 3px solid #fbbf24;
+        box-shadow: 0 0 0 4px rgba(251,191,36,0.25), 0 6px 20px rgba(67,97,238,0.5);
+    }
+    .hof-avatar-2 {
+        background: linear-gradient(135deg, #475569, #64748b);
+        border: 2px solid rgba(148,163,184,0.6);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .hof-avatar-3 {
+        background: linear-gradient(135deg, #92400e, #b45309);
+        border: 2px solid rgba(251,191,36,0.4);
+        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
 
-    /* Book Grid */
+    .hof-rank-badge {
+        display: inline-block; padding: 3px 14px; border-radius: 20px;
+        font-size: 0.75rem; font-weight: 900; margin-top: 4px;
+    }
+    .hof-rank-1 { background: linear-gradient(90deg, #b45309, #fbbf24); color: #fff; box-shadow: 0 2px 8px rgba(251,191,36,0.4); }
+    .hof-rank-2 { background: rgba(100,116,139,0.3); color: #94a3b8; border: 1px solid rgba(100,116,139,0.5); }
+    .hof-rank-3 { background: rgba(180,83,9,0.2); color: #d97706; border: 1px solid rgba(180,83,9,0.4); }
+
+    .hof-name {
+        font-size: 0.78rem; font-weight: 800; color: rgba(255,255,255,0.9);
+        text-align: center; white-space: nowrap; overflow: hidden;
+        text-overflow: ellipsis; max-width: 90px;
+    }
+    .hof-name-1 { color: #fff; font-size: 0.85rem; }
+    .hof-score { font-size: 0.72rem; color: rgba(255,255,255,0.45); font-weight: 600; }
+    .hof-points-pill {
+        display: flex; align-items: center; gap: 4px;
+        padding: 2px 10px; border-radius: 20px;
+        font-size: 0.68rem; font-weight: 800; margin-top: 2px;
+        background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3);
+    }
+    .hof-points-pill-2 { background: rgba(100,116,139,0.2); color: #94a3b8; border: 1px solid rgba(100,116,139,0.3); }
+    .hof-points-pill-3 { background: rgba(217,119,6,0.15); color: #f59e0b; border: 1px solid rgba(217,119,6,0.3); }
+
+    .hof-podium-base {
+        width: 100%; border-radius: 12px 12px 4px 4px; margin-top: 12px;
+    }
+    .hof-base-1 { background: linear-gradient(180deg, rgba(251,191,36,0.25), rgba(251,191,36,0.1)); height: 70px; border: 1px solid rgba(251,191,36,0.3); }
+    .hof-base-2 { background: linear-gradient(180deg, rgba(100,116,139,0.2), rgba(100,116,139,0.08)); height: 50px; border: 1px solid rgba(100,116,139,0.3); }
+    .hof-base-3 { background: linear-gradient(180deg, rgba(180,83,9,0.2), rgba(180,83,9,0.08)); height: 40px; border: 1px solid rgba(180,83,9,0.3); }
+
+    .hof-empty { text-align: center; padding: 30px 0; color: rgba(255,255,255,0.35); font-size: 0.85rem; }
+
+    /* ── Book Grid & Cards ── */
     .book-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
@@ -27,17 +173,10 @@
     @media (max-width: 768px) { .book-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
     @media (max-width: 500px) { .book-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
 
-    /* Top 3 Books Card Style */
-    .top-book-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-        gap: 16px;
-    }
-    
     .book-card {
         background: #fff; border: 1px solid #f1f5f9; border-radius: 12px; overflow: hidden;
         display: flex; flex-direction: column; transition: box-shadow 0.25s, transform 0.25s;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-decoration: none; color: inherit;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03); text-decoration: none; color: inherit; cursor: pointer;
     }
     .book-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(0,0,0,0.08); }
     .book-cover-area {
@@ -48,14 +187,7 @@
     .book-info { padding: 16px; text-align: left; background: #fff; border-top: 1px solid #f1f5f9; }
     .book-title { font-size: 1.05rem; font-weight: 800; color: #1e293b; line-height: 1.3; margin-bottom: 4px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .book-author { font-size: 0.8rem; color: #94a3b8; font-weight: 500; }
-    .book-score-badge {
-        position: absolute; top: 12px; left: 12px; z-index: 20; background: #4361ee; color: #fff;
-        padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
-        box-shadow: 0 4px 10px rgba(67,97,238,0.3);
-    }
-    .rank-1-badge { background: #fbbf24; color: #fff; box-shadow: 0 4px 10px rgba(251,191,36,0.3); }
-    .rank-2-badge { background: #94a3b8; color: #fff; }
-    .rank-3-badge { background: #b45309; color: #fff; }
+    .book-category { font-size: 0.68rem; font-weight: 800; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
 
     .badge-tersedia {
         position: absolute; top: 12px; right: 12px; z-index: 10;
@@ -79,70 +211,22 @@
         opacity: 0; transition: opacity 0.25s ease; z-index: 15;
     }
     .book-card:hover .hover-overlay { opacity: 1; }
-    
+
     .btn-lihat-detail {
         background: #fff; color: #1e293b; padding: 10px 18px; border-radius: 9999px; font-size: 0.8rem; font-weight: 700;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15); transform: translateY(15px); transition: transform 0.25s ease;
     }
     .book-card:hover .btn-lihat-detail { transform: translateY(0); }
 
-    .book-category { font-size: 0.68rem; font-weight: 800; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-
-    .peringkat-card {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: 20px;
-    }
-
-    .peringkat-card-title {
-        font-size: 1.1rem; font-weight: 800; color: #1e293b;
-        margin-bottom: 16px; border-bottom: 2px solid #e2e8f0;
-        padding-bottom: 10px; display: flex; align-items: center; gap: 8px;
-    }
-
-    .list-item {
-        display: flex; align-items: center; gap: 12px;
-        padding: 12px 0; border-bottom: 1px dashed #e2e8f0;
-    }
-    .list-item:last-child { border-bottom: none; }
-
-    .rank-badge {
-        width: 32px; height: 32px; border-radius: 50%;
-        background: #4361ee; color: #fff;
-        display: flex; align-items: center; justify-content: center;
-        font-weight: 800; font-size: 0.85rem; flex-shrink: 0;
-    }
-    .rank-1 { background: #fbbf24; color: #fff; box-shadow: 0 0 10px rgba(251,191,36,0.5); }
-    .rank-2 { background: #94a3b8; color: #fff; }
-    .rank-3 { background: #b45309; color: #fff; }
-
-    .item-info { flex: 1; min-width: 0; }
-    .item-title { font-weight: 700; color: #334155; font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .item-sub { font-size: 0.75rem; color: #64748b; }
-
-    .item-score {
-        font-weight: 800; color: #4361ee; font-size: 0.9rem;
-        background: #eef2ff; padding: 4px 8px; border-radius: 6px;
-    }
-    
-    .empty-state { text-align: center; padding: 20px; color: #94a3b8; font-size: 0.85rem; }
-
-    /* Aksi Cepat */
+    /* ── Aksi Cepat ── */
     .quick-actions-section {
         background: #f8f9fb; border-radius: 14px;
         padding: 24px; border: 1px solid #eee; margin-bottom: 28px;
     }
     .quick-actions-section h3 { font-size: 1rem; font-weight: 800; color: #1e293b; margin: 0 0 16px; }
-    .quick-actions-grid {
-        display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
-    }
-    @media (max-width: 900px) {
-        .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 500px) {
-        .quick-actions-grid { grid-template-columns: 1fr; }
-    }
+    .quick-actions-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    @media (max-width: 900px) { .quick-actions-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .quick-actions-grid { grid-template-columns: 1fr; } }
     .quick-action-card {
         background: #fff; border-radius: 12px; padding: 20px;
         border: 1px solid #e5e7eb; display: flex; flex-direction: column;
@@ -159,128 +243,50 @@
     }
     .quick-action-card:hover .quick-action-icon { background: #4361ee; color: #fff; }
     .quick-action-title { font-size: 0.9rem; font-weight: 600; text-align: center; margin: 0; }
-
-    /* Custom Icon Colors (like penjaga) */
     .icon-katalog { background: #eef0ff; color: #4361ee; }
     .icon-peminjaman { background: #ede9fe; color: #8b5cf6; }
     .icon-riwayat { background: #fef3c7; color: #f59e0b; }
     .icon-pengajuan { background: #dcfce7; color: #22c55e; }
-    /* Hall of Fame Podium */
-    .hof-card {
-        background: #f8fafc;
-        border-radius: 12px;
-        padding: 20px;
-        display: flex; flex-direction: column;
-        height: 100%;
-        border: 1px solid #e2e8f0;
-        position: relative; overflow: hidden;
-    }
-    .hof-card::before {
-        content: ''; position: absolute; top: -40px; right: -40px;
-        width: 160px; height: 160px; border-radius: 50%;
-        background: radial-gradient(circle, rgba(67,97,238,0.05) 0%, transparent 70%);
-    }
-    .hof-title {
-        font-size: 1.1rem; font-weight: 800; color: #1e293b;
-        margin-bottom: 4px; letter-spacing: -0.3px;
-        padding-bottom: 10px; border-bottom: 2px solid #e2e8f0;
-        display: flex; align-items: center; gap: 8px;
-    }
-    .hof-subtitle { font-size: 0.78rem; color: #94a3b8; margin-bottom: 20px; margin-top: 8px; }
 
-    .hof-podium {
-        display: grid;
-        grid-template-columns: 1fr 1.15fr 1fr;
-        align-items: flex-end;
-        gap: 12px;
-        flex: 1;
+    /* ── Section title for Buku Terfavorit ── */
+    .hof-title-light {
+        font-size: 1.25rem; font-weight: 800; color: #1e293b;
+        display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
     }
-    .hof-player { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-    .hof-player-center { position: relative; top: -20px; }
-
-    .crown {
-        font-size: 1.4rem; margin-bottom: -4px;
-        filter: drop-shadow(0 0 8px rgba(255, 183, 0, 0.7));
-        animation: float 2s ease-in-out infinite;
-    }
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-5px); }
-    }
-
-    .hof-avatar {
-        width: 64px; height: 64px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.3rem; font-weight: 900; letter-spacing: -1px;
-        color: #fff; position: relative;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    }
-    .hof-avatar-sm { width: 54px; height: 54px; font-size: 1.1rem; }
-    .hof-avatar-1 {
-        background: linear-gradient(135deg, #4361ee, #6366f1);
-        border: 2.5px solid #fbbf24;
-        box-shadow: 0 0 0 4px rgba(251,191,36,0.2), 0 4px 16px rgba(67,97,238,0.3);
-    }
-    .hof-avatar-2 { background: linear-gradient(135deg, #64748b, #94a3b8); border: 2px solid #cbd5e1; }
-    .hof-avatar-3 { background: linear-gradient(135deg, #b45309, #d97706); border: 2px solid #fcd34d; }
-
-    .hof-rank-badge {
-        display: inline-block; padding: 3px 14px; border-radius: 20px;
-        font-size: 0.8rem; font-weight: 900; margin-top: 4px;
-    }
-    .hof-rank-1 { background: linear-gradient(90deg, #d97706, #fbbf24); color: #fff; }
-    .hof-rank-2 { background: #2d3a55; color: #94a3b8; border: 1px solid #3d4f72; }
-    .hof-rank-3 { background: #3a1f10; color: #b45309; border: 1px solid #6b3a1f; }
-
-    .hof-name {
-        font-size: 0.78rem; font-weight: 800; color: #334155;
-        text-align: center; letter-spacing: 0.5px;
-        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-        max-width: 90px;
-    }
-    .hof-name-1 { color: #4361ee; font-size: 0.85rem; }
-    .hof-score { font-size: 0.72rem; color: #94a3b8; font-weight: 600; }
-
-    .hof-unit-badge {
-        display: inline-block; padding: 2px 10px; border-radius: 8px;
-        font-size: 0.65rem; font-weight: 800; letter-spacing: 0.8px;
-        text-transform: uppercase; margin-top: 2px;
-    }
-    .hof-unit-1 { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
-    .hof-unit-2 { background: rgba(148,163,184,0.1); color: #64748b; border: 1px solid #2d3a55; }
-    .hof-unit-3 { background: rgba(180,83,9,0.15); color: #b45309; border: 1px solid rgba(180,83,9,0.3); }
-
-    .hof-podium-base {
-        width: 100%; border-radius: 12px 12px 8px 8px; margin-top: 12px;
-    }
-    .hof-base-1 { background: linear-gradient(180deg, #fef3c7, #fde68a); height: 70px; border: 1px solid #fbbf24; }
-    .hof-base-2 { background: linear-gradient(180deg, #e2e8f0, #cbd5e1); height: 50px; border: 1px solid #cbd5e1; }
-    .hof-base-3 { background: linear-gradient(180deg, #fed7aa, #fdba74); height: 40px; border: 1px solid #f97316; }
-
-    .hof-book-cover {
-        display: block; width: 70px; height: 100px; border-radius: 8px;
-        overflow: hidden; text-decoration: none;
-        box-shadow: 0 4px 14px rgba(0,0,0,0.15);
-        transition: transform 0.2s; background: #e2e8f0;
-        display: flex; align-items: center; justify-content: center;
-    }
-    .hof-book-cover:hover { transform: scale(1.05); }
-    .hof-book-cover-1 {
-        width: 80px; height: 115px;
-        border: 2.5px solid #fbbf24;
-        box-shadow: 0 0 0 3px rgba(251,191,36,0.2), 0 6px 20px rgba(67,97,238,0.2);
-    }
-    .hof-book-cover-2 { border: 2px solid #cbd5e1; }
-    .hof-book-cover-3 { border: 2px solid #fdba74; }
-    .hof-book-icon { font-size: 2rem; }
-    .hof-empty { text-align: center; padding: 20px 0; color: #94a3b8; font-size: 0.85rem; }
+    .hof-subtitle-light { font-size: 0.78rem; color: #94a3b8; margin-top: -4px; margin-bottom: 24px; }
+    .peringkat-container { background: #fff; border-radius: 16px; padding: 28px 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
 </style>
 @endpush
 
 @section('content')
 
-<h1 class="breadcrumb-title">Selamat Datang, {{ auth()->user()->name }}! 👋</h1>
-<p class="breadcrumb-subtitle">Jelajahi buku dan pantau aktivitas perpustakaan Anda di bulan {{ $now->translatedFormat('F Y') }}.</p>
+@php
+    $user = auth()->user();
+    $initials = collect(explode(' ', strtoupper($user->name)))->map(fn($w) => $w[0] ?? '')->take(2)->join('');
+@endphp
+
+{{-- ── HERO PROFILE CARD ── --}}
+<div class="hero-card">
+    <div class="hero-avatar">
+        @if($user->avatar)
+            <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->name }}">
+        @else
+            {{ $initials }}
+        @endif
+    </div>
+    <div class="hero-info">
+        <p class="hero-greeting">Selamat Datang 👋</p>
+        <h1 class="hero-name">{{ $user->name }}</h1>
+        <p class="hero-sub">Jelajahi buku dan pantau aktivitas perpustakaan Anda di bulan {{ $now->translatedFormat('F Y') }}.</p>
+    </div>
+    <div class="hero-points-badge">
+        <div class="hero-points-icon">⭐</div>
+        <div>
+            <div class="hero-points-val">{{ number_format($userPoints) }}</div>
+            <div class="hero-points-label">POIN</div>
+        </div>
+    </div>
+</div>
 
 @if($hasUnpaidFine)
 <div style="background:#fff1f2; border:1.5px solid #fecdd3; border-left:4px solid #dc2626; border-radius:10px; padding:14px 18px; margin-bottom:20px; display:flex; align-items:flex-start; gap:12px;">
@@ -365,19 +371,16 @@
     </div>
 </div>
 
-<div class="peringkat-container">
-
-    {{-- Top 3 Peminjam (Centered Full Width) --}}
-    <div class="hof-card" style="max-width: 900px; margin: 0 auto; border: 1px solid #e2e8f0; box-shadow: 0 4px 12px rgba(0,0,0,0.02)">
-        <div class="hof-title" style="justify-content: center; font-size: 1.25rem;">Top 3 Peminjam 🏆</div>
-        <div class="hof-subtitle" style="text-align: center; margin-bottom: 30px;">Papan klasemen bulan {{ $now->translatedFormat('F Y') }}</div>
+{{-- ── Top 3 Peminjam ── --}}
+<div style="margin-bottom: 24px;">
+    <div class="hof-card">
+        <div class="hof-title">🏆 Top 3 Peminjam</div>
+        <div class="hof-subtitle">Papan klasemen berdasarkan total poin siswa</div>
 
         @php
-            $sorted = $topStudents;
-            $first  = $sorted->get(0);
-            $second = $sorted->get(1);
-            $third  = $sorted->get(2);
-
+            $first  = $topStudents->get(0);
+            $second = $topStudents->get(1);
+            $third  = $topStudents->get(2);
             function hofInitials($name) {
                 $words = explode(' ', strtoupper(trim($name)));
                 if (count($words) >= 2) return $words[0][0] . $words[1][0];
@@ -386,13 +389,13 @@
         @endphp
 
         @if($topStudents->isEmpty())
-            <div class="hof-empty">Belum ada aktivitas siswa bulan ini.</div>
+            <div class="hof-empty">Belum ada data poin siswa.</div>
         @else
         <div class="hof-podium">
             {{-- #2 Kiri --}}
             <div class="hof-player">
                 @if($second)
-                    <div class="hof-avatar hof-avatar-sm hof-avatar-2" style="padding:0;overflow:hidden;">
+                    <div class="hof-avatar hof-avatar-sm hof-avatar-2" style="overflow:hidden;">
                         @if($second->avatar)
                             <img src="{{ asset('storage/' . $second->avatar) }}" alt="{{ $second->name }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                         @else
@@ -401,8 +404,7 @@
                     </div>
                     <div class="hof-rank-badge hof-rank-2">#2</div>
                     <div class="hof-name">{{ strtoupper(explode(' ', $second->name)[0]) }}</div>
-                    <div class="hof-score">{{ $second->total_borrowed }} X</div>
-                    <div class="hof-unit-badge hof-unit-2">Peminjam</div>
+                    <div class="hof-points-pill hof-points-pill-2">⭐ {{ number_format($second->points) }} poin</div>
                 @endif
                 <div class="hof-podium-base hof-base-2"></div>
             </div>
@@ -411,7 +413,7 @@
             <div class="hof-player hof-player-center">
                 @if($first)
                     <div class="crown">👑</div>
-                    <div class="hof-avatar hof-avatar-1" style="padding:0;overflow:hidden;">
+                    <div class="hof-avatar hof-avatar-1" style="overflow:hidden;">
                         @if($first->avatar)
                             <img src="{{ asset('storage/' . $first->avatar) }}" alt="{{ $first->name }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                         @else
@@ -420,8 +422,7 @@
                     </div>
                     <div class="hof-rank-badge hof-rank-1">#1</div>
                     <div class="hof-name hof-name-1">{{ strtoupper(explode(' ', $first->name)[0]) }}</div>
-                    <div class="hof-score">{{ $first->total_borrowed }} X</div>
-                    <div class="hof-unit-badge hof-unit-1">Peminjam</div>
+                    <div class="hof-points-pill">⭐ {{ number_format($first->points) }} poin</div>
                 @endif
                 <div class="hof-podium-base hof-base-1"></div>
             </div>
@@ -429,7 +430,7 @@
             {{-- #3 Kanan --}}
             <div class="hof-player">
                 @if($third)
-                    <div class="hof-avatar hof-avatar-sm hof-avatar-3" style="padding:0;overflow:hidden;">
+                    <div class="hof-avatar hof-avatar-sm hof-avatar-3" style="overflow:hidden;">
                         @if($third->avatar)
                             <img src="{{ asset('storage/' . $third->avatar) }}" alt="{{ $third->name }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                         @else
@@ -438,8 +439,7 @@
                     </div>
                     <div class="hof-rank-badge hof-rank-3">#3</div>
                     <div class="hof-name">{{ strtoupper(explode(' ', $third->name)[0]) }}</div>
-                    <div class="hof-score">{{ $third->total_borrowed }} X</div>
-                    <div class="hof-unit-badge hof-unit-3">Peminjam</div>
+                    <div class="hof-points-pill hof-points-pill-3">⭐ {{ number_format($third->points) }} poin</div>
                 @endif
                 <div class="hof-podium-base hof-base-3"></div>
             </div>

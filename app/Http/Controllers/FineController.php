@@ -102,6 +102,12 @@ class FineController extends Controller
 
         $denda->book->increment('stock');
 
+        // Award poin: tepat waktu = +10, terlambat = +5
+        if ($denda->user) {
+            $poin = ($hariTerlambat > 0) ? 5 : 10;
+            $denda->user->increment('points', $poin);
+        }
+
         $msg = "Buku \"{$denda->book->title}\" berhasil dikembalikan.";
         if ($amount > 0) {
             $msg .= " Denda Rp " . number_format($amount, 0, ',', '.') . " telah ditambahkan.";
