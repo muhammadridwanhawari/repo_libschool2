@@ -24,7 +24,10 @@ class BookController extends Controller
         $categories = Category::all();
         $series = \App\Models\BookSeries::all();
 
-        return view('admin.buku.index', compact('books', 'categories', 'series', 'search'));
+        $totalBuku = Book::count();
+        $totalStok = (int) Book::sum('stock');
+
+        return view('admin.buku.index', compact('books', 'categories', 'series', 'search', 'totalBuku', 'totalStok'));
     }
 
     public function create()

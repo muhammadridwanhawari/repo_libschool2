@@ -4,9 +4,9 @@
 
 @push('styles')
 <style>
-    .breadcrumb { font-size: 0.85rem; margin-bottom: 20px; }
-    .breadcrumb a { color: #4361ee; text-decoration: none; }
-    .breadcrumb span { color: #666; }
+    .page-header { margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .page-header h1 { font-size: 1.4rem; font-weight: 700; color: #222; margin: 0 0 4px; }
+    .page-header p { font-size: 0.82rem; color: #4361ee; margin: 0; }
 
     .content-panel {
         background: #fff; border-radius: 14px;
@@ -87,10 +87,11 @@
 @endpush
 
 @section('content')
-    <div class="breadcrumb" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+    {{-- Page Header --}}
+    <div class="page-header">
         <div>
-            <a href="{{ route('admin.dashboard') }}">Kelola Data</a>
-            <span> / Denda</span>
+            <h1>Denda</h1>
+            <p>Kelola data keterlambatan dan pembayaran denda</p>
         </div>
         <form action="{{ route('admin.denda.index') }}" method="GET" style="margin: 0; display: flex; gap: 8px;">
             <input type="hidden" name="search" value="{{ $search ?? '' }}">
@@ -299,7 +300,68 @@
 
         @if($dendaList->hasPages())
         <div class="pagination-wrap">
-            {{ $dendaList->appends(['search' => $search, 'month' => $month, 'riwayat_page' => request('riwayat_page')])->links() }}
+            {{ $dendaList->appends(['search' => $search, 'month' => $month, 'riwayat_page' => request('riwayat_page'), 'unpaid_page' => request('unpaid_page')])->links() }}
+        </div>
+        @endif
+    </div>
+
+    {{-- Daftar Denda Belum Dibayar Panel --}}
+    <div class="content-panel" style="margin-top: 20px;">
+        <div class="px-6 pt-5 pb-2 flex items-center justify-between border-b border-slate-100 mb-3">
+            <div>
+                <h2 class="font-bold text-slate-800 text-[1rem]">Denda Belum Dibayar</h2>
+                <p class="text-[0.78rem] text-slate-400 mt-0.5">{{ $unpaidFines->total() }} data denda belum lunas</p>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse min-w-[800px]">
+                <thead>
+                    <tr class="bg-slate-50">
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">SISWA</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">BUKU TERKAIT</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TOTAL DENDA (Rp)</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TANGGAL KEMBALI</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">STATUS</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse ($unpaidFines as $ub)
+                    <tr class="hover:bg-slate-50/60 transition-colors">
+                        <td class="px-5 py-3.5 align-middle">
+                            <p class="font-semibold text-slate-800 text-[0.82rem] leading-tight">{{ $ub->borrowing->user->name ?? '-' }}</p>
+                            <p class="text-[0.7rem] text-slate-400">{{ $ub->borrowing->user->email ?? '' }}</p>
+                        </td>
+                        <td class="px-5 py-3.5 align-middle">
+                            <p class="font-semibold text-slate-800 text-[0.82rem] leading-tight truncate max-w-[200px]">{{ $ub->borrowing->book->title ?? '-' }}</p>
+                        </td>
+                        <td class="px-5 py-3.5 align-middle">
+                            <span class="font-bold text-slate-800 text-[0.85rem] text-red-600">Rp {{ number_format(abs($ub->amount), 0, ',', '.') }}</span>
+                        </td>
+                        <td class="px-5 py-3.5 align-middle text-[0.78rem] text-slate-500">
+                            {{ $ub->borrowing->return_date ? \Carbon\Carbon::parse($ub->borrowing->return_date)->format('d M Y') : '—' }}
+                        </td>
+                        <td class="px-5 py-3.5 align-middle">
+                            <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fee2e2] text-[#dc2626] uppercase">Belum Lunas</span>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-5 py-14 text-center">
+                            <div class="flex flex-col items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#cbd5e1" stroke-width="1.5" viewBox="0 0 24 24" class="mb-1"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                                <p class="text-slate-400 text-[0.85rem]">Tidak ada tagihan denda belum dibayar.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        @if($unpaidFines->hasPages())
+        <div class="pagination-wrap">
+            {{ $unpaidFines->appends(['search' => $search, 'month' => $month, 'riwayat_page' => request('riwayat_page'), 'page' => request('page')])->links() }}
         </div>
         @endif
     </div>

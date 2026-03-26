@@ -97,6 +97,43 @@
     .btn-tolak:hover { background: #fee2e2; }
     .btn-tolak:disabled { opacity: 0.5; cursor: default; }
 
+    .btn-detail {
+        border: 1px solid #4361ee; background: #fff; color: #4361ee;
+        border-radius: 6px; padding: 5px 14px;
+        font-size: 0.78rem; font-weight: 600;
+        cursor: pointer; font-family: inherit;
+        transition: all 0.15s;
+    }
+    .btn-detail:hover { background: #eff2fe; }
+
+    /* Modal Styles */
+    .modal-overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.45); z-index: 1000;
+        align-items: center; justify-content: center;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+        background: #fff; border-radius: 16px;
+        width: 500px; max-width: 95vw;
+        max-height: 90vh; overflow-y: auto;
+    }
+    .modal-header {
+        padding: 24px 30px 16px; border-bottom: 1px solid #eee;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+    .modal-header h2 { font-size: 1.25rem; font-weight: 700; color: #222; margin: 0; }
+    .modal-close {
+        background: none; border: none; font-size: 1.5rem; color: #999;
+        cursor: pointer; padding: 0; line-height: 1;
+    }
+    .modal-close:hover { color: #333; }
+    .modal-body { padding: 24px 30px; }
+    .detail-row { display: flex; margin-bottom: 16px; }
+    .detail-label { width: 140px; font-weight: 600; font-size: 0.85rem; color: #555; flex-shrink: 0; }
+    .detail-value { flex: 1; font-size: 0.85rem; color: #222; }
+    .detail-reason { font-size: 0.85rem; color: #444; background: #f8f9fa; padding: 12px; border-radius: 8px; border: 1px solid #eee; }
+
     /* Empty State */
     .empty-state {
         text-align: center;
@@ -179,6 +216,20 @@
                     </td>
                     <td>
                         <div class="action-btns">
+                            {{-- Tombol Detail --}}
+                            <button type="button" class="btn-detail"
+                                data-judul="{{ $item->judul_buku }}"
+                                data-penulis="{{ $item->penulis ?? '-' }}"
+                                data-isbn="{{ $item->isbn ?? '-' }}"
+                                data-penerbit="{{ $item->penerbit ?? '-' }}"
+                                data-tahun="{{ $item->tahun_terbit ?? '-' }}"
+                                data-pengusul="{{ $item->user->name ?? '-' }}"
+                                data-kategori="{{ $item->category->name ?? '-' }}"
+                                data-alasan="{{ $item->alasan ?? '-' }}"
+                                data-status="{{ $item->status }}"
+                                onclick="openDetailModal(this)">
+                                Detail
+                            </button>
                             {{-- Tombol Disetujui --}}
                             <form action="{{ route('admin.pengajuan.updateStatus', $item->id) }}" method="POST" style="display:inline;">
                                 @csrf
@@ -216,6 +267,50 @@
         </div>
         @endif
     </div>
+
+    {{-- Modal Detail Pengajuan --}}
+    <div class="modal-overlay" id="detailModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Detail Pengajuan</h2>
+                <button type="button" class="modal-close" onclick="closeDetailModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-row">
+                    <div class="detail-label">Judul Buku</div>
+                    <div class="detail-value" id="mdl-judul"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Penulis</div>
+                    <div class="detail-value" id="mdl-penulis"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Penerbit & Tahun</div>
+                    <div class="detail-value"><span id="mdl-penerbit"></span> (<span id="mdl-tahun"></span>)</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">ISBN</div>
+                    <div class="detail-value" id="mdl-isbn"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Kategori</div>
+                    <div class="detail-value" id="mdl-kategori"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Pengusul</div>
+                    <div class="detail-value" id="mdl-pengusul"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Status</div>
+                    <div class="detail-value" id="mdl-status" style="text-transform: capitalize; font-weight: 600;"></div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <div class="detail-label" style="width: auto;">Alasan Pengajuan:</div>
+                    <div class="detail-reason" id="mdl-alasan"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
@@ -226,6 +321,39 @@
             e.preventDefault();
             document.getElementById('filterForm').submit();
         }
+    });
+
+    // Modal logic
+    function openDetailModal(btn) {
+        document.getElementById('mdl-judul').innerText = btn.dataset.judul;
+        document.getElementById('mdl-penulis').innerText = btn.dataset.penulis;
+        document.getElementById('mdl-penerbit').innerText = btn.dataset.penerbit;
+        document.getElementById('mdl-tahun').innerText = btn.dataset.tahun;
+        document.getElementById('mdl-isbn').innerText = btn.dataset.isbn;
+        document.getElementById('mdl-kategori').innerText = btn.dataset.kategori;
+        document.getElementById('mdl-pengusul').innerText = btn.dataset.pengusul;
+        
+        const status = btn.dataset.status;
+        const statusEl = document.getElementById('mdl-status');
+        statusEl.innerText = status;
+        if (status === 'disetujui') statusEl.style.color = '#065f46';
+        else if (status === 'ditolak') statusEl.style.color = '#dc2626';
+        else statusEl.style.color = '#92400e';
+
+        document.getElementById('mdl-alasan').innerText = btn.dataset.alasan;
+        
+        document.getElementById('detailModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetailModal() {
+        document.getElementById('detailModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Close on click outside
+    document.getElementById('detailModal').addEventListener('click', function(e) {
+        if (e.target === this) closeDetailModal();
     });
 </script>
 @endpush

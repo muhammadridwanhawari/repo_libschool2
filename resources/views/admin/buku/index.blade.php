@@ -4,14 +4,12 @@
 
 @push('styles')
 <style>
-    .breadcrumb { font-size: 0.85rem; margin-bottom: 0; }
-    .breadcrumb a { color: #4361ee; text-decoration: none; }
-    .breadcrumb span { color: #666; }
-
     .page-header {
         display: flex; align-items: center;
         justify-content: space-between; margin-bottom: 20px;
     }
+    .page-header h1 { font-size: 1.4rem; font-weight: 700; color: #222; margin: 0 0 4px; }
+    .page-header p { font-size: 0.82rem; color: #4361ee; margin: 0; }
     .btn-tambah {
         background: linear-gradient(135deg, #4361ee, #3a56d4); color: #fff;
         border: none; border-radius: 8px;
@@ -228,11 +226,11 @@
 
 @section('content')
 
-{{-- Breadcrumb + Header --}}
+{{-- Page Header --}}
 <div class="page-header">
-    <div class="breadcrumb">
-        <a href="{{ route('admin.dashboard') }}">Kelola Data</a>
-        <span> / Data Buku</span>
+    <div>
+        <h1>Data Buku</h1>
+        <p>Kelola direktori dan informasi buku perpustakaan</p>
     </div>
     <a href="{{ route('admin.buku.create') }}" class="btn-tambah">+ Tambah Buku</a>
 </div>
@@ -240,6 +238,35 @@
 @if(session('success'))
     <div class="alert-success">✓ {{ session('success') }}</div>
 @endif
+
+{{-- Statistic Cards --}}
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 20px;">
+    {{-- Card 1: Jumlah Buku --}}
+    <div style="background: #fff; border: 1px solid #eee; border-radius: 14px; padding: 20px; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+            <h3 style="font-size: 0.9rem; color: #666; font-weight: 600; margin: 0 0 5px 0;">Jumlah Buku</h3>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #4361ee;">{{ number_format($totalBuku, 0, ',', '.') }}</div>
+        </div>
+        <div style="background: #eff2fe; color: #4361ee; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+            </svg>
+        </div>
+    </div>
+    
+    {{-- Card 2: Jumlah Stok --}}
+    <div style="background: #fff; border: 1px solid #eee; border-radius: 14px; padding: 20px; display: flex; align-items: center; justify-content: space-between;">
+        <div>
+            <h3 style="font-size: 0.9rem; color: #666; font-weight: 600; margin: 0 0 5px 0;">Jumlah Stok</h3>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #10b981;">{{ number_format($totalStok, 0, ',', '.') }}</div>
+        </div>
+        <div style="background: #d1fae5; color: #10b981; width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+            </svg>
+        </div>
+    </div>
+</div>
 
 {{-- Main Panel --}}
 <div class="content-panel">

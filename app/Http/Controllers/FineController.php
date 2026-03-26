@@ -53,7 +53,21 @@ class FineController extends Controller
             })
             ->sum('amount');
 
-        return view('admin.denda.index', compact('dendaList', 'search', 'month', 'pendingPayments', 'riwayatDenda', 'totalDendaDibayar'));
+        // Siswa dengan denda belum dibayar
+        $unpaidFines = Fine::with(['borrowing.user', 'borrowing.book'])
+            ->where('paid', false)
+            ->where(function ($q) {
+                $q->whereNull('payment_status')
+                  ->orWhere('payment_status', '!=', 'pending');
+            })
+            ->when($search, function ($q) use ($search) {
+                $q->whereHas('borrowing.user', fn($u) => $u->where('name', 'like', "%$search%"))
+                  ->orWhereHas('borrowing.book', fn($b) => $b->where('title', 'like', "%$search%"));
+            })
+            ->latest()
+            ->paginate(10, ['*'], 'unpaid_page');
+
+        return view('admin.denda.index', compact('dendaList', 'search', 'month', 'pendingPayments', 'riwayatDenda', 'totalDendaDibayar', 'unpaidFines'));
     }
 
     public function show(Borrowing $denda)

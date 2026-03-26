@@ -4,9 +4,9 @@
 
 @push('styles')
 <style>
-    .breadcrumb { font-size: 0.85rem; margin-bottom: 20px; }
-    .breadcrumb a { color: #4361ee; text-decoration: none; }
-    .breadcrumb span { color: #666; }
+    .page-header { margin-bottom: 20px; }
+    .page-header h1 { font-size: 1.4rem; font-weight: 700; color: #222; margin: 0 0 4px; }
+    .page-header p { font-size: 0.82rem; color: #4361ee; margin: 0; }
 
     .kategori-wrapper {
         display: grid;
@@ -144,10 +144,10 @@
 @endpush
 
 @section('content')
-    {{-- Breadcrumb --}}
-    <div class="breadcrumb">
-        <a href="{{ route('admin.dashboard') }}">Kelola Data</a>
-        <span> / Kategori</span>
+    {{-- Page Header --}}
+    <div class="page-header">
+        <h1>Kategori</h1>
+        <p>Kelola data kategori buku perpustakaan</p>
     </div>
 
     <div class="kategori-wrapper">
