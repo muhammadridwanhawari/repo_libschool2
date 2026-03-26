@@ -128,112 +128,6 @@
 
 
 
-    {{-- Riwayat Peminjaman Panel --}}
-    <div class="content-panel" style="margin-bottom: 24px;">
-        {{-- History Table --}}
-        <div class="px-6 pt-5 pb-2 flex items-center justify-between">
-            <div>
-                <h2 class="font-bold text-slate-800 text-[1rem]">Riwayat Peminjaman</h2>
-                <p class="text-[0.78rem] text-slate-400 mt-0.5">{{ $recentHistory->count() }} data denda atau buku yang dikembalikan</p>
-            </div>
-        </div>
-
-        <div class="overflow-x-auto">
-            <table class="w-full border-collapse min-w-[700px]">
-                <thead>
-                    <tr class="bg-slate-50">
-                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">BUKU</th>
-                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TGL PINJAM</th>
-                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TGL KEMBALI</th>
-                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">STATUS</th>
-                        <th class="px-5 py-3 text-right text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">DENDA</th>
-                    </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            @forelse ($recentHistory as $loan)
-                            @php
-                                $isLate = false;
-                                $isDeadline = false;
-                                $isReturnedLate = false;
-                                
-                                if ($loan->status === 'dipinjam' && $loan->deadline) {
-                                    $deadlineDate = \Carbon\Carbon::parse($loan->deadline)->startOfDay();
-                                    $today = now()->startOfDay();
-                                    $diff = $today->diffInDays($deadlineDate, false);
-                                    
-                                    if ($diff < 0) {
-                                        $isLate = true;
-                                    } elseif ($diff >= 0 && $diff <= 1) {
-                                        $isDeadline = true;
-                                    }
-                                } elseif ($loan->status === 'dikembalikan' && $loan->deadline && $loan->return_date) {
-                                    $deadlineDate = \Carbon\Carbon::parse($loan->deadline)->startOfDay();
-                                    $returnDate = \Carbon\Carbon::parse($loan->return_date)->startOfDay();
-                                    if ($returnDate->gt($deadlineDate) || $loan->fine) {
-                                        $isReturnedLate = true;
-                                    }
-                                }
-                            @endphp
-                            <tr class="hover:bg-slate-50/60 transition-colors">
-                                {{-- Buku --}}
-                                <td class="px-5 py-3.5 align-middle">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-9 h-11 rounded bg-slate-100 flex-shrink-0 overflow-hidden border border-slate-200 flex items-center justify-center">
-                                            @if($loan->book && $loan->book->cover)
-                                                <img src="{{ asset('storage/' . $loan->book->cover) }}" alt="Cover" class="w-full h-full object-cover">
-                                            @elseif($loan->book && $loan->book->cover_image)
-                                                <img src="{{ asset('storage/' . $loan->book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
-                                            @else
-                                                <svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
-                                            @endif
-                                        </div>
-                                        <div class="min-w-0">
-                                            <p class="font-semibold text-slate-800 text-[0.82rem] leading-tight truncate max-w-[160px]">{{ $loan->book->title ?? '-' }}</p>
-                                            <p class="text-[0.7rem] text-slate-400 truncate max-w-[160px]">{{ $loan->book->author ?? '' }}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-5 py-3.5 text-slate-500 text-[0.78rem] align-middle">
-                                    {{ $loan->borrow_date ? $loan->borrow_date->format('d M Y') : '—' }}
-                                </td>
-                                <td class="px-5 py-3.5 text-slate-500 text-[0.78rem] align-middle">
-                                    {{ $loan->return_date ? $loan->return_date->format('d M Y') : ($loan->deadline ? $loan->deadline->format('d M Y') : '—') }}
-                                </td>
-                                <td class="px-5 py-3.5 align-middle">
-                                    @if($isReturnedLate)
-                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fee2e2] text-[#dc2626]">TERLAMBAT</span>
-                                    @else
-                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dcfce7] text-[#16a34a]">TEPAT WAKTU</span>
-                                    @endif
-                                </td>
-                                {{-- Denda --}}
-                                <td class="px-5 py-3.5 text-right align-middle">
-                                    @php $fineAmount = $loan->fine?->amount ?? 0; @endphp
-                                    @if(abs($fineAmount) > 0)
-                                        <span class="font-bold text-[0.78rem] text-red-600">Rp {{ number_format(abs($fineAmount), 0, ',', '.') }}</span>
-                                    @else
-                                        <span class="text-slate-300 text-[0.78rem]">—</span>
-                                    @endif
-                                </td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="5" class="px-5 py-14 text-center">
-                                    <div class="flex flex-col items-center gap-2">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#cbd5e1" stroke-width="1.5" viewBox="0 0 24 24" class="mb-1">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
-                                        </svg>
-                                        <p class="text-slate-400 text-[0.85rem]">Belum ada riwayat peminjaman.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-        </div>
-    </div>
-
     {{-- ── Denda Panel (Side by Side) ───────────────────────────── --}}
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 mb-6">
         
@@ -356,7 +250,113 @@
         </div>
     </div>
 
-</div>
+{{-- Riwayat Peminjaman Panel --}}
+    <div class="content-panel" style="margin-bottom: 24px;">
+        {{-- History Table --}}
+        <div class="px-6 pt-5 pb-2 flex items-center justify-between">
+            <div>
+                <h2 class="font-bold text-slate-800 text-[1rem]">Riwayat Peminjaman</h2>
+                <p class="text-[0.78rem] text-slate-400 mt-0.5">{{ $recentHistory->count() }} data denda atau buku yang dikembalikan</p>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse min-w-[700px]">
+                <thead>
+                    <tr class="bg-slate-50">
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">BUKU</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TGL PINJAM</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TGL KEMBALI</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">STATUS</th>
+                        <th class="px-5 py-3 text-right text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">DENDA</th>
+                    </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-50">
+                            @forelse ($recentHistory as $loan)
+                            @php
+                                $isLate = false;
+                                $isDeadline = false;
+                                $isReturnedLate = false;
+                                
+                                if ($loan->status === 'dipinjam' && $loan->deadline) {
+                                    $deadlineDate = \Carbon\Carbon::parse($loan->deadline)->startOfDay();
+                                    $today = now()->startOfDay();
+                                    $diff = $today->diffInDays($deadlineDate, false);
+                                    
+                                    if ($diff < 0) {
+                                        $isLate = true;
+                                    } elseif ($diff >= 0 && $diff <= 1) {
+                                        $isDeadline = true;
+                                    }
+                                } elseif ($loan->status === 'dikembalikan' && $loan->deadline && $loan->return_date) {
+                                    $deadlineDate = \Carbon\Carbon::parse($loan->deadline)->startOfDay();
+                                    $returnDate = \Carbon\Carbon::parse($loan->return_date)->startOfDay();
+                                    if ($returnDate->gt($deadlineDate) || $loan->fine) {
+                                        $isReturnedLate = true;
+                                    }
+                                }
+                            @endphp
+                            <tr class="hover:bg-slate-50/60 transition-colors">
+                                {{-- Buku --}}
+                                <td class="px-5 py-3.5 align-middle">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-11 rounded bg-slate-100 flex-shrink-0 overflow-hidden border border-slate-200 flex items-center justify-center">
+                                            @if($loan->book && $loan->book->cover)
+                                                <img src="{{ asset('storage/' . $loan->book->cover) }}" alt="Cover" class="w-full h-full object-cover">
+                                            @elseif($loan->book && $loan->book->cover_image)
+                                                <img src="{{ asset('storage/' . $loan->book->cover_image) }}" alt="Cover" class="w-full h-full object-cover">
+                                            @else
+                                                <svg class="w-5 h-5 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                                            @endif
+                                        </div>
+                                        <div class="min-w-0">
+                                            <p class="font-semibold text-slate-800 text-[0.82rem] leading-tight truncate max-w-[160px]">{{ $loan->book->title ?? '-' }}</p>
+                                            <p class="text-[0.7rem] text-slate-400 truncate max-w-[160px]">{{ $loan->book->author ?? '' }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-3.5 text-slate-500 text-[0.78rem] align-middle">
+                                    {{ $loan->borrow_date ? $loan->borrow_date->format('d M Y') : '—' }}
+                                </td>
+                                <td class="px-5 py-3.5 text-slate-500 text-[0.78rem] align-middle">
+                                    {{ $loan->return_date ? $loan->return_date->format('d M Y') : ($loan->deadline ? $loan->deadline->format('d M Y') : '—') }}
+                                </td>
+                                <td class="px-5 py-3.5 align-middle">
+                                    @if($isReturnedLate)
+                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fee2e2] text-[#dc2626]">TERLAMBAT</span>
+                                    @else
+                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dcfce7] text-[#16a34a]">TEPAT WAKTU</span>
+                                    @endif
+                                </td>
+                                {{-- Denda --}}
+                                <td class="px-5 py-3.5 text-right align-middle">
+                                    @php $fineAmount = $loan->fine?->amount ?? 0; @endphp
+                                    @if(abs($fineAmount) > 0)
+                                        <span class="font-bold text-[0.78rem] text-red-600">Rp {{ number_format(abs($fineAmount), 0, ',', '.') }}</span>
+                                    @else
+                                        <span class="text-slate-300 text-[0.78rem]">—</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="5" class="px-5 py-14 text-center">
+                                    <div class="flex flex-col items-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#cbd5e1" stroke-width="1.5" viewBox="0 0 24 24" class="mb-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
+                                        </svg>
+                                        <p class="text-slate-400 text-[0.85rem]">Belum ada riwayat peminjaman.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+        </div>
+    </div>
+
+    </div>
 
 {{-- MODAL BAYAR --}}
 <div class="modal-overlay" id="bayarModal">
@@ -395,6 +395,25 @@
     </div>
 </div>
 
+@if(session('success'))
+<div class="modal-overlay show" id="successModal" style="z-index: 9999;">
+    <div class="modal-box" style="text-align: center; max-width: 400px; animation: modalPopBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;">
+        <div style="width: 70px; height: 70px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#16a34a" stroke-width="3" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 6L9 17l-5-5"/>
+            </svg>
+        </div>
+        <h2 style="font-size: 1.25rem; margin-bottom: 12px; color: #166534; border-bottom: none; padding-bottom: 0;">Pembayaran Berhasil!</h2>
+        <p style="font-size: 0.9rem; color: #475569; line-height: 1.5; margin-bottom: 24px;">
+            {{ session('success') }}
+        </p>
+        <button type="button" onclick="document.getElementById('successModal').classList.remove('show')" style="background: #16a34a; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
+            Tutup
+        </button>
+    </div>
+</div>
+@endif
+
 @endsection
 
 @push('styles')
@@ -418,6 +437,10 @@
     @keyframes modalPop {
         from { transform: scale(0.95); opacity: 0; }
         to   { transform: scale(1);    opacity: 1; }
+    }
+    @keyframes modalPopBounce {
+        0% { transform: scale(0.8); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
     }
     .modal-box h2 {
         font-size: 1.05rem; font-weight: 700;

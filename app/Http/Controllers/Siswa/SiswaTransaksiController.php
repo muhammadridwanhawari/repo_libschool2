@@ -166,6 +166,6 @@ class SiswaTransaksiController extends Controller
             ]);
         }
 
-        return back()->with('success', 'Terimakasih sudah melunasi denda! Pembayaran kamu akan segera di proses oleh Penjaga perpustakaan');
+        return back()->with('success', 'terimakasih sudah membayar denda! pembayaran kamu akan segera di proses oleh Penjaga perpustakaan.');
     }
 }
