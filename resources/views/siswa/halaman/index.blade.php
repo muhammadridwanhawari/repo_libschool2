@@ -313,15 +313,15 @@
                 $titleColor = $isLate ? '#991b1b' : '#9a3412';
                 $textColor = $isLate ? '#b91c1c' : '#c2410c';
             @endphp
-            <div {!! 'style="' . $bgStyle . '"' !!}>
-                <div {!! 'style="color: ' . $iconColor . '; gap: 10px; flex-shrink: 0; margin-top: 2px;"' !!}>
+            <div <?php echo 'style="' . $bgStyle . '"'; ?>>
+                <div <?php echo 'style="color: ' . $iconColor . '; gap: 10px; flex-shrink: 0; margin-top: 2px;"'; ?>>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                 </div>
                 <div>
-                    <h3 {!! 'style="margin: 0 0 4px; font-size: 0.95rem; font-weight: 800; color: ' . $titleColor . ';"' !!}>
+                    <h3 <?php echo 'style="margin: 0 0 4px; font-size: 0.95rem; font-weight: 800; color: ' . $titleColor . '"'; ?>>
                         {{ $isLate ? 'Buku Terlambat!' : 'Peringatan Deadline!' }}
                     </h3>
-                    <p {!! 'style="margin: 0; font-size: 0.85rem; color: ' . $textColor . ';"' !!}>
+                    <p <?php echo 'style="margin: 0; font-size: 0.85rem; color: ' . $textColor . '"'; ?>>
                         Masa pinjam buku <strong>{{ $loan->book->title ?? 'Tidak diketahui' }}</strong> 
                         @if($isLate)
                             sudah terlewat. Segera kembalikan ke perpustakaan untuk menghindari penumpukan denda.
