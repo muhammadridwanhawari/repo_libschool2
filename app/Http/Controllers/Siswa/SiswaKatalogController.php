@@ -174,7 +174,7 @@ class SiswaKatalogController extends Controller
         // Generate kode booking
         $bookingCode = Borrowing::generateBookingCode();
 
-        // Simpan booking (stok belum dikurangi, penjaga yang akan konfirmasi)
+        // Simpan booking dan langsung kurangi stok buku
         Borrowing::create([
             'user_id'      => Auth::id(),
             'book_id'      => $id,
@@ -184,12 +184,39 @@ class SiswaKatalogController extends Controller
             'status'       => 'booking',
         ]);
 
+        // Kurangi stok buku saat booking berhasil dibuat
+        $book->decrement('stock');
+
         return response()->json([
             'success'      => true,
             'booking_code' => $bookingCode,
             'book_title'   => $book->title,
             'book_author'  => $book->author,
             'message'      => 'Kode booking berhasil dibuat! Tunjukkan kode ini kepada penjaga perpustakaan.',
+        ]);
+    }
+    /**
+     * AJAX: Batal Booking
+     */
+    public function batalBooking($id)
+    {
+        $borrowing = Borrowing::with('book')
+            ->where('id', $id)
+            ->where('user_id', Auth::id())
+            ->where('status', 'booking')
+            ->firstOrFail();
+
+        // Kembalikan stok buku
+        if ($borrowing->book) {
+            $borrowing->book->increment('stock');
+        }
+
+        // Hapus data booking
+        $borrowing->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Booking berhasil dibatalkan dan stok buku telah dikembalikan.',
         ]);
     }
 }

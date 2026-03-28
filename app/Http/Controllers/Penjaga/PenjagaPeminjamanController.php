@@ -87,19 +87,12 @@ class PenjagaPeminjamanController extends Controller
             return back()->with('error', 'Peminjaman ini sudah diproses sebelumnya.');
         }
 
-        if ($borrowing->book->stock < 1) {
-            return back()->with('error', 'Stok buku sudah habis, tidak bisa diproses.');
-        }
-
-        // Update borrowing
+        // Update borrowing: booking → dipinjam (stok TIDAK dikurangi lagi, sudah dikurangi saat booking)
         $borrowing->update([
             'status'      => 'dipinjam',
             'borrow_date' => now()->toDateString(),
             'deadline'    => now()->addDays($borrowing->duration ?? 7)->toDateString(),
         ]);
-
-        // Kurangi stok buku
-        $borrowing->book->decrement('stock');
 
         return redirect()->route('penjaga.peminjaman')
             ->with('success', "Peminjaman buku \"{$borrowing->book->title}\" berhasil dikonfirmasi! Deadline: " . now()->addDays($borrowing->duration ?? 7)->format('d M Y'));

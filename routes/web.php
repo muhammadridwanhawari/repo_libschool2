@@ -88,6 +88,9 @@ Route::middleware(['auth', 'role:siswa'])
 
         // Ulasan Buku
         Route::post('/katalog/{id}/review', [SiswaKatalogController::class, 'review'])->name('katalog.review');
+
+        // Batal Booking
+        Route::delete('/booking/{id}/batal', [SiswaKatalogController::class, 'batalBooking'])->name('booking.batal');
     });
 
 // ═══════════════════════════════════════
