@@ -96,10 +96,11 @@
       <li><a href="#home" class="text-sm font-semibold text-blue no-underline">Beranda</a></li>
       <li><a href="#fitur" class="text-sm font-medium text-slate-700 hover:text-blue no-underline transition-colors">Fitur</a></li>
       <li><a href="#layanan" class="text-sm font-medium text-slate-700 hover:text-blue no-underline transition-colors">Layanan</a></li>
-      <li><a href="#team" class="text-sm font-medium text-slate-700 hover:text-blue no-underline transition-colors">Tentang Kami</a></li>
+      <li><a href="#about" class="text-sm font-medium text-slate-700 hover:text-blue no-underline transition-colors">Tentang Kami</a></li>
+      <li><a href="#contact" class="text-sm font-medium text-slate-700 hover:text-blue no-underline transition-colors">Hubungi Kami</a></li>
     </ul>
 
-    <a href="{{ route('login') }}" class="hidden md:block px-6 py-2 rounded-lg bg-white text-slate-800 shadow-sm border border-slate-200 text-sm font-semibold hover:bg-slate-50 transition-colors no-underline flex-shrink-0">Login</a>
+    <a href="{{ route('login') }}" class="hidden md:block px-6 py-2 rounded-full bg-white text-slate-800 shadow-sm border border-slate-200 text-sm font-semibold hover:bg-slate-50 transition-colors no-underline flex-shrink-0">Login</a>
 
     <button id="hamburger" class="hamburger md:hidden flex flex-col justify-center gap-[5px] p-1.5 bg-transparent border-none cursor-pointer" aria-label="Menu">
       <span class="block w-6 h-0.5 bg-navy rounded transition-all duration-300"></span>
@@ -113,7 +114,8 @@
   <a href="#home" onclick="closeMenu()" class="py-3 text-[15px] font-semibold text-slate-800 border-b border-slate-100 hover:text-blue no-underline transition-colors">Beranda</a>
   <a href="#fitur" onclick="closeMenu()" class="py-3 text-[15px] font-semibold text-slate-800 border-b border-slate-100 hover:text-blue no-underline transition-colors">Fitur</a>
   <a href="#layanan" onclick="closeMenu()" class="py-3 text-[15px] font-semibold text-slate-800 border-b border-slate-100 hover:text-blue no-underline transition-colors">Layanan</a>
-  <a href="#team" onclick="closeMenu()" class="py-3 text-[15px] font-semibold text-slate-800 hover:text-blue no-underline transition-colors">Tentang Kami</a>
+  <a href="#about" onclick="closeMenu()" class="py-3 text-[15px] font-semibold text-slate-800 border-b border-slate-100 hover:text-blue no-underline transition-colors">Tentang Kami</a>
+  <a href="#contact" onclick="closeMenu()" class="py-3 text-[15px] font-semibold text-slate-800 hover:text-blue no-underline transition-colors">Hubungi Kami</a>
   <a href="{{ route('login') }}" class="mt-3 w-full py-3 rounded-xl bg-white border border-slate-300 text-slate-800 text-[15px] font-bold text-center no-underline block">Login</a>
 </div>
 
@@ -218,7 +220,7 @@
 </section>
 
 <!-- SECTION METODE PEMINJAMAN -->
-<section class="py-20 px-5 md:px-8 lg:px-16 bg-white overflow-hidden">
+<section id="how-to" class="py-20 px-5 md:px-8 lg:px-16 bg-white overflow-hidden">
   <div class="max-w-6xl mx-auto">
     <h2 class="text-[clamp(24px,3vw,38px)] font-extrabold text-navy tracking-tight text-center mb-16">Bagaimana Cara Meminjam Buku?</h2>
     
@@ -358,7 +360,7 @@
 <section id="team" class="py-20 px-5 md:px-8 lg:px-16 bg-white overflow-hidden">
   <div class="max-w-6xl mx-auto">
     <h2 class="text-[clamp(24px,3vw,32px)] font-bold text-gray-900 text-center mb-16">
-      Tim Propesional Pembuatan Libshool.
+      Tim Profesional Pembuatan Libshool.
     </h2>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -401,7 +403,7 @@
 </section>
 
 {{-- ═══ SECTION: CTA Banner ═══ --}}
-<section class="py-16 px-5 md:px-8 lg:px-16 bg-white">
+<section id="contact" class="py-16 px-5 md:px-8 lg:px-16 bg-white">
   <div class="max-w-5xl mx-auto">
     <div class="relative rounded-3xl overflow-hidden" style="background: linear-gradient(135deg, #4475F2 0%, #7BA3F7 60%, #FDFDFD 100%);">
       
@@ -502,7 +504,8 @@
         <li><a href="#" class="text-[13.5px] text-slate-600 hover:text-[#3B5BDB] no-underline transition-colors">Beranda</a></li>
         <li><a href="#fitur" class="text-[13.5px] text-slate-600 hover:text-[#3B5BDB] no-underline transition-colors">Fitur</a></li>
         <li><a href="#layanan" class="text-[13.5px] text-slate-600 hover:text-[#3B5BDB] no-underline transition-colors">Layanan</a></li>
-        <li><a href="#team" class="text-[13.5px] text-slate-600 hover:text-[#3B5BDB] no-underline transition-colors">Tentang kami</a></li>
+        <li><a href="#about" class="text-[13.5px] text-slate-600 hover:text-[#3B5BDB] no-underline transition-colors">Tentang kami</a></li>
+        <li><a href="#contact" class="text-[13.5px] text-slate-600 hover:text-[#3B5BDB] no-underline transition-colors">Hubungi Kami</a></li>
       </ul>
     </div>
 
@@ -614,7 +617,7 @@
   // Scrollspy Navigation Logic
   document.addEventListener('DOMContentLoaded', () => {
     // Definisi ID tiap section yang ingin di track
-    const sections = ['home', 'fitur', 'layanan', 'team'].map(id => document.getElementById(id)).filter(Boolean);
+    const sections = ['home', 'fitur', 'how-to', 'layanan', 'about', 'team', 'contact'].map(id => document.getElementById(id)).filter(Boolean);
     const navLinksDesktop = document.querySelectorAll('nav ul a[href^="#"]');
     const navLinksMobile = document.querySelectorAll('#mobileMenu a[href^="#"]');
 
@@ -632,14 +635,15 @@
 
       // Kondisi untuk section paling bawah agar pasti terpilih
       if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight - 50) {
-         currentSectionId = 'team';
+         currentSectionId = 'contact';
       }
 
       // Update Class Desktop Links
       navLinksDesktop.forEach(link => {
         const href = link.getAttribute('href').substring(1);
-        if (['home', 'fitur', 'layanan', 'team'].includes(href)) {
-            if(href === currentSectionId) {
+        if (['home', 'fitur', 'layanan', 'about', 'contact'].includes(href)) {
+            const isActive = (href === currentSectionId) || (href === 'about' && currentSectionId === 'team') || (href === 'fitur' && currentSectionId === 'how-to');
+            if(isActive) {
                 link.classList.remove('text-slate-700', 'font-medium');
                 link.classList.add('text-blue', 'font-semibold');
             } else {
@@ -652,8 +656,9 @@
       // Update Class Mobile Links
       navLinksMobile.forEach(link => {
         const href = link.getAttribute('href').substring(1);
-        if (['home', 'fitur', 'layanan', 'team'].includes(href)) {
-            if(href === currentSectionId) {
+        if (['home', 'fitur', 'layanan', 'about', 'contact'].includes(href)) {
+            const isActive = (href === currentSectionId) || (href === 'about' && currentSectionId === 'team') || (href === 'fitur' && currentSectionId === 'how-to');
+            if(isActive) {
                 link.classList.remove('text-slate-800');
                 link.classList.add('text-blue');
             } else {

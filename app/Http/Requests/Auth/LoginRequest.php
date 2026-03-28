@@ -28,6 +28,17 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
+        // Cek apakah username ada di database
+        $user = \App\Models\User::where('username', $this->username)->first();
+
+        if (!$user) {
+            RateLimiter::hit($this->throttleKey());
+            throw ValidationException::withMessages([
+                'username' => 'Nama pengguna tidak ditemukan',
+            ]);
+        }
+
+        // Jika username ada, lakukan attempt terhadap password
         if (!Auth::attempt([
             'username' => $this->username,
             'password' => $this->password,
@@ -35,7 +46,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'username' => 'Username atau kata sandi salah.',
+                'password' => 'kata sandi yang anda masukan salah',
             ]);
         }
 
