@@ -6,7 +6,7 @@
 <style>
     /* ── Hero Profile Card ── */
     .hero-card {
-        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #4361ee 100%);
+        background: linear-gradient(to right, #89f7fe, #a8edea, #fed6e3);
         border-radius: 20px;
         padding: 32px 36px;
         display: flex;
@@ -14,24 +14,22 @@
         gap: 28px;
         margin-bottom: 28px;
         position: relative;
-        overflow: hidden;
+        /* Removed overflow:hidden so the dropdown can escape the card */
         box-shadow: 0 10px 40px rgba(37,99,235,0.3);
         min-width: 0;
     }
-    .hero-card::before {
-        content: '';
-        position: absolute;
-        top: -60px; right: -60px;
-        width: 240px; height: 240px;
-        border-radius: 50%;
+    .hero-decorators {
+        position: absolute; inset: 0; border-radius: 20px;
+        overflow: hidden; pointer-events: none; z-index: 0;
+    }
+    .hero-decorators::before {
+        content: ''; position: absolute; top: -60px; right: -60px;
+        width: 240px; height: 240px; border-radius: 50%;
         background: rgba(255,255,255,0.06);
     }
-    .hero-card::after {
-        content: '';
-        position: absolute;
-        bottom: -80px; left: 40px;
-        width: 200px; height: 200px;
-        border-radius: 50%;
+    .hero-decorators::after {
+        content: ''; position: absolute; bottom: -80px; left: 40px;
+        width: 200px; height: 200px; border-radius: 50%;
         background: rgba(255,255,255,0.04);
     }
     .hero-avatar {
@@ -48,8 +46,8 @@
     .hero-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .hero-info { flex: 1; position: relative; z-index: 1; min-width: 0; }
     .hero-greeting { font-size: 0.8rem; font-weight: 600; color: rgba(255,255,255,0.7); margin-bottom: 4px; letter-spacing: 0.3px; }
-    .hero-name { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 6px; line-height: 1.2; word-break: break-word; }
-    .hero-sub { font-size: 0.82rem; color: rgba(255,255,255,0.65); word-break: break-word; overflow-wrap: break-word; }
+    .hero-name { font-size: 1.5rem; font-weight: 800; color: #2c3e50; margin-bottom: 6px; line-height: 1.2; word-break: break-word; }
+    .hero-sub { font-size: 0.82rem; color: #5f6f73; word-break: break-word; overflow-wrap: break-word; }
     .hero-points-badge {
         display: flex; align-items: center; gap: 8px;
         background: rgba(255,255,255,0.12);
@@ -60,8 +58,8 @@
         flex-shrink: 0;
     }
     .hero-points-icon { font-size: 1.5rem; }
-    .hero-points-val { font-size: 1.4rem; font-weight: 900; color: #fbbf24; line-height: 1; }
-    .hero-points-label { font-size: 0.72rem; color: rgba(255,255,255,0.7); font-weight: 600; margin-top: 2px; }
+    .hero-points-val { font-size: 1.4rem; font-weight: 900; color: #f39c12; line-height: 1; }
+    .hero-points-label { font-size: 0.72rem; color: #5f6f73; font-weight: 800; margin-top: 2px; }
     @media (max-width: 600px) {
         .hero-card { flex-direction: column; align-items: flex-start; padding: 20px; gap: 16px; }
         .hero-avatar { width: 60px; height: 60px; font-size: 1.5rem; }
@@ -71,38 +69,49 @@
 
     /* ── Hall of Fame Podium ── */
     .hof-card {
-        background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #4361ee 100%);
+        background: linear-gradient(to bottom right, #a8edea, #fed6e3);
         border-radius: 20px;
         padding: 28px 32px 20px;
-        border: 1px solid rgba(99,130,255,0.2);
-        box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+        border: 1px solid rgba(255,255,255,0.6);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
         position: relative; overflow: hidden;
     }
     .hof-card::before {
         content: '';
         position: absolute; top: -60px; right: -60px;
         width: 200px; height: 200px; border-radius: 50%;
-        background: radial-gradient(circle, rgba(67,97,238,0.12) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
     }
     .hof-title {
-        font-size: 1.2rem; font-weight: 800; color: #fff;
-        display: flex; align-items: center; justify-content: center; gap: 10px;
+        font-size: 1.25rem; font-weight: 800; color: #2c3e50;
+        display: flex; align-items: center; justify-content: flex-start; gap: 10px;
         margin-bottom: 4px;
         letter-spacing: -0.3px;
     }
-    .hof-subtitle { font-size: 0.78rem; color: rgba(255,255,255,0.45); text-align: center; margin-bottom: 28px; }
+    .hof-subtitle { 
+        font-size: 0.8rem; color: #5f6f73; 
+        text-align: left; margin-bottom: 40px; 
+    }
 
     .hof-podium {
         display: grid;
-        grid-template-columns: 1fr 1.15fr 1fr;
+        grid-template-columns: 1fr 1.2fr 1fr;
         align-items: flex-end;
-        gap: 12px;
+        gap: 16px;
     }
-    .hof-player { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-    .hof-player-center { position: relative; top: -20px; }
+    .hof-player { 
+        display: flex; flex-direction: column; align-items: center; justify-content: flex-end; 
+    }
+    .hof-player-info {
+        display: flex; flex-direction: column; align-items: center;
+        margin-bottom: 16px;
+    }
+    .hof-player-center .hof-player-info {
+        margin-bottom: 24px;
+    }
 
     .crown {
-        font-size: 1.6rem; margin-bottom: -4px;
+        font-size: 1.8rem; margin-bottom: -12px; z-index: 10;
         filter: drop-shadow(0 0 10px rgba(255,183,0,0.8));
         animation: float 2s ease-in-out infinite;
     }
@@ -111,63 +120,129 @@
         50% { transform: translateY(-5px); }
     }
 
-    .hof-avatar {
-        width: 64px; height: 64px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 1.3rem; font-weight: 900; letter-spacing: -1px;
-        color: #fff; position: relative;
+    .avatar-wrapper {
+        position: relative;
+        display: flex; flex-direction: column; align-items: center;
     }
-    .hof-avatar-sm { width: 54px; height: 54px; font-size: 1.1rem; }
+
+    .hof-avatar {
+        width: 72px; height: 72px; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.4rem; font-weight: 900; letter-spacing: -1px;
+        color: #fff; position: relative; overflow: hidden;
+    }
+    .hof-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    
+    .hof-avatar-sm { width: 60px; height: 60px; font-size: 1.2rem; }
+    
     .hof-avatar-1 {
-        background: linear-gradient(135deg, #4361ee, #6366f1);
-        border: 3px solid #fbbf24;
-        box-shadow: 0 0 0 4px rgba(251,191,36,0.25), 0 6px 20px rgba(67,97,238,0.5);
+        background: linear-gradient(135deg, #fceabb, #f8b500);
+        border: 3px solid #fff;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.15);
     }
     .hof-avatar-2 {
-        background: linear-gradient(135deg, #475569, #64748b);
-        border: 2px solid rgba(148,163,184,0.6);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        background: linear-gradient(135deg, #e0e0e0, #cfcfcf);
+        border: 3px solid #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     .hof-avatar-3 {
-        background: linear-gradient(135deg, #92400e, #b45309);
-        border: 2px solid rgba(251,191,36,0.4);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        background: linear-gradient(135deg, #f6d365, #fda085);
+        border: 3px solid #fff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
     .hof-rank-badge {
-        display: inline-block; padding: 4px 16px; border-radius: 20px;
-        font-size: 0.75rem; font-weight: 900; margin-top: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 3px 12px; border-radius: 20px;
+        font-size: 0.7rem; font-weight: 900; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        z-index: 10;
+        letter-spacing: 0.5px;
     }
-    .hof-rank-1 { background: linear-gradient(90deg, #d97706, #fbbf24); color: #fff; border: none; box-shadow: 0 4px 16px rgba(251,191,36,0.4); }
-    .hof-rank-2 { background: rgba(255,255,255,0.2); color: #f8fafc; border: 1px solid rgba(255,255,255,0.4); backdrop-filter: blur(4px); }
-    .hof-rank-3 { background: rgba(251,146,60,0.2); color: #fffedd; border: 1px solid rgba(251,146,60,0.4); backdrop-filter: blur(4px); }
+    .hof-rank-1 { background: #fbbf24; color: #78350f; border: none; }
+    .hof-rank-2 { background: #e2e8f0; color: #334155; border: none; }
+    .hof-rank-3 { background: #ea580c; color: #fff; border: none; }
 
     .hof-name {
-        font-size: 0.85rem; font-weight: 800; color: #fff;
+        font-size: 0.85rem; font-weight: 800; color: #2c3e50;
         text-align: center; white-space: nowrap; overflow: hidden;
-        text-overflow: ellipsis; max-width: 90px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        text-overflow: ellipsis; max-width: 110px;
+        margin-top: 20px; text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
-    .hof-name-1 { font-size: 0.95rem; }
+    .hof-name-1 { font-size: 1rem; color: #f39c12; }
     
-    .hof-points-pill {
-        display: flex; align-items: center; gap: 4px;
-        padding: 4px 12px; border-radius: 20px;
-        font-size: 0.72rem; font-weight: 800; margin-top: 2px;
-        background: rgba(251,191,36,0.25); color: #fef08a; border: 1px solid rgba(251,191,36,0.5);
+    .hof-xp {
+        font-size: 0.75rem; font-weight: 800; color: #f39c12; margin-top: 4px;
+        letter-spacing: 0.5px;
     }
-    .hof-points-pill-2 { background: rgba(255,255,255,0.15); color: #f1f5f9; border: 1px solid rgba(255,255,255,0.35); }
-    .hof-points-pill-3 { background: rgba(251,146,60,0.2); color: #fed7aa; border: 1px solid rgba(251,146,60,0.4); }
+
+    .hof-role-pill {
+        display: inline-block; padding: 2px 10px; border-radius: 12px;
+        font-size: 0.6rem; font-weight: 800; margin-top: 6px;
+        letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .hof-role-1 { border: 1px solid rgba(243,156,18,0.4); color: #f39c12; background: rgba(255,255,255,0.7); }
+    .hof-role-2 { border: 1px solid rgba(95,111,115,0.3); color: #5f6f73; background: rgba(255,255,255,0.7); }
+    .hof-role-3 { border: 1px solid rgba(211,84,0,0.3); color: #e67e22; background: rgba(255,255,255,0.7); }
 
     .hof-podium-base {
-        width: 100%; border-radius: 12px 12px 4px 4px; margin-top: 14px;
-        backdrop-filter: blur(8px);
+        width: 100%; border-radius: 16px; 
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08); 
     }
-    .hof-base-1 { background: linear-gradient(180deg, rgba(226,232,240,0.35), rgba(226,232,240,0.05)); height: 75px; border: 1px solid rgba(226,232,240,0.5); border-bottom: none; box-shadow: inset 0 2px 10px rgba(226,232,240,0.2); }
-    .hof-base-2 { background: linear-gradient(180deg, rgba(203,213,225,0.25), rgba(203,213,225,0.05)); height: 55px; border: 1px solid rgba(203,213,225,0.4); border-bottom: none; box-shadow: inset 0 2px 10px rgba(203,213,225,0.15); }
-    .hof-base-3 { background: linear-gradient(180deg, rgba(148,163,184,0.2), rgba(148,163,184,0.05)); height: 45px; border: 1px solid rgba(148,163,184,0.35); border-bottom: none; box-shadow: inset 0 2px 10px rgba(148,163,184,0.1); }
+    /* Mimic the dark UI bases in the image */
+    .hof-base-1 { background: linear-gradient(to right, #fceabb, #f8b500); opacity: 0.9; height: 85px; border: 2px solid rgba(255,255,255,0.5); border-bottom: none; }
+    .hof-base-2 { background: linear-gradient(to right, #e8e8e8, #d6d6d6); height: 60px; border: 2px solid rgba(255,255,255,0.5); border-bottom: none; }
+    .hof-base-3 { background: linear-gradient(to right, #f6d365, #fda085); opacity: 0.95; height: 45px; border: 2px solid rgba(255,255,255,0.5); border-bottom: none; }
 
-    .hof-empty { text-align: center; padding: 30px 0; color: rgba(255,255,255,0.6); font-size: 0.9rem; font-weight: 500; }
+    .hof-empty { text-align: center; padding: 30px 0; color: #2c3e50; font-size: 0.95rem; font-weight: 600; }
+
+    /* ── Hall of Fame List (Ranks 4-10) ── */
+    .hof-list-container {
+        margin-top: 36px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+    .hof-list-item {
+        display: flex; align-items: center;
+        background: rgba(255, 255, 255, 0.6); 
+        backdrop-filter: blur(12px);
+        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        border-radius: 0.75rem; padding: 16px 20px;
+        transition: transform 0.2s, background 0.2s;
+    }
+    .hof-list-item:hover {
+        background: rgba(255, 255, 255, 0.9); transform: translateX(4px); 
+    }
+    .hof-list-rank { font-size: 1.1rem; font-weight: 800; color: #f39c12; width: 32px; flex-shrink: 0; }
+    .hof-list-avatar {
+        width: 36px; height: 36px; border-radius: 50%;
+        margin-right: 16px; object-fit: cover; flex-shrink: 0;
+        background: linear-gradient(to bottom right, #a8edea, #fed6e3); border: 2px solid #fff;
+        display: flex; align-items: center; justify-content: center;
+        color: #2c3e50; font-weight: 800; font-size: 0.9rem; letter-spacing: -0.5px;
+    }
+    .hof-list-info { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .hof-list-name {
+        font-size: 0.85rem; font-weight: 800; color: #2c3e50;
+        text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        letter-spacing: 0.5px;
+    }
+    .hof-list-role { display: flex; align-items: center; gap: 8px; }
+    .hof-list-role-pill {
+        background: rgba(255,255,255,0.7); border: 1px solid rgba(95,111,115,0.3);
+        color: #5f6f73; padding: 2px 8px; border-radius: 6px; font-size: 0.6rem; font-weight: 700;
+        text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .hof-list-role-text { font-size: 0.65rem; color: #5f6f73; font-weight: 600; }
+    .hof-list-points { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; margin-left: 12px; }
+    .hof-list-xp { font-size: 0.85rem; font-weight: 800; color: #f39c12; letter-spacing: 0.5px; }
+    .hof-list-lvl { font-size: 0.65rem; font-weight: 600; color: #5f6f73; }
 
     /* ── Book Grid & Cards ── */
     .book-grid {
@@ -252,6 +327,48 @@
         .hof-title-light svg { width: 16px; height: 16px; }
         .hof-subtitle-light { font-size: 0.65rem; margin-bottom: 16px; }
     }
+
+    /* ─── MODAL NOTIFIKASI ─────────────────────────────── */
+    .modal-overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.4); z-index: 1000;
+        align-items: center; justify-content: center;
+        padding: 20px;
+    }
+    .modal-overlay.show { display: flex; }
+
+    .modal-box {
+        background: #fff; border-radius: 16px;
+        width: 100%; max-width: 500px;
+        max-height: 90vh; overflow-y: auto;
+        padding: 28px 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        animation: modalPop 0.2s ease;
+    }
+    @keyframes modalPop {
+        from { transform: scale(0.95); opacity: 0; }
+        to   { transform: scale(1);    opacity: 1; }
+    }
+    .modal-box h2 {
+        font-size: 1.05rem; font-weight: 700;
+        color: #222; margin: 0 0 24px; padding-bottom: 14px;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex; justify-content: space-between; align-items: center;
+    }
+
+    .btn-cancel-modal {
+        padding: 9px 22px; border-radius: 8px; border: 1px solid #ddd;
+        background: #fff; color: #555; font-size: 0.85rem; font-weight: 600;
+        cursor: pointer; font-family: inherit; transition: all 0.15s;
+    }
+    .btn-cancel-modal:hover { background: #f5f5f5; }
+
+    .modal-footer {
+        display: flex; justify-content: flex-end; gap: 10px;
+        margin-top: 22px; padding-top: 18px; border-top: 1px solid #f0f0f0;
+    }
+    @media (max-width: 640px) {
+        .modal-box { padding: 20px 18px; }
+    }
 </style>
 @endpush
 
@@ -264,85 +381,76 @@
 
 {{-- ── HERO PROFILE CARD ── --}}
 <div class="hero-card">
-    <div class="hero-avatar">
+    <div class="hero-decorators"></div>
+    <div class="hero-avatar relative z-10">
         @if($user->avatar)
             <img src="{{ asset('storage/' . $user->avatar) }}" alt="{{ $user->username }}">
         @else
             {{ $initials }}
         @endif
     </div>
-    <div class="hero-info">
-        <p class="hero-greeting">Selamat Datang 👋</p>
-        <h1 class="hero-name">{{ $user->username }}</h1>
-        <p class="hero-sub">Jelajahi buku dan pantau aktivitas perpustakaan Anda di bulan {{ $now->translatedFormat('F Y') }}.</p>
+    <div class="hero-info relative z-10">
+        <h1 class="hero-name">Selamat datang, {{ $user->username }} ✨</h1>
+        <p class="hero-sub">Temukan cerita baru dan lanjutkan petualangan membacamu!</p>
     </div>
-    <div class="hero-points-badge">
-        <div class="hero-points-icon">⭐</div>
+    
+    <!-- Bagian Kanan Kumpulan Info & Notifikasi -->
+    <div class="flex flex-col items-end gap-3 z-10 relative">
+        @php
+            $notifCount = ($hasUnpaidFine ? 1 : 0) + (isset($deadlineLoans) ? $deadlineLoans->count() : 0);
+        @endphp
+        
+        <!-- Bell Icon / Notifikasi (DI ATAS POIN) -->
         <div>
-            <div class="hero-points-val">{{ number_format($userPoints) }}</div>
-            <div class="hero-points-label">POIN</div>
+            <button id="notifBtn" onclick="document.getElementById('modalNotif').classList.add('show')" class="relative flex items-center justify-center p-1.5 outline-none transition-transform hover:scale-105" title="Notifikasi">
+                <!-- Ikon Lonceng Solid Putih + Bayangan Lembut -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));">
+                    <path d="M12 22a2 2 0 002-2H10a2 2 0 002 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4a1.5 1.5 0 00-3 0v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" />
+                </svg>
+                
+                @if($notifCount > 0)
+                    <!-- Tanda titik merah solid dengan koordinat inline absolut untuk memastikan tidak ke tengah -->
+                    <span class="absolute rounded-full" style="top: 10px; right: 10px; width: 12px; height: 12px; background-color: #ef4444; border: 2px solid transparent;"></span>
+                @endif
+            </button>
+        </div>
+
+        <!-- Poin Badge (Di bawah lonceng notif) -->
+        <div class="hero-points-badge shadow-sm border-white/20 relative z-10 w-full justify-center sm:w-auto">
+            <div class="hero-points-icon">⭐</div>
+            <div>
+                <div class="hero-points-val text-[#f39c12]">{{ number_format($userPoints) }}</div>
+                <div class="hero-points-label text-[#5f6f73]">POIN</div>
+            </div>
         </div>
     </div>
 </div>
 
-@if($hasUnpaidFine)
-<div style="background:#fff1f2; border:1.5px solid #fecdd3; border-left:4px solid #dc2626; border-radius:10px; padding:14px 18px; margin-bottom:20px; display:flex; align-items:flex-start; gap:12px;">
-    <div style="flex-shrink:0; margin-top:2px; color:#dc2626;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-    </div>
-    <div style="flex:1;">
-        <div style="font-size:0.88rem; font-weight:700; color:#991b1b; margin-bottom:2px;">⚠️ Akun Anda Dibatasi — Ada Tagihan Denda</div>
-        <div style="font-size:0.8rem; color:#b91c1c; line-height:1.55;">Anda tidak dapat meminjam buku baru sampai semua denda dilunasi. <a href="{{ route('siswa.riwayat') }}" style="font-weight:700; color:#991b1b; text-decoration:underline;">Klik di sini untuk melunasi denda →</a></div>
-    </div>
-</div>
-@endif
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modalNotif = document.getElementById('modalNotif');
+        const btnCloseNotif = document.getElementById('btnCloseNotif');
 
-@if(isset($deadlineLoans) && $deadlineLoans->count() > 0)
-    <div style="margin-bottom: 28px; display: flex; flex-direction: column; gap: 12px;">
-        @foreach($deadlineLoans as $loan)
-            @php
-                $deadlineDate = \Carbon\Carbon::parse($loan->deadline)->startOfDay();
-                $diff = now()->startOfDay()->diffInDays($deadlineDate, false);
-                $isLate = $diff < 0;
-            @endphp
-            @php
-                $bgStyle = $isLate 
-                    ? 'background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #dc2626; padding: 14px 16px; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; min-width: 0;' 
-                    : 'background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #ea580c; padding: 14px 16px; border-radius: 8px; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); overflow: hidden; min-width: 0;';
-                $iconColor = $isLate ? '#dc2626' : '#ea580c';
-                $titleColor = $isLate ? '#991b1b' : '#9a3412';
-                $textColor = $isLate ? '#b91c1c' : '#c2410c';
-            @endphp
-            <div <?php echo 'style="' . $bgStyle . '"'; ?>>
-                <div <?php echo 'style="color: ' . $iconColor . '; gap: 10px; flex-shrink: 0; margin-top: 2px;"'; ?>>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-                </div>
-                <div>
-                    <h3 <?php echo 'style="margin: 0 0 4px; font-size: 0.95rem; font-weight: 800; color: ' . $titleColor . '"'; ?>>
-                        {{ $isLate ? 'Buku Terlambat!' : 'Peringatan Deadline!' }}
-                    </h3>
-                    <p <?php echo 'style="margin: 0; font-size: 0.85rem; color: ' . $textColor . '"'; ?>>
-                        Masa pinjam buku <strong>{{ $loan->book->title ?? 'Tidak diketahui' }}</strong> 
-                        @if($isLate)
-                            sudah terlewat. Segera kembalikan ke perpustakaan untuk menghindari penumpukan denda.
-                        @elseif($diff == 0)
-                            berakhir <strong>hari ini</strong>. Jangan lupa untuk segera mengembalikannya.
-                        @else
-                            tinggal <strong>{{ $diff }} hari lagi</strong>. Jangan lupa kembalikan tepat waktu.
-                        @endif
-                    </p>
-                </div>
-            </div>
-        @endforeach
-    </div>
-@endif
+        if (btnCloseNotif && modalNotif) {
+            btnCloseNotif.addEventListener('click', function() {
+                modalNotif.classList.remove('show');
+            });
+            // Click outside the modal box to close
+            modalNotif.addEventListener('click', function(e) {
+                if (e.target === modalNotif) {
+                    modalNotif.classList.remove('show');
+                }
+            });
+        }
+    });
+</script>
 
 
-{{-- ── Top 3 Peminjam ── --}}
+{{-- ── Top 10 Peminjam ── --}}
 <div style="margin-bottom: 24px;">
     <div class="hof-card">
-        <div class="hof-title">🏆 Top 3 Peminjam</div>
-        <div class="hof-subtitle">Papan klasemen berdasarkan total poin siswa</div>
+        <div class="hof-title">🏆 Top 10 Peminjam</div>
+        <div class="hof-subtitle">Papan klasemen poin sementara siswa</div>
 
         @php
             $first  = $topStudents->get(0);
@@ -361,56 +469,100 @@
         <div class="hof-podium">
             {{-- #2 Kiri --}}
             <div class="hof-player">
-                @if($second)
-                    <div class="hof-avatar hof-avatar-sm hof-avatar-2" style="overflow:hidden;">
-                        @if($second->avatar)
-                            <img src="{{ asset('storage/' . $second->avatar) }}" alt="{{ $second->name }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-                        @else
-                            {{ hofInitials($second->name) }}
-                        @endif
-                    </div>
-                    <div class="hof-rank-badge hof-rank-2">#2</div>
-                    <div class="hof-name">{{ strtoupper(explode(' ', $second->name)[0]) }}</div>
-                    <div class="hof-points-pill hof-points-pill-2">⭐ {{ number_format($second->points) }} poin</div>
-                @endif
+                <div class="hof-player-info">
+                    @if($second)
+                        <div class="avatar-wrapper">
+                            <div class="hof-avatar hof-avatar-sm hof-avatar-2">
+                                @if($second->avatar)
+                                    <img src="{{ asset('storage/' . $second->avatar) }}" alt="{{ $second->name }}">
+                                @else
+                                    {{ hofInitials($second->name) }}
+                                @endif
+                            </div>
+                            <div class="hof-rank-badge hof-rank-2">#2</div>
+                        </div>
+                        <div class="hof-name">{{ strtoupper(explode(' ', $second->name)[0]) }}</div>
+                        <div class="hof-xp">{{ number_format($second->points) }} POIN</div>
+                        <div class="hof-role-pill hof-role-2">SISWA</div>
+                    @endif
+                </div>
                 <div class="hof-podium-base hof-base-2"></div>
             </div>
 
             {{-- #1 Tengah --}}
             <div class="hof-player hof-player-center">
-                @if($first)
-                    <div class="crown">👑</div>
-                    <div class="hof-avatar hof-avatar-1" style="overflow:hidden;">
-                        @if($first->avatar)
-                            <img src="{{ asset('storage/' . $first->avatar) }}" alt="{{ $first->name }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-                        @else
-                            {{ hofInitials($first->name) }}
-                        @endif
-                    </div>
-                    <div class="hof-rank-badge hof-rank-1">#1</div>
-                    <div class="hof-name hof-name-1">{{ strtoupper(explode(' ', $first->name)[0]) }}</div>
-                    <div class="hof-points-pill">⭐ {{ number_format($first->points) }} poin</div>
-                @endif
+                <div class="hof-player-info">
+                    @if($first)
+                        <div class="crown">👑</div>
+                        <div class="avatar-wrapper">
+                            <div class="hof-avatar hof-avatar-1">
+                                @if($first->avatar)
+                                    <img src="{{ asset('storage/' . $first->avatar) }}" alt="{{ $first->name }}">
+                                @else
+                                    {{ hofInitials($first->name) }}
+                                @endif
+                            </div>
+                            <div class="hof-rank-badge hof-rank-1">#1</div>
+                        </div>
+                        <div class="hof-name hof-name-1">{{ strtoupper(explode(' ', $first->name)[0]) }}</div>
+                        <div class="hof-xp">{{ number_format($first->points) }} POIN</div>
+                        <div class="hof-role-pill hof-role-1">SISWA</div>
+                    @endif
+                </div>
                 <div class="hof-podium-base hof-base-1"></div>
             </div>
 
             {{-- #3 Kanan --}}
             <div class="hof-player">
-                @if($third)
-                    <div class="hof-avatar hof-avatar-sm hof-avatar-3" style="overflow:hidden;">
-                        @if($third->avatar)
-                            <img src="{{ asset('storage/' . $third->avatar) }}" alt="{{ $third->name }}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-                        @else
-                            {{ hofInitials($third->name) }}
-                        @endif
-                    </div>
-                    <div class="hof-rank-badge hof-rank-3">#3</div>
-                    <div class="hof-name">{{ strtoupper(explode(' ', $third->name)[0]) }}</div>
-                    <div class="hof-points-pill hof-points-pill-3">⭐ {{ number_format($third->points) }} poin</div>
-                @endif
+                <div class="hof-player-info">
+                    @if($third)
+                        <div class="avatar-wrapper">
+                            <div class="hof-avatar hof-avatar-sm hof-avatar-3">
+                                @if($third->avatar)
+                                    <img src="{{ asset('storage/' . $third->avatar) }}" alt="{{ $third->name }}">
+                                @else
+                                    {{ hofInitials($third->name) }}
+                                @endif
+                            </div>
+                            <div class="hof-rank-badge hof-rank-3">#3</div>
+                        </div>
+                        <div class="hof-name">{{ strtoupper(explode(' ', $third->name)[0]) }}</div>
+                        <div class="hof-xp">{{ number_format($third->points) }} POIN</div>
+                        <div class="hof-role-pill hof-role-3">SISWA</div>
+                    @endif
+                </div>
                 <div class="hof-podium-base hof-base-3"></div>
             </div>
         </div>
+        
+        {{-- List Ranks 4-10 --}}
+        @if($topStudents->count() > 3)
+            <div class="hof-list-container">
+                @foreach($topStudents->slice(3) as $index => $student)
+                    @php $rank = $index + 1; @endphp
+                    <div class="hof-list-item">
+                        <div class="hof-list-rank">{{ $rank }}</div>
+                        <div class="hof-list-avatar">
+                            @if($student->avatar)
+                                <img src="{{ asset('storage/' . $student->avatar) }}" alt="{{ $student->name }}">
+                            @else
+                                {{ hofInitials($student->name) }}
+                            @endif
+                        </div>
+                        <div class="hof-list-info">
+                            <div class="hof-list-name">{{ strtoupper($student->name) }}</div>
+                            <div class="hof-list-role">
+                                <span class="hof-list-role-pill">SISWA</span>
+                                <span class="hof-list-role-text">• ANGGOTA AKTIF</span>
+                            </div>
+                        </div>
+                        <div class="hof-list-points" style="justify-content: center;">
+                            <div class="hof-list-xp">{{ number_format($student->points) }} POIN</div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
         @endif
     </div>
 </div>
@@ -468,4 +620,83 @@
         </div>
     @endif
 </div>
+
+{{-- ═══ MODAL NOTIFIKASI ═══ --}}
+<div class="modal-overlay" id="modalNotif">
+    <div class="modal-box">
+        <h2 id="modalTitle">
+            <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:inline; margin-right:4px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                Notifikasi
+            </div>
+            @if(isset($notifCount) && $notifCount > 0)
+                <span style="background:#fee2e2; color:#dc2626; padding:3px 10px; border-radius:999px; font-size:0.75rem; font-weight:700;">{{ $notifCount }} Baru</span>
+            @endif
+        </h2>
+        
+        <div style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;">
+            @if(isset($notifCount) && $notifCount == 0)
+                <div style="text-align: center; padding: 40px 0; color: #94a3b8;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="none" stroke="#e2e8f0" stroke-width="1.5" viewBox="0 0 24 24" style="margin: 0 auto 12px;"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    <p style="font-size:0.9rem;">Tidak ada notifikasi saat ini.</p>
+                </div>
+            @else
+                @if(isset($hasUnpaidFine) && $hasUnpaidFine)
+                <div style="background:#fff1f2; border:1px solid #fecdd3; border-left:4px solid #dc2626; border-radius:8px; padding:16px; display:flex; gap:12px;">
+                    <div style="flex-shrink:0; margin-top:2px; color:#dc2626;">
+                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    </div>
+                    <div style="flex:1;">
+                        <div style="font-size:0.95rem; font-weight:700; color:#991b1b; margin-bottom:4px;">Akun Dibatasi — Ada Denda</div>
+                        <div style="font-size:0.85rem; color:#b91c1c; line-height:1.5;">Harap lunasi denda untuk meminjam buku. <br><a href="{{ route('siswa.riwayat') }}" style="font-weight:700; text-decoration:underline; display:inline-block; margin-top:4px;">Lihat Detail &rarr;</a></div>
+                    </div>
+                </div>
+                @endif
+
+                @if(isset($deadlineLoans) && $deadlineLoans->count() > 0)
+                    @foreach($deadlineLoans as $loan)
+                        @php
+                            $deadlineDate = \Carbon\Carbon::parse($loan->deadline)->startOfDay();
+                            $diff = now()->startOfDay()->diffInDays($deadlineDate, false);
+                            $isLate = $diff < 0;
+                        @endphp
+                        @php
+                            $bgStyle = $isLate 
+                                ? 'background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #dc2626; padding: 16px; border-radius: 8px; display: flex; gap: 12px; min-width: 0;' 
+                                : 'background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #ea580c; padding: 16px; border-radius: 8px; display: flex; gap: 12px; min-width: 0;';
+                            $iconColor = $isLate ? '#dc2626' : '#ea580c';
+                            $titleColor = $isLate ? '#991b1b' : '#9a3412';
+                            $textColor = $isLate ? '#b91c1c' : '#c2410c';
+                        @endphp
+                        <div <?php echo 'style="' . $bgStyle . '"'; ?>>
+                            <div <?php echo 'style="color: ' . $iconColor . '; flex-shrink: 0; margin-top: 2px;"'; ?>>
+                                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                            </div>
+                            <div>
+                                <h3 <?php echo 'style="margin: 0 0 4px; font-size: 0.95rem; font-weight: 800; color: ' . $titleColor . '"'; ?>>
+                                    {{ $isLate ? 'Buku Terlambat!' : 'Peringatan Deadline' }}
+                                </h3>
+                                <p <?php echo 'style="margin: 0; font-size: 0.85rem; color: ' . $textColor . '; line-height: 1.5;"'; ?>>
+                                    Buku "<strong>{{ Str::limit($loan->book->title ?? '', 40) }}</strong>" 
+                                    @if($isLate)
+                                        sudah terlewat batas.
+                                    @elseif($diff == 0)
+                                        berakhir <strong>hari ini</strong>.
+                                    @else
+                                        tinggal <strong>{{ $diff }} hari</strong>.
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                    @endforeach
+                @endif
+            @endif
+        </div>
+        
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel-modal" id="btnCloseNotif">Tutup Peringatan</button>
+        </div>
+    </div>
+</div>
+
 @endsection

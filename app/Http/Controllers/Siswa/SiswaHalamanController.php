@@ -49,7 +49,7 @@ class SiswaHalamanController extends Controller
             ->where('role', 'siswa')
             ->where('points', '>', 0)
             ->orderByDesc('points')
-            ->limit(3)
+            ->limit(10)
             ->get();
 
         // Data Stat Cards untuk Auth User

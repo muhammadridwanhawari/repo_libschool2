@@ -7,88 +7,72 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     @vite('resources/css/app.css')
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body class="min-h-screen flex items-center justify-center p-4 relative" style="background: linear-gradient(135deg, #4475F2 0%, #A2BEF8 100%);">
 
-    {{-- Logo --}}
-    <div class="flex justify-center pt-10 pb-6">
-        <img src="{{ asset('images/logo/logo.png') }}" alt="LibSchool Logo" width="92" height="92" style="object-fit:contain;filter:drop-shadow(0 6px 20px rgba(99,102,241,0.35))">
-    </div>
+    {{-- Kartu --}}
+    <div class="w-full max-w-[500px] bg-white rounded-3xl shadow-xl px-10 py-12 relative z-10">
 
-    {{-- Garis Pemisah --}}
-    <hr class="border-t-[1.5px] border-indigo-100 w-full">
-
-    {{-- Konten Utama --}}
-    <main class="flex-1 flex flex-col items-center px-4 pt-10 pb-4">
-        <div class="w-full max-w-[420px] bg-white rounded-[1.25rem] border border-violet-100 shadow-[0_4px_24px_rgba(99,102,241,0.08)] px-9 py-9">
-
-            {{-- Breadcrumb --}}
-            <nav class="text-[0.82rem] mb-5 text-gray-400">
-                <a href="/" class="text-indigo-500 font-semibold no-underline hover:underline">Beranda</a>
-                <span class="mx-1 text-gray-300">/</span>
-                <a href="{{ route('login') }}" class="text-indigo-500 font-semibold no-underline hover:underline">Login</a>
-                <span class="mx-1 text-gray-300">/</span>
-                <span>Lupa Kata Sandi</span>
-            </nav>
-
-            {{-- Judul --}}
-            <h1 class="text-[1.65rem] font-bold text-indigo-950 mb-1.5">Lupa Kata Sandi?</h1>
-            <p class="text-[0.85rem] text-slate-400 mb-7 leading-relaxed">
-                Masukkan alamat email Anda dan kami akan mengirimkan tautan untuk mereset kata sandi Anda.
-            </p>
-
-            {{-- Status Sesi --}}
-            @if (session('status'))
-                <div class="mb-5 px-4 py-3.5 bg-green-50 border border-green-200 rounded-[0.7rem] text-green-600 text-[0.83rem]">
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            {{-- Pesan Error --}}
-            @if ($errors->any())
-                <div class="mb-5 px-4 py-3.5 bg-red-50 border border-red-200 rounded-[0.7rem] text-red-600 text-[0.83rem]">
-                    <ul class="list-none p-0 m-0">
-                        @foreach ($errors->all() as $error)
-                            <li>• {{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <form method="POST" action="{{ route('password.email') }}">
-                @csrf
-
-                {{-- Alamat Email --}}
-                <div class="mb-5">
-                    <label for="email" class="block text-[0.875rem] font-semibold text-indigo-950 mb-1.5">Alamat Email</label>
-                    <input type="email" name="email" id="email"
-                           class="w-full border-[1.5px] border-gray-200 rounded-[0.65rem] px-4 py-2.5 text-[0.875rem] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-indigo-500 focus:ring-[3px] focus:ring-indigo-500/15 placeholder-slate-300"
-                           placeholder="contoh@email.com"
-                           value="{{ old('email') }}"
-                           required autofocus>
-                </div>
-
-                {{-- Tombol Submit --}}
-                <button type="submit"
-                        class="w-full mt-2 bg-indigo-500 text-white border-0 rounded-[0.75rem] py-3.5 text-[0.95rem] font-bold tracking-wide cursor-pointer transition-all duration-200 shadow-[0_3px_10px_rgba(99,102,241,0.3)] hover:bg-indigo-600 hover:shadow-[0_5px_16px_rgba(99,102,241,0.4)] active:bg-indigo-700 block">
-                    Kirim Tautan Reset
-                </button>
-            </form>
+        {{-- Logo --}}
+        <div class="flex justify-center mb-6">
+            <img src="{{ asset('images/logo/LogoBlack.png') }}" alt="LibSchool Logo" class="h-14 w-auto object-contain">
         </div>
 
-        {{-- Link kembali login --}}
-        <p class="text-center mt-6 text-[0.85rem] text-gray-400">
-            Ingat kata sandi?
-            <a href="{{ route('login') }}" class="text-indigo-500 font-bold no-underline hover:underline">Login!</a>
+        {{-- Judul / Subtitle --}}
+        <h1 class="text-[22px] font-bold text-center text-slate-800 mb-2">Lupa Kata Sandi?</h1>
+        <p class="text-[15px] font-medium text-slate-600 text-center mb-8 leading-relaxed">
+            Masukkan alamat email Anda dan kami akan mengirimkan tautan untuk mereset kata sandi Anda.
         </p>
-    </main>
 
-    <footer class="text-center text-[0.8rem] text-slate-400 py-6 px-4">
-        &copy; 2026 LibSchool. Hak cipta dilindungi.
-    </footer>
+        {{-- Status / Error --}}
+        @if (session('status'))
+            <div class="mb-5 px-4 py-3 bg-green-50 border border-green-200 rounded-xl text-green-600 text-sm font-medium">
+                {{ session('status') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm font-medium">
+                <ul class="list-none p-0 m-0">
+                    @foreach ($errors->all() as $error)
+                        <li>• {{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('password.email') }}" autocomplete="off">
+            @csrf
+
+            {{-- Input Email --}}
+            <div class="mb-8">
+                <label for="email" class="block text-[15px] font-medium text-slate-800 mb-2">Alamat Email</label>
+                <input type="email" name="email" id="email"
+                       class="w-full border border-gray-300 rounded-xl px-4 py-3 text-[15px] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-[#4475F2] focus:ring-[3px] focus:ring-[#4475F2]/20"
+                       placeholder="contoh@email.com"
+                       value="{{ old('email') }}"
+                       required autofocus>
+            </div>
+
+            {{-- Tombol Submit --}}
+            <button type="submit"
+                    class="w-full bg-[#4475F2] text-white rounded-xl py-3.5 text-[16px] font-bold tracking-wide transition-all hover:bg-blue-600 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:bg-blue-700 active:shadow-md">
+                Kirim Tautan Reset
+            </button>
+        </form>
+
+        {{-- Login Link --}}
+        <div class="mt-8 text-center text-[14.5px] text-gray-800">
+            Ingat kata sandi? 
+            <a href="{{ route('login') }}" class="font-bold text-[#4475F2] hover:text-blue-700 hover:underline">
+                Login disini
+            </a>
+        </div>
+    </div>
 
 </body>
 </html>
