@@ -26,7 +26,6 @@
 
         // Ambil Hak Akses Penjaga
         $perms = json_decode(Auth::user()->permissions ?? '[]', true) ?? [];
-        $aksesDasar = ['Peminjaman', 'Pengembalian', 'Riwayat Transaksi'];
         
         $semuaFiturTambahan = [
             'kategori'   => 'Kategori Buku',
@@ -34,14 +33,10 @@
             'series'     => 'Series Buku',
             'peminjaman' => 'Kelola Peminjaman (Admin)',
             'denda'      => 'Kelola Denda',
-            'pengajuan'  => 'Pengajuan Buku',
             'laporan'    => 'Laporan Transaksi'
         ];
 
         $aksesArray = [];
-        foreach ($aksesDasar as $dasar) {
-            $aksesArray[] = ['name' => $dasar, 'has_access' => true];
-        }
         foreach ($semuaFiturTambahan as $key => $label) {
             $aksesArray[] = [
                 'name' => $label,
@@ -53,7 +48,7 @@
 <style>
     /* Stat Cards (Laporan Admin Style) */
     .stat-cards {
-        display: grid; grid-template-columns: repeat(3, 1fr);
+        display: grid; grid-template-columns: repeat(4, 1fr);
         gap: 16px; margin-bottom: 28px;
     }
     .stat-card {
@@ -77,7 +72,7 @@
     .stat-card:nth-child(1) .stat-card-icon { background: #eef0ff; color: #4361ee; }
     .stat-card:nth-child(2) .stat-card-icon { background: #fef3c7; color: #f59e0b; }
     .stat-card:nth-child(3) .stat-card-icon { background: #ede9fe; color: #8b5cf6; }
-
+    .stat-card:nth-child(4) .stat-card-icon { background: #fee2e2; color: #ef4444; }
     /* Aksi Cepat */
     .quick-actions-section {
         background: #f8f9fb; border-radius: 14px;
@@ -137,7 +132,7 @@
 @endpush
 
     <div class="stat-cards">
-        {{-- Total Buku --}}
+        {{-- Stok Buku --}}
         <div class="stat-card">
             <div class="stat-card-info">
                 <p class="stat-card-label">Stok Buku</p>
@@ -147,10 +142,10 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
             </div>
         </div>
-        {{-- Sedang Dipinjam --}}
+        {{-- Pinjaman Aktif --}}
         <div class="stat-card">
             <div class="stat-card-info">
-                <p class="stat-card-label">Sedang Dipinjam</p>
+                <p class="stat-card-label">Pinjaman Aktif</p>
                 <p class="stat-card-value warning">{{ $sedangDipinjam }}</p>
             </div>
             <div class="stat-card-icon">
@@ -167,7 +162,16 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
             </div>
         </div>
-
+        {{-- Belum Dikembalikan --}}
+        <div class="stat-card">
+            <div class="stat-card-info">
+                <p class="stat-card-label">Belum Dikembalikan</p>
+                <p class="stat-card-value danger">{{ $belumKembali }}</p>
+            </div>
+            <div class="stat-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+        </div>
     </div>
 
     <div class="quick-actions-section">

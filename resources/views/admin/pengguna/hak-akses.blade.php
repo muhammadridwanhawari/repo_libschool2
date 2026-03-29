@@ -211,17 +211,7 @@
             </div>
             <p>Mengelola data series atau koleksi buku.</p>
         </div>
-        <div class="module-card">
-            <div class="module-card-header">
-                <div class="module-card-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                    </svg>
-                </div>
-                <h4>Pengajuan Buku</h4>
-            </div>
-            <p>Menerima dan mengulas pengajuan buku dari siswa.</p>
-        </div>
+
         <div class="module-card">
             <div class="module-card-header">
                 <div class="module-card-icon">
@@ -245,7 +235,7 @@
                 'kategori'   => ['label' => 'Kelola Kategori', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>'],
                 'series'     => ['label' => 'Series Buku', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16m-7 6h7"/>'],
                 'buku'       => ['label' => 'Data Buku', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>'],
-                'pengajuan'  => ['label' => 'Pengajuan Buku', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>'],
+
                 'denda'      => ['label' => 'Denda', 'icon' => '<circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2"/>'],
                 'laporan'    => ['label' => 'Laporan', 'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M18 20V10M12 20V4M6 20v-6"/>'],
             ];
@@ -372,21 +362,7 @@
                         </div>
                     </div>
 
-                    {{-- Cell 8: Pengajuan Buku --}}
-                    @php $key = 'pengajuan'; $mod = $modulesUI[$key]; $checked = in_array($key, $perms); @endphp
-                    <div class="perm-row">
-                        <div class="perm-label">
-                            <div class="perm-label-icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">{!! $mod['icon'] !!}</svg></div>
-                            {{ $mod['label'] }}
-                        </div>
-                        <div class="perm-status">
-                            <span class="status-text-{{ $p->id }}-{{ $key }}">{{ $checked ? 'Aktif' : 'Nonaktif' }}</span>
-                            <label class="toggle-switch">
-                                <input type="checkbox" name="permissions[]" value="{{ $key }}" {{ $checked ? 'checked' : '' }} onchange="updateStatus(this, '{{ $p->id }}', '{{ $key }}')">
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
+
                 </div>
 
                 {{-- Simpan di bawah full width --}}
