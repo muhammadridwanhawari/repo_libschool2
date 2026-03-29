@@ -123,6 +123,16 @@
     .akses-badge.active svg { color: #10b981; }
     .akses-badge.inactive { background: #fef2f2; border-color: #fecaca; color: #9ca3af; }
     .akses-badge.inactive svg { color: #ef4444; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .stat-cards { grid-template-columns: repeat(2, 1fr); }
+        .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+        .stat-cards { grid-template-columns: 1fr; }
+        .quick-actions-grid { grid-template-columns: 1fr; }
+    }
 </style>
 @endpush
 
@@ -130,7 +140,7 @@
         {{-- Total Buku --}}
         <div class="stat-card">
             <div class="stat-card-info">
-                <p class="stat-card-label">Total Stok Buku</p>
+                <p class="stat-card-label">Stok Buku</p>
                 <p class="stat-card-value">{{ $totalBuku }}</p>
             </div>
             <div class="stat-card-icon">
@@ -140,7 +150,7 @@
         {{-- Sedang Dipinjam --}}
         <div class="stat-card">
             <div class="stat-card-info">
-                <p class="stat-card-label">Aktif</p>
+                <p class="stat-card-label">Sedang Dipinjam</p>
                 <p class="stat-card-value warning">{{ $sedangDipinjam }}</p>
             </div>
             <div class="stat-card-icon">

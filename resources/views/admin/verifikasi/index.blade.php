@@ -69,86 +69,7 @@
         padding: 2px 6px;
     }
 
-    /* ─── Table ──────────────────────────────────────── */
-    .table-card {
-        background: #fff; border-radius: 14px;
-        border: 1px solid #e8e8e8; overflow: hidden;
-    }
-    .table-card-header {
-        padding: 18px 22px 14px;
-        border-bottom: 1px solid #f0f0f0;
-    }
-    .table-card-header h2 { font-size: 0.95rem; font-weight: 700; color: #1a1a2e; margin: 0; }
 
-    .data-table { width: 100%; border-collapse: collapse; }
-    .data-table th {
-        text-align: left; font-size: 0.7rem;
-        font-weight: 700; color: #aaa;
-        text-transform: uppercase; letter-spacing: 0.04em;
-        padding: 12px 20px;
-        border-bottom: 1px solid #f0f0f0; background: #fafafa;
-    }
-    .data-table td {
-        padding: 14px 20px; font-size: 0.83rem;
-        color: #444; border-bottom: 1px solid #f7f7f7;
-        vertical-align: middle;
-    }
-    .data-table tr:last-child td { border-bottom: none; }
-    .data-table tr:hover td { background: #f9faff; }
-
-    /* Avatar inisial */
-    .user-cell { display: flex; align-items: center; gap: 12px; }
-    .avatar-initials {
-        width: 40px; height: 40px; border-radius: 12px;
-        display: flex; align-items: center; justify-content: center;
-        font-size: 0.8rem; font-weight: 800; flex-shrink: 0;
-        color: #fff;
-    }
-    .user-cell-info .username { font-weight: 700; color: #1a1a2e; font-size: 0.85rem; }
-    .user-cell-info .fullname { font-size: 0.75rem; color: #888; margin-top: 1px; }
-
-    /* Kontak */
-    .contact-cell .email  { font-size: 0.82rem; color: #444; }
-    .contact-cell .telepon{ font-size: 0.76rem; color: #888; margin-top: 2px; }
-
-    /* Badge status */
-    .badge-pending {
-        display: inline-flex; align-items: center; gap: 5px;
-        background: #fef3c7; color: #b45309;
-        border-radius: 20px; padding: 3px 12px;
-        font-size: 0.72rem; font-weight: 700;
-    }
-    .badge-dot {
-        width: 6px; height: 6px; border-radius: 50%;
-        background: #f59e0b; flex-shrink: 0;
-    }
-
-    /* Action buttons */
-    .action-btns { display: flex; gap: 8px; align-items: center; }
-    .btn-detail {
-        display: inline-flex; align-items: center; gap: 5px;
-        padding: 6px 14px; border-radius: 8px;
-        border: 1px solid #e5e7eb; background: #fff;
-        font-size: 0.78rem; font-weight: 600; color: #555;
-        cursor: pointer; transition: all 0.15s; font-family: inherit;
-        text-decoration: none;
-    }
-    .btn-detail:hover { background: #f5f5f5; }
-    .btn-verify {
-        display: inline-flex; align-items: center; gap: 5px;
-        padding: 6px 14px; border-radius: 8px;
-        border: 1px solid #bbf7d0; background: #f0fdf4;
-        font-size: 0.78rem; font-weight: 600; color: #16a34a;
-        cursor: pointer; transition: all 0.15s; font-family: inherit;
-    }
-    .btn-verify:hover { background: #dcfce7; border-color: #86efac; }
-
-    /* Empty state */
-    .empty-state {
-        text-align: center; padding: 50px 20px; color: #bbb;
-    }
-    .empty-state svg { margin-bottom: 10px; color: #ddd; }
-    .empty-state p { font-size: 0.85rem; margin: 0; }
 
     /* Pagination */
     .pagination-wrap {
@@ -222,6 +143,19 @@
         cursor: pointer; font-family: inherit; transition: all 0.2s;
     }
     .btn-verify-modal:hover { opacity: 0.9; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .stat-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+        .stat-grid { grid-template-columns: 1fr; }
+        .page-topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+        .filter-bar { flex-wrap: wrap; gap: 8px; }
+        .divider-v { display: none; }
+        .filter-bar select { width: 100%; }
+        .page-topbar-left h1 { font-size: 1.15rem; }
+    }
 </style>
 @endpush
 
@@ -306,107 +240,104 @@
     </div>
 </form>
 
-{{-- Table --}}
-<div class="table-card">
-    <div class="table-card-header">
-        <h2>Daftar Menunggu Verifikasi</h2>
+<div class="bg-white border border-slate-200 rounded-2xl overflow-hidden mt-4">
+    <div class="px-6 pt-5 pb-4 border-b border-slate-100 mb-2 mt-2">
+        <h2 class="font-bold text-slate-800 text-[1rem]">Daftar Menunggu Verifikasi</h2>
     </div>
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Anggota</th>
-                <th>Kontak</th>
-                <th>Tanggal Daftar</th>
-                <th>Status</th>
-                <th style="text-align:right;">Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($pending as $siswa)
-            @php
-                $initials = collect(explode(' ', $siswa->name))->take(2)->map(fn($w) => strtoupper($w[0]))->implode('');
-                $colors = ['6366f1','22c55e','f59e0b','ec4899','14b8a6','8b5cf6','f97316','06b6d4'];
-                $color  = '#' . $colors[$siswa->id % count($colors)];
-            @endphp
-            <tr>
-                {{-- Avatar + Info --}}
-                <td>
-                    <div class="user-cell">
-                        <div class="avatar-initials" style="background:<?php echo $color; ?>;">{{ $initials }}</div>
-                        <div class="user-cell-info">
-                            <div class="username">{{ $siswa->username }}</div>
-                            <div class="fullname">{{ $siswa->name }}</div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse min-w-[800px]">
+            <thead>
+                <tr class="bg-slate-50">
+                    <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">ANGGOTA</th>
+                    <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">KONTAK</th>
+                    <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">TANGGAL DAFTAR</th>
+                    <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">STATUS</th>
+                    <th class="px-5 py-3 text-center text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">AKSI</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                @forelse ($pending as $siswa)
+                @php
+                    $initials = collect(explode(' ', $siswa->name))->take(2)->map(fn($w) => strtoupper($w[0]))->implode('');
+                    $colors = ['6366f1','22c55e','f59e0b','ec4899','14b8a6','8b5cf6','f97316','06b6d4'];
+                    $color  = '#' . $colors[$siswa->id % count($colors)];
+                @endphp
+                <tr class="hover:bg-slate-50/60 transition-colors">
+                    <td class="px-5 py-3.5 align-middle">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-[0.8rem] font-extrabold text-white flex-shrink-0" style="background:<?php echo $color; ?>;">
+                                {{ $initials }}
+                            </div>
+                            <div class="min-w-0">
+                                <p class="font-semibold text-slate-800 text-[0.85rem] leading-tight truncate">{{ $siswa->username }}</p>
+                                <p class="text-[0.75rem] text-slate-400 truncate mt-0.5">{{ $siswa->name }}</p>
+                            </div>
                         </div>
-                    </div>
-                </td>
+                    </td>
 
-                {{-- Kontak --}}
-                <td>
-                    <div class="contact-cell">
-                        <div class="email">{{ $siswa->email }}</div>
-                        <div class="telepon">{{ $siswa->telepon ?: '-' }}</div>
-                    </div>
-                </td>
+                    <td class="px-5 py-3.5 align-middle">
+                        <div class="text-[0.82rem] text-slate-600 mb-0.5">{{ $siswa->email }}</div>
+                        <div class="text-[0.76rem] text-slate-400">{{ $siswa->telepon ?: '-' }}</div>
+                    </td>
 
-                {{-- Tanggal Daftar --}}
-                <td>{{ $siswa->created_at->format('d M Y') }}</td>
+                    <td class="px-5 py-3.5 align-middle text-slate-600 text-[0.82rem]">
+                        {{ $siswa->created_at->format('d M Y') }}
+                    </td>
 
-                {{-- Status --}}
-                <td>
-                    <span class="badge-pending">
-                        <span class="badge-dot"></span> Pending
-                    </span>
-                </td>
+                    <td class="px-5 py-3.5 align-middle">
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-[0.7rem] font-bold tracking-wide">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0"></span> Pending
+                        </span>
+                    </td>
 
-                {{-- Aksi --}}
-                <td style="text-align:right;">
-                    <div class="action-btns" style="justify-content:flex-end;">
-                        {{-- Tombol Detail --}}
-                        <button type="button" class="btn-detail btn-show-detail"
-                            data-id="{{ $siswa->id }}"
-                            data-username="{{ $siswa->username }}"
-                            data-name="{{ $siswa->name }}"
-                            data-email="{{ $siswa->email }}"
-                            data-telepon="{{ $siswa->telepon }}"
-                            data-gender="{{ $siswa->gender }}"
-                            data-daftar="{{ $siswa->created_at->format('d M Y') }}"
-                            data-color="{{ $color }}"
-                            data-initials="{{ $initials }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            </svg>
-                            Detail
-                        </button>
-
-                        {{-- Tombol Verifikasi --}}
-                        <form action="{{ route('admin.verifikasi.update', $siswa->id) }}" method="POST"
-                              onsubmit="confirmAction(event, 'Verifikasi akun @{{ $siswa->username }}?', 'Ya, Verifikasi', 'Konfirmasi Verifikasi', false); return false;">
-                            @csrf
-                            <button type="submit" class="btn-verify">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                    <td class="px-5 py-3.5 text-center align-middle">
+                        <div class="inline-flex items-center gap-2 justify-center">
+                            <button type="button" class="btn-show-detail inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-[0.75rem] font-semibold transition-colors m-0"
+                                data-id="{{ $siswa->id }}"
+                                data-username="{{ $siswa->username }}"
+                                data-name="{{ $siswa->name }}"
+                                data-email="{{ $siswa->email }}"
+                                data-telepon="{{ $siswa->telepon }}"
+                                data-gender="{{ $siswa->gender }}"
+                                data-daftar="{{ $siswa->created_at->format('d M Y') }}"
+                                data-color="{{ $color }}"
+                                data-initials="{{ $initials }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                 </svg>
-                                Verifikasi
+                                Detail
                             </button>
-                        </form>
-                    </div>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="5">
-                    <div class="empty-state">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <p>Tidak ada anggota yang menunggu verifikasi.</p>
-                    </div>
-                </td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
+
+                            <form action="{{ route('admin.verifikasi.update', $siswa->id) }}" method="POST" class="m-0"
+                                  onsubmit="confirmAction(event, 'Verifikasi akun @{{ $siswa->username }}?', 'Ya, Verifikasi', 'Konfirmasi Verifikasi', false); return false;">
+                                @csrf
+                                <button type="submit" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-green-200 bg-green-50 hover:bg-green-100 text-green-600 text-[0.75rem] font-semibold transition-colors m-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
+                                    </svg>
+                                    Verifikasi
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="5" class="px-5 py-14 text-center">
+                        <div class="flex flex-col items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="#cbd5e1" stroke-width="1.5" viewBox="0 0 24 24" class="mb-1">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
+                            </svg>
+                            <p class="text-slate-400 text-[0.85rem]">Tidak ada anggota yang menunggu verifikasi.</p>
+                        </div>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 
     @if($pending->hasPages())
     <div class="pagination-wrap">

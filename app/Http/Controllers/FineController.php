@@ -14,16 +14,7 @@ class FineController extends Controller
         $search = $request->input('search');
         $month = $request->input('month');
 
-        // Denda: hanya tampilkan peminjaman yang terlambat (deadline < hari ini dan belum dikembalikan)
-        $dendaList = Borrowing::with(['user', 'book', 'fine'])
-            ->where('status', '!=', 'dikembalikan')
-            ->where('deadline', '<', Carbon::today())
-            ->when($search, function ($q) use ($search) {
-                $q->whereHas('user', fn($u) => $u->where('name', 'like', "%$search%"))
-                  ->orWhereHas('book', fn($b) => $b->where('title', 'like', "%$search%"));
-            })
-            ->latest()
-            ->paginate(10);
+
 
         // Pembayaran Pending
         $pendingPayments = Fine::with(['borrowing.user', 'borrowing.book'])
@@ -67,7 +58,7 @@ class FineController extends Controller
             ->latest()
             ->paginate(10, ['*'], 'unpaid_page');
 
-        return view('admin.denda.index', compact('dendaList', 'search', 'month', 'pendingPayments', 'riwayatDenda', 'totalDendaDibayar', 'unpaidFines'));
+        return view('admin.denda.index', compact('search', 'month', 'pendingPayments', 'riwayatDenda', 'totalDendaDibayar', 'unpaidFines'));
     }
 
     public function show(Borrowing $denda)

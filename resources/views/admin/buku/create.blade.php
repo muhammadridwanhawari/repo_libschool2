@@ -103,6 +103,14 @@
     .alert-error ul {
         margin: 0; padding-left: 20px;
     }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .form-row { grid-template-columns: 1fr; gap: 0; }
+        .content-panel { padding: 20px 16px; }
+        .footer-actions { flex-direction: column; }
+        .btn-batal, .btn-simpan { width: 100%; text-align: center; justify-content: center; }
+    }
 </style>
 @endpush
 

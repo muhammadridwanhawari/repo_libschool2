@@ -25,64 +25,7 @@
         transform: translateY(-1px); box-shadow: 0 4px 12px rgba(67,97,238,0.3);
     }
 
-    /* Search */
-    .search-wrap {
-        display: flex; align-items: center; gap: 10px;
-        background: #fff; border-radius: 10px;
-        border: 1px solid #ddd; padding: 10px 16px;
-        margin-bottom: 20px;
-    }
-    .search-wrap svg { color: #bbb; flex-shrink: 0; }
-    .search-wrap input {
-        flex: 1; border: none; outline: none;
-        font-size: 0.88rem; color: #555;
-        background: transparent; font-family: inherit;
-    }
 
-    /* Table */
-    .table-card {
-        background: #fff; border-radius: 14px;
-        border: 1px solid #e8e8e8; overflow: hidden;
-    }
-    .data-table { width: 100%; border-collapse: collapse; }
-    .data-table th {
-        text-align: left; font-size: 0.72rem;
-        font-weight: 700; color: #888;
-        text-transform: uppercase; padding: 14px 18px;
-        border-bottom: 2px solid #f0f0f0; background: #fafafa;
-    }
-    .data-table td {
-        padding: 14px 18px; font-size: 0.85rem;
-        color: #444; border-bottom: 1px solid #f5f5f5;
-        vertical-align: middle;
-    }
-    .data-table tr:last-child td { border-bottom: none; }
-    .data-table tr:hover td { background: #f8f9ff; }
-    .data-table .td-name { font-weight: 600; color: #222; }
-
-    /* Role Badge */
-    .role-badge {
-        display: inline-block; padding: 4px 14px;
-        border-radius: 20px; font-size: 0.75rem; font-weight: 600;
-    }
-    .role-admin  { background: #fee2e2; color: #dc2626; }
-    .role-penjaga { background: #fef9c3; color: #b45309; }
-    .role-siswa  { background: #dcfce7; color: #16a34a; }
-
-    /* Action buttons */
-    .action-btns { display: flex; gap: 8px; align-items: center; }
-    .btn-edit, .btn-delete {
-        width: 32px; height: 32px;
-        display: inline-flex; align-items: center; justify-content: center;
-        border: none; border-radius: 8px; cursor: pointer; transition: all 0.15s;
-    }
-    .btn-edit { background: #eef0ff; color: #4361ee; }
-    .btn-edit:hover { background: #dde1ff; }
-    .btn-delete { background: #fee2e2; color: #dc2626; }
-    .btn-delete:hover { background: #fecaca; }
-
-    /* Empty & Pagination */
-    .empty-state { text-align: center; padding: 40px; color: #999; font-size: 0.85rem; }
     .pagination-wrap {
         display: flex; align-items: center; gap: 4px;
         padding: 16px 18px;
@@ -185,6 +128,16 @@
         visibility: hidden;
         pointer-events: none;
     }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .btn-primary { width: 100%; justify-content: center; }
+    }
+    @media (max-width: 640px) {
+        .form-grid { grid-template-columns: 1fr; }
+        .modal-box { padding: 20px 18px; }
+    }
 </style>
 @endpush
 
@@ -200,82 +153,102 @@
         <button class="btn-primary" id="btnTambahPengguna">+ Tambah Pengguna</button>
     </div>
 
-    {{-- Search --}}
-    <form action="{{ route('admin.pengguna.index') }}" method="GET">
-        <div class="search-wrap">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-            </svg>
-            <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari Nama Peminjam atau Judul Buku..">
+    <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden mt-4">
+        {{-- Search & Header --}}
+        <div class="px-6 pt-5 pb-4 flex items-center justify-between flex-wrap gap-4 border-b border-slate-100 mb-2">
+            <div>
+                <h2 class="font-bold text-slate-800 text-[1rem]">Daftar Pengguna</h2>
+                <p class="text-[0.78rem] text-slate-400 mt-0.5">{{ $users->total() }} pengguna terdaftar</p>
+            </div>
+            
+            <form action="{{ route('admin.pengguna.index') }}" method="GET" class="w-full sm:w-auto m-0">
+                <div class="flex items-center gap-2 border border-slate-200 rounded-xl px-4 py-2.5 bg-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                    <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari Nama Pengguna..." class="w-full sm:w-64 border-none outline-none text-[0.88rem] text-slate-600 bg-transparent font-[inherit]">
+                </div>
+            </form>
         </div>
-    </form>
 
-    {{-- Table --}}
-    <div class="table-card">
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Nama Pengguna</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Nama Lengkap</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($users as $user)
-                <tr>
-                    <td class="td-name">{{ $user->username }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>
-                        @php $r = strtolower($user->role); @endphp
-                        <span class="role-badge role-{{ $r }}">
-                            {{ ucfirst($user->role === 'penjaga' ? 'Petugas' : $user->role) }}
-                        </span>
-                    </td>
-                    <td>{{ $user->name && $user->name !== $user->username ? $user->name : '-' }}</td>
-                    <td>
-                        <div class="action-btns">
-                            {{-- Edit --}}
-                            <button type="button" class="btn-edit btn-edit-pengguna"
-                                data-id="{{ $user->id }}"
-                                data-username="{{ $user->username }}"
-                                data-email="{{ $user->email }}"
-                                data-role="{{ $user->role }}"
-                                data-name="{{ $user->name }}"
-                                data-telepon="{{ $user->telepon }}"
-                                data-gender="{{ $user->gender }}"
-                                title="Edit">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                </svg>
-                            </button>
-
-                            {{-- Hapus (Admin tidak boleh hapus dirinya sendiri) --}}
-                            @if($user->id !== auth()->id())
-                            <form action="{{ route('admin.pengguna.destroy', $user->id) }}" method="POST"
-                                  onsubmit="confirmAction(event, 'Yakin ingin menghapus pengguna {{ $user->username }}?', 'Ya, Hapus', 'Konfirmasi Hapus'); return false;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn-delete" title="Hapus">
+        {{-- Table --}}
+        <div class="overflow-x-auto">
+            <table class="w-full border-collapse min-w-[800px]">
+                <thead>
+                    <tr class="bg-slate-50">
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">NAMA PENGGUNA</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">EMAIL</th>
+                        <th class="px-5 py-3 text-center text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">ROLE</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">NAMA LENGKAP</th>
+                        <th class="px-5 py-3 text-center text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">AKSI</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse ($users as $user)
+                    <tr class="hover:bg-slate-50/60 transition-colors">
+                        <td class="px-5 py-3.5 align-middle">
+                            <span class="font-semibold text-slate-800 text-[0.85rem]">{{ $user->username }}</span>
+                        </td>
+                        <td class="px-5 py-3.5 align-middle text-slate-600 text-[0.85rem]">
+                            {{ $user->email }}
+                        </td>
+                        <td class="px-5 py-3.5 align-middle text-center">
+                            @php $r = strtolower($user->role); @endphp
+                            @if($r == 'admin')
+                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fee2e2] text-[#dc2626] uppercase">Admin</span>
+                            @elseif($r == 'penjaga')
+                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fef9c3] text-[#b45309] uppercase">Petugas</span>
+                            @else
+                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dcfce7] text-[#16a34a] uppercase">Siswa</span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-3.5 align-middle">
+                            <span class="text-slate-600 text-[0.85rem]">{{ $user->name && $user->name !== $user->username ? $user->name : '-' }}</span>
+                        </td>
+                        <td class="px-5 py-3.5 text-center align-middle">
+                            <div class="inline-flex items-center gap-2 justify-center">
+                                <button type="button" class="btn-edit-pengguna text-blue-600 bg-blue-50 hover:bg-blue-100 transition-colors rounded-lg w-8 h-8 flex items-center justify-center"
+                                    data-id="{{ $user->id }}"
+                                    data-username="{{ $user->username }}"
+                                    data-email="{{ $user->email }}"
+                                    data-role="{{ $user->role }}"
+                                    data-name="{{ $user->name }}"
+                                    data-telepon="{{ $user->telepon }}"
+                                    data-gender="{{ $user->gender }}"
+                                    title="Edit">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <polyline points="3 6 5 6 21 6"/>
-                                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                     </svg>
                                 </button>
-                            </form>
-                            @endif
-                        </div>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="5" class="empty-state">Belum ada pengguna terdaftar.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+
+                                @if($user->id !== auth()->id())
+                                <form action="{{ route('admin.pengguna.destroy', $user->id) }}" method="POST" style="margin: 0;"
+                                      onsubmit="confirmAction(event, 'Yakin ingin menghapus pengguna {{ $user->username }}?', 'Ya, Hapus', 'Konfirmasi Hapus'); return false;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-600 bg-red-50 hover:bg-red-100 transition-colors rounded-lg w-8 h-8 flex items-center justify-center" title="Hapus">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <polyline points="3 6 5 6 21 6"/>
+                                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                        </svg>
+                                    </button>
+                                </form>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="5" class="px-5 py-14 text-center">
+                            <div class="flex flex-col items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#cbd5e1" stroke-width="1.5" viewBox="0 0 24 24" class="mb-1"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                                <p class="text-slate-400 text-[0.85rem]">Belum ada pengguna terdaftar.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
 
         @if($users->hasPages())
         <div class="pagination-wrap">

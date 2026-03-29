@@ -129,7 +129,7 @@
   <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-10 px-5 md:px-8 lg:px-16 pt-32 pb-12 md:pt-40 md:pb-20 min-h-screen">
     <div class="animate-fadeUp text-center md:text-left pr-0 md:pr-10">
       <h1 class="text-[clamp(36px,7vw,72px)] font-extrabold leading-tight tracking-tight text-navy mb-4">
-        Perpustakaan Digital Sekolah Modern <span class=" text-blue underline decoration-blue/40 underline-offset-4">Hemat Waktu, Pinjam Buku Instant!</span><br>
+        Perpustakaan Digital Sekolah Modern <span class=" text-blue decoration-blue/40 underline-offset-4">Hemat Waktu, Pinjam Buku Instant!</span><br>
       </h1>
       <p class="text-[clamp(16px,2.5vw,20px)] leading-relaxed text-slate-500 max-w-md mx-auto md:mx-0 mb-8">
         Mulailah perjalanan sastra yang belum pernah ada sebelumnya dengan aplikasi perpustakaan revolusioner kami! Memperkenalkan pengalaman tanpa hambatan yang melampaui batasan tradisional, di mana Anda dapat dengan mudah mencari buku favorit Anda. ✨

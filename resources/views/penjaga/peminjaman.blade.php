@@ -65,6 +65,15 @@
     }
     .pagination-wrap .active { background: #4361ee; color: #fff; border-color: #4361ee; }
     .pagination-wrap nav p.text-sm.text-gray-700 { display: none !important; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .stat-cards { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+        .stat-cards { grid-template-columns: 1fr; }
+        .stat-card-value { font-size: 1.6rem; }
+    }
 </style>
 @endpush
 
@@ -72,7 +81,7 @@
     <div class="stat-cards">
         <div class="stat-card">
             <div class="stat-card-info">
-                <p class="stat-card-label">Total Buku</p>
+                <p class="stat-card-label">Stok Buku</p>
                 <p class="stat-card-value">{{ $totalBuku }}</p>
             </div>
             <div class="stat-card-icon">
@@ -106,18 +115,18 @@
         <p class="text-[0.8rem] text-slate-400 mb-4">Masukkan kode booking dari siswa untuk memproses peminjaman.</p>
 
         {{-- Search Kode Booking --}}
-        <div class="flex gap-3 mb-5">
+        <div class="flex gap-3 mb-5 flex-wrap">
             <input
                 type="text"
                 id="inputKodeBooking"
                 placeholder="Contoh: BK-20260310-AB1C"
                 class="flex-1 border border-slate-200 rounded-xl px-4 py-3 text-[0.88rem] font-mono font-semibold uppercase tracking-wider outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100 transition-all"
-                style="letter-spacing: 0.08em;"
+                style="letter-spacing: 0.08em; min-width: 200px;"
                 oninput="this.value = this.value.toUpperCase()"
             >
             <button
                 onclick="cariBooking()"
-                class="text-white font-semibold rounded-xl px-6 py-3 text-[0.88rem] transition-colors flex items-center gap-2"
+                class="text-white font-semibold rounded-xl px-6 py-3 text-[0.88rem] transition-colors flex items-center gap-2 w-full sm:w-auto justify-center"
                 style="background:#4361ee;"
                 onmouseover="this.style.background='#3a56d4'" onmouseout="this.style.background='#4361ee'"
             >
@@ -179,13 +188,13 @@
             <table class="w-full border-collapse min-w-[800px]">
                 <thead>
                     <tr class="bg-slate-50">
-                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">KODE BOOKING</th>
-                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">BUKU</th>
-                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">SISWA</th>
-                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">TGL PINJAM</th>
-                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">DEADLINE</th>
-                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">STATUS</th>
-                        <th class="px-5 py-3 text-center text-[0.72rem] font-bold text-slate-500 border-b border-slate-100">AKSI</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">KODE BOOKING</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">BUKU</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">SISWA</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">TGL PINJAM</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">DEADLINE</th>
+                        <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">STATUS</th>
+                        <th class="px-5 py-3 text-center text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">AKSI</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">

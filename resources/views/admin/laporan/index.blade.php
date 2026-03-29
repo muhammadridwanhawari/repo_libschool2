@@ -4,7 +4,9 @@
 
 @push('styles')
 <style>
-    .breadcrumb { font-size: 0.85rem; color: #4361ee; margin-bottom: 20px; }
+    .page-header { margin-bottom: 20px; }
+    .page-header h1 { font-size: 1.4rem; font-weight: 700; color: #222; margin: 0 0 4px; }
+    .page-header p { font-size: 0.82rem; color: #4361ee; margin: 0; }
 
     /* Search / Filter Box */
     .filter-box {
@@ -83,12 +85,29 @@
     }
     .pagination-wrap .active { background: #4361ee; color: #fff; border-color: #4361ee; }
     .pagination-wrap nav p.text-sm.text-gray-700 { display: none !important; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .stat-cards { grid-template-columns: repeat(2, 1fr); }
+        .filter-row { flex-wrap: wrap; }
+        .date-input-wrap { min-width: 140px; }
+    }
+    @media (max-width: 640px) {
+        .stat-cards { grid-template-columns: 1fr; }
+        .filter-row { flex-direction: column; align-items: stretch; }
+        .date-input-wrap { width: 100%; }
+        .btn-filter { width: 100%; text-align: center; }
+        .page-header h1 { font-size: 1.15rem; }
+    }
 </style>
 @endpush
 
 @section('content')
-    {{-- Breadcrumb --}}
-    <div class="breadcrumb">Laporan</div>
+    {{-- Page Header --}}
+    <div class="page-header">
+        <h1>Laporan Peminjaman</h1>
+        <p>Rekap dan statistik seluruh transaksi peminjaman perpustakaan</p>
+    </div>
 
     {{-- Filter Box --}}
     <div class="filter-box">

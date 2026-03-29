@@ -221,6 +221,17 @@
         transform: translateY(-1px);
         box-shadow: 0 4px 12px rgba(67,97,238,0.3);
     }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .btn-tambah { width: 100%; justify-content: center; }
+        .page-header h1 { font-size: 1.15rem; }
+    }
+    @media (max-width: 640px) {
+        .modal-body { grid-template-columns: 1fr; }
+        .modal { padding: 24px 18px; }
+    }
 </style>
 @endpush
 
@@ -271,40 +282,39 @@
 {{-- Main Panel --}}
 <div class="content-panel">
     {{-- Search --}}
-    <div style="padding: 16px 16px 0;">
+    <div class="px-6 pt-5 pb-3">
         <form action="{{ route('admin.buku.index') }}" method="GET">
-            <div class="search-wrap">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-                </svg>
-                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari Judul, Penulis atau ISBN..">
+            <div class="flex items-center gap-2 border border-slate-200 rounded-xl px-4 py-2.5 bg-white">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="#94a3b8" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari Judul, Penulis atau ISBN.." class="flex-1 border-none outline-none text-[0.88rem] text-slate-600 bg-transparent font-[inherit]">
             </div>
         </form>
     </div>
 
     {{-- Table --}}
-    <table class="buku-table">
-        <thead>
-            <tr>
-                <th>SAMPUL</th>
-                <th>JUDUL &amp; ISBN</th>
-                <th>PENULIS</th>
-                <th>STOK</th>
-                <th>LOKASI</th>
-                <th>AKSI</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse ($books as $buku)
-            <tr>
-                <td>
+    <div class="overflow-x-auto">
+        <table class="w-full border-collapse min-w-[800px]">
+            <thead>
+                <tr class="bg-slate-50">
+                    <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">SAMPUL</th>
+                    <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">JUDUL &amp; ISBN</th>
+                    <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">PENULIS</th>
+                    <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">STOK</th>
+                    <th class="px-5 py-3 text-left text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">LOKASI</th>
+                    <th class="px-5 py-3 text-center text-[0.72rem] font-bold text-[#888] uppercase border-b border-slate-100">AKSI</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                @forelse ($books as $buku)
+                <tr class="hover:bg-slate-50/60 transition-colors">
+                    <td class="px-5 py-3.5 align-middle">
                     @if($buku->cover)
                         <img src="{{ asset('storage/' . $buku->cover) }}" alt="Cover" class="cover-img">
                     @else
                         <div class="no-cover">No<br>Image</div>
                     @endif
                 </td>
-                <td>
+                <td class="px-5 py-3.5 align-middle">
                     <div class="book-title">{{ $buku->title }}</div>
                     @if($buku->isbn)
                         <div class="book-isbn">ISBN: {{ $buku->isbn }}</div>
@@ -317,15 +327,15 @@
                         </div>
                     @endif
                 </td>
-                <td>
+                <td class="px-5 py-3.5 align-middle">
                     <div class="author-name">{{ $buku->author ?? '-' }}</div>
                     @if($buku->publisher)
                         <div class="author-publisher">{{ $buku->publisher }}</div>
                     @endif
-                </td>
-                <td>{{ $buku->stock }}</td>
-                <td>{{ $buku->location ?? '-' }}</td>
-                <td>
+                    </td>
+                    <td class="px-5 py-3.5 align-middle text-[#444] text-[0.85rem]">{{ $buku->stock }}</td>
+                    <td class="px-5 py-3.5 align-middle text-[#444] text-[0.85rem]">{{ $buku->location ?? '-' }}</td>
+                    <td class="px-5 py-3.5 text-center align-middle">
                     <div class="action-btns">
                         <button type="button" class="btn-edit btn-edit-buku" title="Edit"
                             data-id="{{ $buku->id }}"
@@ -357,18 +367,22 @@
                                 </svg>
                             </button>
                         </form>
-                    </div>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="6" style="text-align:center; padding:40px; color:#999;">
-                    Belum ada data buku.
-                </td>
-            </tr>
-            @endforelse
-        </tbody>
-    </table>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="6" class="px-5 py-14 text-center">
+                        <div class="flex flex-col items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#cbd5e1" stroke-width="1.5" viewBox="0 0 24 24" class="mb-1"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+                            <p class="text-slate-400 text-[0.85rem]">Belum ada data buku.</p>
+                        </div>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
 
     @if($books->hasPages())
     <div class="pagination-wrap">

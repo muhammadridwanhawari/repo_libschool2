@@ -26,13 +26,7 @@ class PenjagaPeminjamanController extends Controller
         $peminjaman = Borrowing::with(['user', 'book'])
             ->where(function($q) {
                 $q->where('status', 'booking')
-                  ->orWhere(function($sq) {
-                      $sq->where('status', 'dipinjam')
-                         ->where(function($dq) {
-                             $dq->whereNull('deadline')
-                                ->orWhere('deadline', '>=', \Carbon\Carbon::today());
-                         });
-                  });
+                  ->orWhere('status', 'dipinjam');
             })
             ->orderByRaw("CASE status WHEN 'booking' THEN 0 ELSE 1 END")
             ->latest()

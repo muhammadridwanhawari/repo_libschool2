@@ -46,7 +46,43 @@ class PenjagaPengembalianController extends Controller
             }
         }
 
-        return view('penjaga.pengembalian', compact('peminjaman', 'search'));
+        // Daftar Keterlambatan
+        $dendaList = Borrowing::with(['user', 'book', 'fine'])
+            ->where('status', 'dipinjam')
+            ->where('deadline', '<', Carbon::today())
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($subQ) use ($search) {
+                    $subQ->where('booking_code', 'like', "%$search%")
+                         ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%$search%"))
+                         ->orWhereHas('book', fn($b) => $b->where('title', 'like', "%$search%"));
+                });
+            })
+            ->latest()
+            ->paginate(10, ['*'], 'denda_page');
+
+        // Stat counts
+        $statBelumDikembalikan = Borrowing::where('status', 'dipinjam')->count();
+
+        $statSedangDipinjam = Borrowing::where('status', 'dipinjam')
+            ->where(function($q) {
+                $q->whereNull('deadline')
+                  ->orWhere('deadline', '>=', Carbon::today());
+            })->count();
+
+        $statSudahTerlambat = Borrowing::where('status', 'dipinjam')
+            ->where('deadline', '<', Carbon::today())
+            ->count();
+
+        foreach ($dendaList as $p) {
+            $p->denda_estimasi = 0;
+            $p->hari_terlambat = 0;
+            if ($p->deadline && now()->startOfDay()->gt(Carbon::parse($p->deadline)->startOfDay())) {
+                $p->hari_terlambat = now()->startOfDay()->diffInDays(Carbon::parse($p->deadline)->startOfDay());
+                $p->denda_estimasi = $p->hari_terlambat * 2000;
+            }
+        }
+
+        return view('penjaga.pengembalian', compact('peminjaman', 'dendaList', 'search', 'statBelumDikembalikan', 'statSedangDipinjam', 'statSudahTerlambat'));
     }
 
     /**

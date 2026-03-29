@@ -140,6 +140,15 @@
         background: #4361ee; color: #fff; border-color: #4361ee;
     }
     .pagination-wrap nav p.text-sm.text-gray-700 { display: none !important; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .kategori-wrapper { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 640px) {
+        .page-header h1 { font-size: 1.15rem; }
+        .form-panel, .table-panel { padding: 16px; }
+    }
 </style>
 @endpush
 

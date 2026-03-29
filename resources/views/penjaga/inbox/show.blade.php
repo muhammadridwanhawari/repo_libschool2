@@ -35,7 +35,7 @@
         </div>
 
         {{-- Actions --}}
-        <div class="px-6 py-4 border-t border-slate-100 flex justify-between items-center">
+        <div class="px-6 py-4 border-t border-slate-100 flex justify-between items-center flex-wrap gap-3">
             <a href="{{ route('penjaga.inbox') }}"
                class="text-[0.82rem] text-slate-500 hover:text-slate-700 flex items-center gap-1.5 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>

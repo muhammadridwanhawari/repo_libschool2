@@ -13,17 +13,18 @@
 
     {{-- Pencarian --}}
     <div class="bg-white rounded-2xl shadow-[0_1px_6px_rgba(0,0,0,0.06)] p-6 mb-6">
-        <form method="GET" action="{{ route('penjaga.riwayat') }}" class="flex gap-3">
+        <form method="GET" action="{{ route('penjaga.riwayat') }}" class="flex gap-3 flex-wrap">
             <input
                 type="text"
                 name="search"
                 value="{{ $search }}"
                 placeholder="Cari berdasarkan Kode Booking, Nama Siswa, atau Judul Buku..."
                 class="flex-1 border border-slate-200 rounded-xl px-4 py-3 text-[0.88rem] outline-none focus:border-sky-400 focus:ring-2 focus:ring-sky-100 transition-all"
+                style="min-width: 200px;"
             >
             <button
                 type="submit"
-                class="text-white font-semibold rounded-xl px-6 py-3 text-[0.88rem] transition-colors flex items-center gap-2"
+                class="text-white font-semibold rounded-xl px-6 py-3 text-[0.88rem] transition-colors flex items-center gap-2 w-full sm:w-auto justify-center"
                 style="background:#4737FF;"
                 onmouseover="this.style.background='#3a2ee0'" onmouseout="this.style.background='#4737FF'"
             >
@@ -31,7 +32,7 @@
                 Cari
             </button>
             @if($search)
-            <a href="{{ route('penjaga.riwayat') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl px-4 py-3 text-[0.88rem] transition-colors flex items-center justify-center">
+            <a href="{{ route('penjaga.riwayat') }}" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl px-4 py-3 text-[0.88rem] transition-colors flex items-center justify-center w-full sm:w-auto">
                 Reset
             </a>
             @endif
@@ -41,7 +42,7 @@
     {{-- Tabel Riwayat --}}
     <div class="bg-white rounded-2xl shadow-[0_1px_6px_rgba(0,0,0,0.06)] overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-[0.82rem]">
+            <table class="w-full text-[0.82rem] min-w-[700px]">
                 <thead>
                     <tr class="bg-slate-50 border-b border-slate-100">
                         <th class="text-left px-5 py-3 font-semibold text-slate-500">Kode Booking</th>

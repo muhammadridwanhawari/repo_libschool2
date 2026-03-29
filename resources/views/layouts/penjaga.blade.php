@@ -20,8 +20,9 @@
             flex-direction: column;
             position: fixed;
             left: 0; top: 0; bottom: 0;
-            z-index: 100;
+            z-index: 300;
             border-right: 1px solid #e8e8e8;
+            transition: transform 0.28s cubic-bezier(.4,0,.2,1);
         }
 
         .sidebar-logo {
@@ -116,6 +117,40 @@
             box-shadow: 0 4px 12px rgba(67,97,238,0.3);
         }
 
+        /* ── Mobile Topbar ── */
+        .admin-topbar {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 56px;
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 200;
+            gap: 12px;
+        }
+        .topbar-logo img { width: 52px; height: auto; }
+        .topbar-title { font-size: 0.9rem; font-weight: 700; color: #222; flex: 1; }
+        .hamburger-btn {
+            background: none; border: none;
+            padding: 6px; cursor: pointer;
+            border-radius: 8px; color: #444;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+        }
+        .hamburger-btn:hover { background: #f0f0f0; }
+
+        /* ── Sidebar Overlay ── */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 250;
+        }
+        .sidebar-overlay.active { display: block; }
+
         /* Main content */
         .admin-main {
             margin-left: 220px;
@@ -134,13 +169,50 @@
         }
         .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
         .alert-danger  { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        /* ── Responsive: Tablet ── */
+        @media (max-width: 1024px) {
+            .admin-main { padding: 24px 20px; }
+        }
+
+        /* ── Responsive: Mobile ── */
+        @media (max-width: 768px) {
+            .admin-topbar { display: flex; }
+            .admin-sidebar {
+                transform: translateX(-100%);
+                box-shadow: 4px 0 20px rgba(0,0,0,0.12);
+            }
+            .admin-sidebar.open { transform: translateX(0); }
+            .admin-main {
+                margin-left: 0;
+                padding: 72px 16px 24px;
+            }
+        }
     </style>
     @stack('styles')
 </head>
 <body style="display:flex; min-height:100vh; background:#fff;">
 
+    {{-- Mobile Topbar --}}
+    <header class="admin-topbar">
+        <button class="hamburger-btn" id="sidebarToggle" aria-label="Buka menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <line x1="3" y1="6"  x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+        </button>
+        <div class="topbar-logo">
+            <img src="{{ asset('images/logo/LOGO.png') }}" alt="LibSchool">
+        </div>
+        <span class="topbar-title">@yield('title', 'Dashboard')</span>
+    </header>
+
+    {{-- Sidebar Overlay --}}
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
     {{-- Sidebar --}}
-    <aside class="admin-sidebar">
+    <aside class="admin-sidebar" id="adminSidebar">
 
         {{-- Logo --}}
         <div class="sidebar-logo">
@@ -204,9 +276,6 @@
                     @if(in_array('denda', $perms))
                     <a href="{{ route('admin.denda.index') }}" class="{{ request()->routeIs('admin.denda.*') ? 'active' : '' }}">Denda</a>
                     @endif
-                    @if(in_array('pengajuan', $perms))
-                    <a href="{{ route('admin.pengajuan.index') }}" class="{{ request()->routeIs('admin.pengajuan.*') ? 'active' : '' }}">Pengajuan Buku</a>
-                    @endif
                     @if(in_array('laporan', $perms))
                     <a href="{{ route('admin.laporan.index') }}" class="{{ request()->routeIs('admin.laporan.*') ? 'active' : '' }}">Laporan</a>
                     @endif
@@ -219,7 +288,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
                 </svg>
-                <span>Peminjaman</span>
+                <span>Peminjaman Buku</span>
             </a>
 
             {{-- Pengembalian --}}
@@ -227,7 +296,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
                 </svg>
-                <span>Pengembalian</span>
+                <span>Pengembalian Buku</span>
             </a>
 
             {{-- Inbox --}}
@@ -261,5 +330,25 @@
 
     @include('components.confirm-modal')
     @stack('scripts')
+
+    <script>
+        const sidebarToggle  = document.getElementById('sidebarToggle');
+        const adminSidebar   = document.getElementById('adminSidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+        function openSidebar() {
+            adminSidebar.classList.add('open');
+            sidebarOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeSidebar() {
+            adminSidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (sidebarToggle) sidebarToggle.addEventListener('click', openSidebar);
+        if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+    </script>
 </body>
 </html>

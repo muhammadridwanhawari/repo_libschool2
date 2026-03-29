@@ -14,7 +14,6 @@ use App\Http\Controllers\Siswa\SiswaTransaksiController;
 use App\Http\Controllers\Siswa\SiswaKartuController;
 use App\Http\Controllers\Siswa\SiswaProfilController;
 use App\Http\Controllers\Siswa\SiswaPengajuanController;
-use App\Http\Controllers\Admin\PengajuanBukuController;
 use App\Http\Controllers\Penjaga\PenjagaInboxController;
 use App\Http\Controllers\Penjaga\PenjagaPeminjamanController;
 use App\Http\Controllers\Penjaga\PenjagaPengembalianController;
@@ -118,6 +117,7 @@ Route::middleware(['auth', 'role:penjaga'])
 
         // Inbox
         Route::get('/inbox', [PenjagaInboxController::class, 'index'])->name('inbox');
+        Route::post('/inbox/pengajuan/{id}/status', [PenjagaInboxController::class, 'updateStatusPengajuan'])->name('inbox.updateStatusPengajuan');
         Route::get('/inbox/{id}', [PenjagaInboxController::class, 'show'])->name('inbox.show');
         Route::delete('/inbox/{id}', [PenjagaInboxController::class, 'destroy'])->name('inbox.destroy');
     });
@@ -165,12 +165,6 @@ Route::middleware(['auth', 'role:admin,penjaga'])
         Route::resource('/series', \App\Http\Controllers\SeriesController::class)
             ->except(['create', 'show', 'edit'])
             ->middleware(\App\Http\Middleware\PermissionMiddleware::class.':series');
-
-        // Pengajuan Buku
-        Route::get('/pengajuan-buku', [PengajuanBukuController::class, 'index'])
-            ->name('pengajuan.index')->middleware(\App\Http\Middleware\PermissionMiddleware::class.':pengajuan');
-        Route::post('/pengajuan-buku/{id}/status', [PengajuanBukuController::class, 'updateStatus'])
-            ->name('pengajuan.updateStatus')->middleware(\App\Http\Middleware\PermissionMiddleware::class.':pengajuan');
 
         // Data Buku
         Route::resource('/buku', BookController::class)

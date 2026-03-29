@@ -4,7 +4,9 @@
 
 @push('styles')
 <style>
-    .breadcrumb { font-size: 0.85rem; color: #4361ee; margin-bottom: 20px; }
+    .page-header { margin-bottom: 20px; }
+    .page-header h1 { font-size: 1.4rem; font-weight: 700; color: #222; margin: 0 0 4px; }
+    .page-header p { font-size: 0.82rem; color: #4361ee; margin: 0; }
 
     /* Stat Cards (Laporan Admin Style) */
     .stat-cards {
@@ -57,14 +59,28 @@
     .quick-action-card:nth-child(1) .quick-action-icon { background: #eef0ff; color: #4361ee; }
     .quick-action-card:nth-child(2) .quick-action-icon { background: #ede9fe; color: #8b5cf6; }
     .quick-action-card:nth-child(3) .quick-action-icon { background: #d1fae5; color: #059669; }
-    .quick-action-card:hover .quick-action-icon { background: #4361ee; color: #fff; }
+    .quick-action-hover .quick-action-icon { background: #4361ee; color: #fff; }
     .quick-action-title { font-size: 0.9rem; font-weight: 600; text-align: center; margin: 0; }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+        .stat-cards { grid-template-columns: repeat(2, 1fr); }
+        .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+        .stat-cards { grid-template-columns: 1fr; }
+        .quick-actions-grid { grid-template-columns: 1fr; }
+        .page-header h1 { font-size: 1.15rem; }
+    }
 </style>
 @endpush
 
 @section('content')
-    {{-- Breadcrumb --}}
-    <div class="breadcrumb">Dashboard</div>
+    {{-- Page Header --}}
+    <div class="page-header">
+        <h1>Dashboard</h1>
+        <p>Ringkasan statistik dan aktivitas perpustakaan</p>
+    </div>
 
     {{-- Stat Cards --}}
     <div class="stat-cards">
