@@ -19,6 +19,9 @@
     .form-panel {
         background: #f8f9fb; border-radius: 14px;
         padding: 24px; border: 1px solid #eee;
+        max-width: 100%;
+        overflow: hidden;
+        min-width: 0;
     }
     .form-panel h3 {
         font-size: 1rem; font-weight: 700;
@@ -73,6 +76,9 @@
     .table-panel {
         background: #f8f9fb; border-radius: 14px;
         padding: 24px; border: 1px solid #eee;
+        max-width: 100%;
+        overflow: hidden;
+        min-width: 0;
     }
     .table-panel h3 {
         font-size: 1rem; font-weight: 700;
@@ -217,50 +223,52 @@
                 </div>
             </form>
 
-            <table class="cat-table">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama Kategori</th>
-                        <th>Jumlah Buku</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($categories as $i => $cat)
-                    <tr>
-                        <td>#{{ $categories->firstItem() + $i }}</td>
-                        <td>{{ $cat->name }}</td>
-                        <td>{{ $cat->books_count }} Buku</td>
-                        <td>
-                            <div class="action-btns">
-                                <a href="{{ route('admin.kategori.index', ['edit' => $cat->id]) }}" class="btn-edit" title="Edit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                    </svg>
-                                </a>
-                                <form action="{{ route('admin.kategori.destroy', $cat->id) }}" method="POST"
-                                      onsubmit="confirmAction(event, 'Yakin ingin menghapus kategori {{ $cat->name }}?', 'Ya, Hapus', 'Konfirmasi Hapus'); return false;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-delete" title="Hapus">
+            <div class="overflow-x-auto">
+                <table class="cat-table min-w-[500px]">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Kategori</th>
+                            <th>Jumlah Buku</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($categories as $i => $cat)
+                        <tr>
+                            <td>#{{ $categories->firstItem() + $i }}</td>
+                            <td>{{ $cat->name }}</td>
+                            <td>{{ $cat->books_count }} Buku</td>
+                            <td>
+                                <div class="action-btns">
+                                    <a href="{{ route('admin.kategori.index', ['edit' => $cat->id]) }}" class="btn-edit" title="Edit">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <polyline points="3 6 5 6 21 6"/>
-                                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                         </svg>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="empty-state">Belum ada kategori.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                    </a>
+                                    <form action="{{ route('admin.kategori.destroy', $cat->id) }}" method="POST"
+                                          onsubmit="confirmAction(event, 'Yakin ingin menghapus kategori {{ $cat->name }}?', 'Ya, Hapus', 'Konfirmasi Hapus'); return false;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-delete" title="Hapus">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <polyline points="3 6 5 6 21 6"/>
+                                                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="empty-state">Belum ada kategori.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
             @if($categories->hasPages())
             <div class="pagination-wrap">

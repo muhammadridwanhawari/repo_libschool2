@@ -19,6 +19,9 @@
     .form-panel {
         background: #f8f9fb; border-radius: 14px;
         padding: 24px; border: 1px solid #eee;
+        max-width: 100%;
+        overflow: hidden;
+        min-width: 0; /* Fixes grid item horizontal overflow */
     }
     .form-panel h3 {
         font-size: 1rem; font-weight: 700;
@@ -27,7 +30,7 @@
     .form-row {
         display: flex; gap: 16px; margin-bottom: 16px;
     }
-    .form-group { flex: 1; margin-bottom: 16px; }
+    .form-group { flex: 1; margin-bottom: 16px; min-width: 0; }
     .form-group label {
         display: block; font-size: 0.82rem;
         font-weight: 600; color: #333; margin-bottom: 6px;
@@ -39,6 +42,7 @@
         font-size: 0.85rem; font-family: inherit;
         outline: none; transition: border 0.2s;
         box-sizing: border-box;
+        max-width: 100%;
     }
     .form-group input:focus, .form-group textarea:focus { border-color: #4361ee; }
     .form-group input.is-invalid, .form-group textarea.is-invalid { border-color: #ef4444; }
@@ -73,6 +77,9 @@
     .table-panel {
         background: #f8f9fb; border-radius: 14px;
         padding: 24px; border: 1px solid #eee;
+        max-width: 100%;
+        overflow: hidden;
+        min-width: 0; /* Fixes grid item horizontal overflow */
     }
     .table-panel h3 {
         font-size: 1rem; font-weight: 700;
@@ -90,14 +97,25 @@
         flex: 1; border: none; outline: none;
         font-size: 0.85rem; color: #555;
         background: transparent; font-family: inherit;
+        min-width: 0;
     }
 
-    .cat-table { width: 100%; border-collapse: collapse; }
+    .overflow-x-auto {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .cat-table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        min-width: 600px;
+    }
     .cat-table th {
         text-align: left; font-size: 0.72rem;
         font-weight: 700; color: #888;
         text-transform: uppercase; padding: 10px 12px;
         border-bottom: 2px solid #e5e7eb;
+        white-space: nowrap;
     }
     .cat-table td {
         padding: 11px 12px; font-size: 0.85rem;
@@ -105,13 +123,14 @@
     }
     .cat-table tr:hover td { background: #f0f3ff; }
 
-    .action-btns { display: flex; gap: 8px; }
+    .action-btns { display: flex; gap: 8px; white-space: nowrap; }
     .btn-edit, .btn-delete {
         width: 30px; height: 30px;
         display: inline-flex; align-items: center;
         justify-content: center; border: none;
         border-radius: 6px; cursor: pointer;
         transition: all 0.15s;
+        flex-shrink: 0;
     }
     .btn-edit {
         background: #eef0ff; color: #4361ee;
@@ -128,6 +147,7 @@
     .pagination-wrap {
         display: flex; align-items: center;
         gap: 4px; margin-top: 14px;
+        flex-wrap: wrap;
     }
     .pagination-wrap a, .pagination-wrap span {
         display: inline-flex; align-items: center;
@@ -143,11 +163,154 @@
 
     /* Responsive */
     @media (max-width: 1024px) {
-        .kategori-wrapper { grid-template-columns: 1fr; }
+        .kategori-wrapper { 
+            grid-template-columns: 1fr; 
+        }
+        .cat-table {
+            min-width: 500px;
+        }
     }
+
+    @media (max-width: 768px) {
+        .page-header h1 { font-size: 1.2rem; }
+        .page-header p { font-size: 0.78rem; }
+        
+        .form-panel, .table-panel { 
+            padding: 18px; 
+            border-radius: 12px;
+        }
+        
+        .form-panel h3, .table-panel h3 {
+            font-size: 0.95rem;
+        }
+        
+        .cat-table {
+            min-width: 450px;
+            font-size: 0.8rem;
+        }
+        
+        .cat-table th {
+            font-size: 0.68rem;
+            padding: 8px 10px;
+        }
+        
+        .cat-table td {
+            padding: 9px 10px;
+            font-size: 0.8rem;
+        }
+        
+        .btn-edit, .btn-delete {
+            width: 28px;
+            height: 28px;
+        }
+        
+        .btn-edit svg, .btn-delete svg {
+            width: 13px;
+            height: 13px;
+        }
+    }
+
     @media (max-width: 640px) {
         .page-header h1 { font-size: 1.15rem; }
-        .form-panel, .table-panel { padding: 16px; }
+        .page-header p { font-size: 0.75rem; }
+        
+        .kategori-wrapper {
+            gap: 16px;
+        }
+        
+        .form-panel, .table-panel { 
+            padding: 16px;
+            border-radius: 10px;
+        }
+        
+        .form-panel h3, .table-panel h3 {
+            font-size: 0.9rem;
+            margin-bottom: 14px;
+        }
+        
+        .form-group input, .form-group textarea {
+            padding: 9px 12px;
+            font-size: 0.82rem;
+        }
+        
+        .btn-submit {
+            padding: 12px;
+            font-size: 0.85rem;
+        }
+        
+        .btn-cancel {
+            padding: 10px;
+            font-size: 0.82rem;
+        }
+        
+        .search-table-wrap {
+            padding: 7px 12px;
+        }
+        
+        .search-table-wrap input {
+            font-size: 0.82rem;
+        }
+        
+        .cat-table {
+            min-width: 400px;
+        }
+        
+        .cat-table th {
+            font-size: 0.65rem;
+            padding: 7px 8px;
+        }
+        
+        .cat-table td {
+            padding: 8px;
+            font-size: 0.78rem;
+        }
+        
+        .btn-edit, .btn-delete {
+            width: 26px;
+            height: 26px;
+        }
+        
+        .btn-edit svg, .btn-delete svg {
+            width: 12px;
+            height: 12px;
+        }
+        
+        .action-btns {
+            gap: 6px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .page-header {
+            margin-bottom: 16px;
+        }
+        
+        .page-header h1 { 
+            font-size: 1.05rem; 
+        }
+        
+        .page-header p { 
+            font-size: 0.72rem; 
+        }
+        
+        .form-panel, .table-panel { 
+            padding: 14px;
+        }
+        
+        .cat-table {
+            min-width: 350px;
+            font-size: 0.75rem;
+        }
+        
+        .cat-table th {
+            padding: 6px;
+            font-size: 0.62rem;
+        }
+        
+        .cat-table td {
+            padding: 7px 6px;
+            font-size: 0.75rem;
+        }
     }
 </style>
 @endpush
@@ -242,50 +405,52 @@
                 </div>
             </form>
 
-            <table class="cat-table">
-                <thead>
-                    <tr>
-                        <th>Nama Series</th>
-                        <th>Deskripsi</th>
-                        <th>Jumlah Buku</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($series as $s)
-                    <tr>
-                        <td style="font-weight:600; color:#222;">{{ $s->name }}</td>
-                        <td>{{ Str::limit($s->description ?? '-', 50) }}</td>
-                        <td>{{ $s->books_count }} Buku</td>
-                        <td>
-                            <div class="action-btns">
-                                <a href="{{ route('admin.series.index', ['edit' => $s->id]) }}" class="btn-edit" title="Edit">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                        <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
-                                        <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                                    </svg>
-                                </a>
-                                <form action="{{ route('admin.series.destroy', $s->id) }}" method="POST"
-                                      onsubmit="confirmAction(event, 'Yakin ingin menghapus series {{ $s->name }}?', 'Ya, Hapus', 'Konfirmasi Hapus'); return false;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-delete" title="Hapus">
+            <div class="overflow-x-auto">
+                <table class="cat-table">
+                    <thead>
+                        <tr>
+                            <th>Nama Series</th>
+                            <th>Deskripsi</th>
+                            <th>Jumlah Buku</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($series as $s)
+                        <tr>
+                            <td style="font-weight:600; color:#222;">{{ $s->name }}</td>
+                            <td>{{ Str::limit($s->description ?? '-', 50) }}</td>
+                            <td>{{ $s->books_count }} Buku</td>
+                            <td>
+                                <div class="action-btns">
+                                    <a href="{{ route('admin.series.index', ['edit' => $s->id]) }}" class="btn-edit" title="Edit">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <polyline points="3 6 5 6 21 6"/>
-                                            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                            <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/>
+                                            <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                         </svg>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="4" class="empty-state">Belum ada series buku.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                    </a>
+                                    <form action="{{ route('admin.series.destroy', $s->id) }}" method="POST"
+                                          onsubmit="confirmAction(event, 'Yakin ingin menghapus series {{ $s->name }}?', 'Ya, Hapus', 'Konfirmasi Hapus'); return false;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-delete" title="Hapus">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <polyline points="3 6 5 6 21 6"/>
+                                                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="4" class="empty-state">Belum ada series buku.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
 
             @if($series->hasPages())
             <div class="pagination-wrap">

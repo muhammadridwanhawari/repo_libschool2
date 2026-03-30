@@ -130,7 +130,7 @@
             z-index: 200;
             gap: 12px;
         }
-        .topbar-logo img { width: 52px; height: auto; }
+        .topbar-logo img { width: 30px; height: auto; }
         .topbar-title { font-size: 0.9rem; font-weight: 700; color: #222; flex: 1; }
         .hamburger-btn {
             background: none; border: none;
@@ -158,6 +158,7 @@
             padding: 24px 32px;
             min-height: 100vh;
             background: #fff;
+            min-width: 0;
         }
 
         /* Alert styles */

@@ -1,66 +1,87 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# LibSchool - Sistem Informasi Manajemen Perpustakaan Sekolah
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**LibSchool** adalah sebuah sistem informasi manajemen perpustakaan modern berbasis web yang dikembangkan menggunakan ekosistem **Laravel 11** dan dipoles antarmukanya menggunakan **Tailwind CSS**. Sistem ini dirancang secara khusus untuk mempermudah proses sirkulasi peminjaman buku, manajemen inventaris pustaka, pengelolaan operasional sanksi denda, hingga integrasi rekam jejak (*history*) anggota sekolah dalam satu ruang lingkup profesional.
 
-## About Laravel
+## 🌟 Fitur Utama & Multi-Role (Tiga Hak Akses)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Aplikasi dipisah menjadi 3 pintu gerbang utama untuk membatasi privasi data:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. Admin (Administrator Senior)
+Berfungsi sebagai pusat manajemen pengaturan dengan kuasa kontrol penuh atas aplikasi web ini.
+- **Kelola Data Induk Pustaka**: Mulai dari integrasi rak Kategori Buku, pembagian _Series_ (Seri) Buku secara linear, hingga pencatatan kuantitas sirkulasi stok.
+- **Kelola Daftar Pengguna**: Eksekusi tambah, ubah kata sandi rahasia, dan blokir/hapus akses untuk setiap Penjaga maupun Siswa.
+- **Verifikasi Anggota (KYC Internal)**: Layar pemvalidasi pendaftaran baru. Siswa tidak akan diizinkan *booking* peminjaman hingga akun tervalidasi oleh Admin.
+- **Manajemen Global Otoritas**: Mengontrol rekam jejak pembayaran denda masuk, mengaudit daftar pinjaman buku mandek, dan mengubah batasan otorisasi sistem.
+- **Export Laporan (Reporting)**: Tarik dan *download* rekapitulasi data krusial secara berkala.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. Penjaga (Pustakawan Front-End)
+Berfungsi sebagai ujung tombak pelaksana operasional harian fisik perpustakaan.
+- **Peminjaman Buku Instan**: Posisi Penjaga perpustakaan untuk mengeksekusi pinjaman serta menyerahkan objek buku fisik berdasar pengajuan *booking* daring otomatis dari ranah siswa.
+- **Pengembalian Otomatis**: Layar untuk mengonfirmasi dan meregristrasikan sistem pengembalian buku tepat jadwal, atau mengeksekusi perhitungan penagihan denda keterlambatan secara matematis (Otomasi sistem per-hari telat).
+- **Manajemen Inbox Pengajuan**: Berinteraksi merepons korespondensi surat dan dokumen permintaan akses sirkulasi.
 
-## Learning Laravel
+### 3. Siswa (Member Regular)
+Berfungsi sebagai pengunjung loyal penikmat literasi sekolah, dapat mengakses sistem via gawai genggam/telepon seluler.
+- **Katalog Buku Interaktif**: Mesin perpustakaan mutakhir agar siswa bisa dengan elegan mencari literatur bacaan, merangkai filter *series*/kategori, melihat ulasan deskripsi lengkap, serta menciptakan perpustakaan pribadi menggunakan fitur simpan *Favorite*.
+- **Booking Mandiri Real-Time**: Ajukan pinjaman melalui perangkat kapanpun dan biarkan Pustakawan memproses dokumen reservasi Anda sebelum menjemput koleksinya di gedung sekolah.
+- **Monitor Riwayat Akun Transparan**: Tampilan layar interaktif khusus guna mengeksplor histori tagihan terlambat bayar, rekap log pinjaman sukses/balik gudang, serta penampil tenggat batas (Deadline) peminjaman.
+- **Kustomisasi Profil Mandiri**: Fleksibilitas unggah Avatar *profil* baru dan mutasi kunci kata sandi akun dengan desain antarmuka modern yang estetik.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Modul Teknologi
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+*   **Core / Backend Framework**: Laravel 11.x (PHP 8.2+)
+*   **Database Management**: Relational Database menggunakan MySQL / MariaDB
+*   **Frontend UI Ecosystem**: Blade Templating Engine 
+*   **Struktur Visual Rendering**: Tailwind CSS v3 / Vanilla CSS modern (Responsive - Web Mobile Friendly)
+*   **Infrastruktur Autentikasi**: Laravel Session Guards & Standard Role-Based Middleware 
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Panduan Ringkas Pemasangan Standar (Development)
 
-## Laravel Sponsors
+Pastikan lingkungan server lokal (seperti XAMPP, Laragon, Valet) dan perangkat Composer serta NodeJS telah beroperasi mulus di atas mesin komputer Anda. 
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. **Pengunduhan Repositori Source Code Penuh**
+   ```bash
+   git clone <link-repositori-anda>
+   cd LIBSCHOOL
+   ```
+2. **Memulihkan Kumpulan Paket Fundamental**
+   ```bash
+   # Merangkul *Vendor* PHP
+   composer install
+   
+   # Merangkul Konstruksi *Node Modules* untuk desain Web Tailwind
+   npm install
+   ```
+3. **Menggandakan Parameter Lingkungan Otomatis**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+   > Jangan lupa, tautkan dan edit variabel `DB_DATABASE=libschool` ke database kosong Anda!
+4. **Instalasi Skema dan Isi (Seeder) Database Awal**
+   ```bash
+   php artisan migrate:fresh --seed
+   ```
+5. **Memautkan Ekosistem Aset Gambar Publik**
+   Guna memastikan gambar logo buku, pratinjau PDF, dan cover Siswa tidak pecah pada tatap muka aplikasi:
+   ```bash
+   php artisan storage:link
+   ```
+6. **Pembangkitan Dua Terminal *Dual Engine* Lokal (Running Platform)**
+   Buka *Command Prompt / Bash Terminal*, sediakan menjadi dua halaman layar dan ketik rutinitas komando ini secara masing-masing:
+   ```bash
+   # Terminal Pertama (Jantung Back-end Laravel Node Lokal Server)
+   php artisan serve
 
-### Premium Partners
+   # Terminal Kedua (Kompilator Aset HMR Vite Tailwind CSS)
+   npm run dev
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+🎉 Platform Administrasi Pustaka siap dimainkan lewat peramban web (*browser*) dengan menyentuh rute: `http://localhost:8000`. 
 
-## Contributing
+## 🔒 Standar Kebersihan Rancang-Bangun Sistem
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Bahan baku konstruksi dari baris sumber LIBSCHOOL disajikan berdasar paradigma **Clean Code Principles**, yang meliputi pemisahan fungsional via ekosistem berlapis (Middlewares, Controllers, Models, Routes) sembari tetap menyandarkan fleksibel UI dan kompatibilitas peramban telepon melalui implementasi murni *Single Point Design* Flex/Grid Layout di atas Tailwind.
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+*Dibangun dengan komitmen guna merevolusi ranah administrasi perpustakaan, menuju masa depan administrasi digital yang presisi, ringan, interaktif, dan terstruktur kuat.*

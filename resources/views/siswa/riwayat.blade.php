@@ -61,7 +61,7 @@
 @endpush
 
 @section('content')
-<div class="max-w-5xl mx-auto">
+<div class="w-full">
 
     {{-- Header --}}
     <div class="mb-6">

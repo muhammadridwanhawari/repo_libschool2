@@ -21,7 +21,7 @@
             flex-direction: column;
             position: fixed;
             left: 0; top: 0; bottom: 0;
-            z-index: 100;
+            z-index: 300;
             border-right: 1px solid #e8e8e8;
         }
 
@@ -123,27 +123,31 @@
         /* ===== MOBILE HEADER & OVERLAY ===== */
         .mobile-header {
             display: none;
-            align-items: center; justify-content: space-between;
-            padding: 15px 20px;
-            background: #fff;
-            border-bottom: 1px solid #e8e8e8;
             position: fixed;
             top: 0; left: 0; right: 0;
-            z-index: 90;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            height: 56px;
+            background: #fff;
+            border-bottom: 1px solid #e8e8e8;
+            align-items: center;
+            padding: 0 16px;
+            z-index: 200;
+            gap: 12px;
         }
-        .mobile-header-logo { height: 35px; width: auto; object-fit: contain; }
+        .mobile-header-logo { width: 30px; height: auto; object-fit: contain; display: block; }
+        .topbar-title { font-size: 0.9rem; font-weight: 700; color: #222; flex: 1; margin: 0; }
         .mobile-toggle {
             background: none; border: none;
-            cursor: pointer; padding: 5px;
+            padding: 6px; cursor: pointer;
+            border-radius: 8px; color: #444;
             display: flex; align-items: center; justify-content: center;
-            color: #333;
+            transition: background 0.15s;
         }
+        .mobile-toggle:hover { background: #f0f0f0; }
 
         .sidebar-overlay {
             display: none;
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5); z-index: 95;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45); z-index: 250;
             opacity: 0; transition: opacity 0.3s;
         }
         .sidebar-overlay.active { opacity: 1; }
@@ -156,7 +160,7 @@
             .sidebar.open { transform: translateX(0); }
             .main-content {
                 margin-left: 0;
-                padding: 85px 15px 20px; /* Space for mobile header */
+                padding: 72px 16px 24px;
             }
             .mobile-header { display: flex; }
             .sidebar-overlay { display: block; pointer-events: none; }
@@ -168,16 +172,17 @@
 <body>
 
     {{-- Mobile Header --}}
-    <div class="mobile-header">
-        <img src="{{ asset('images/logo/LOGO.png') }}" alt="LibSchool" class="mobile-header-logo">
-        <button class="mobile-toggle" id="mobileToggle" aria-label="Toggle Menu">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
+    <header class="mobile-header">
+        <button class="mobile-toggle" id="mobileToggle" aria-label="Buka menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <line x1="3" y1="6"  x2="21" y2="6"/>
+                <line x1="3" y1="12" x2="21" y2="12"/>
+                <line x1="3" y1="18" x2="21" y2="18"/>
             </svg>
         </button>
-    </div>
+        <img src="{{ asset('images/logo/LOGO.png') }}" alt="LibSchool" class="mobile-header-logo">
+        <span class="topbar-title">@yield('title', 'Dashboard')</span>
+    </header>
 
     {{-- Sidebar Overlay --}}
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
