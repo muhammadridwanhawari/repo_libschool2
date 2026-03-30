@@ -1,6 +1,6 @@
 # LibSchool - Sistem Informasi Manajemen Perpustakaan Sekolah
 
-**LibSchool** adalah sebuah sistem informasi manajemen perpustakaan modern berbasis web yang dikembangkan menggunakan ekosistem **Laravel 11** dan dipoles antarmukanya menggunakan **Tailwind CSS**. Sistem ini dirancang secara khusus untuk mempermudah proses sirkulasi peminjaman buku, manajemen inventaris pustaka, pengelolaan operasional sanksi denda, hingga integrasi rekam jejak (*history*) anggota sekolah dalam satu ruang lingkup profesional.
+**LibSchool** adalah sebuah sistem informasi manajemen perpustakaan modern berbasis web yang dikembangkan menggunakan ekosistem **Laravel 12** dan dipoles antarmukanya menggunakan **Tailwind CSS**. Sistem ini dirancang secara khusus untuk mempermudah proses sirkulasi peminjaman buku, manajemen inventaris pustaka, pengelolaan operasional sanksi denda, hingga integrasi rekam jejak (*history*) anggota sekolah dalam satu ruang lingkup profesional.
 
 ## 🌟 Fitur Utama & Multi-Role (Tiga Hak Akses)
 
@@ -12,13 +12,13 @@ Berfungsi sebagai pusat manajemen pengaturan dengan kuasa kontrol penuh atas apl
 - **Kelola Daftar Pengguna**: Eksekusi tambah, ubah kata sandi rahasia, dan blokir/hapus akses untuk setiap Penjaga maupun Siswa.
 - **Verifikasi Anggota (KYC Internal)**: Layar pemvalidasi pendaftaran baru. Siswa tidak akan diizinkan *booking* peminjaman hingga akun tervalidasi oleh Admin.
 - **Manajemen Global Otoritas**: Mengontrol rekam jejak pembayaran denda masuk, mengaudit daftar pinjaman buku mandek, dan mengubah batasan otorisasi sistem.
-- **Export Laporan (Reporting)**: Tarik dan *download* rekapitulasi data krusial secara berkala.
+- **Export Laporan (Reporting)**: Tarik dan *download* rekapitulasi data krusial secara berkala menggunakan **DomPDF**.
 
 ### 2. Penjaga (Pustakawan Front-End)
 Berfungsi sebagai ujung tombak pelaksana operasional harian fisik perpustakaan.
 - **Peminjaman Buku Instan**: Posisi Penjaga perpustakaan untuk mengeksekusi pinjaman serta menyerahkan objek buku fisik berdasar pengajuan *booking* daring otomatis dari ranah siswa.
 - **Pengembalian Otomatis**: Layar untuk mengonfirmasi dan meregristrasikan sistem pengembalian buku tepat jadwal, atau mengeksekusi perhitungan penagihan denda keterlambatan secara matematis (Otomasi sistem per-hari telat).
-- **Manajemen Inbox Pengajuan**: Berinteraksi merepons korespondensi surat dan dokumen permintaan akses sirkulasi.
+- **Manajemen Inbox Pengajuan**: Berinteraksi merespons korespondensi surat dan dokumen permintaan akses sirkulasi.
 
 ### 3. Siswa (Member Regular)
 Berfungsi sebagai pengunjung loyal penikmat literasi sekolah, dapat mengakses sistem via gawai genggam/telepon seluler.
@@ -26,18 +26,40 @@ Berfungsi sebagai pengunjung loyal penikmat literasi sekolah, dapat mengakses si
 - **Booking Mandiri Real-Time**: Ajukan pinjaman melalui perangkat kapanpun dan biarkan Pustakawan memproses dokumen reservasi Anda sebelum menjemput koleksinya di gedung sekolah.
 - **Monitor Riwayat Akun Transparan**: Tampilan layar interaktif khusus guna mengeksplor histori tagihan terlambat bayar, rekap log pinjaman sukses/balik gudang, serta penampil tenggat batas (Deadline) peminjaman.
 - **Kustomisasi Profil Mandiri**: Fleksibilitas unggah Avatar *profil* baru dan mutasi kunci kata sandi akun dengan desain antarmuka modern yang estetik.
+- **Reset Kata Sandi via Email**: Fitur lupa kata sandi yang mengirimkan tautan reset melalui sistem notifikasi email (SMTP).
 
 ## 🛠️ Modul Teknologi
 
-*   **Core / Backend Framework**: Laravel 11.x (PHP 8.2+)
-*   **Database Management**: Relational Database menggunakan MySQL / MariaDB
-*   **Frontend UI Ecosystem**: Blade Templating Engine 
-*   **Struktur Visual Rendering**: Tailwind CSS v3 / Vanilla CSS modern (Responsive - Web Mobile Friendly)
-*   **Infrastruktur Autentikasi**: Laravel Session Guards & Standard Role-Based Middleware 
+| Komponen | Detail |
+|---|---|
+| **Core / Backend Framework** | Laravel 12.x (PHP ^8.2) |
+| **Database Management** | Relational Database — MySQL / MariaDB |
+| **Frontend UI Ecosystem** | Blade Templating Engine + Alpine.js v3 |
+| **Struktur Visual Rendering** | Tailwind CSS v3 + Vanilla CSS (Responsive / Mobile Friendly) |
+| **Build Tool** | Vite v6 + laravel-vite-plugin |
+| **Infrastruktur Autentikasi** | Laravel Breeze v2 (Session Guards + Role-Based Middleware) |
+| **Export Laporan PDF** | barryvdh/laravel-dompdf v3 |
+| **HTTP Client** | Axios v1 |
+| **Notification System** | Laravel Mail Notification (SMTP — Reset Password) |
+
+## 🗂️ Struktur Model (Eloquent)
+
+Berikut adalah daftar model Eloquent yang aktif digunakan dalam proyek ini:
+
+- **User** — Data akun pengguna (Admin, Penjaga, Siswa) beserta verifikasi, avatar, dan poin.
+- **Book** — Data buku pustaka beserta stok, sinopsis, jumlah halaman, cover, dan relasi kategori/seri.
+- **Category** — Kategori / genre buku.
+- **BookSeries** — Seri / serial buku (relasi ke banyak buku).
+- **Borrowing** — Rekaman transaksi peminjaman dengan kode booking unik (`BK-YYYYMMDD-XXXX`), status, dan deadline.
+- **Fine** — Data denda keterlambatan beserta status dan metode pembayaran.
+- **Favorite** — Bookmark buku favorit per-siswa.
+- **BookReview** — Ulasan/review buku oleh siswa.
+- **Pengajuan** — Pengajuan/permohonan sirkulasi dari siswa ke Penjaga.
+- **Message** — Sistem pesan internal antar pengguna.
 
 ## 🚀 Panduan Ringkas Pemasangan Standar (Development)
 
-Pastikan lingkungan server lokal (seperti XAMPP, Laragon, Valet) dan perangkat Composer serta NodeJS telah beroperasi mulus di atas mesin komputer Anda. 
+Pastikan lingkungan server lokal (seperti XAMPP, Laragon, Valet) dan perangkat Composer serta NodeJS telah beroperasi mulus di atas mesin komputer Anda.
 
 1. **Pengunduhan Repositori Source Code Penuh**
    ```bash
@@ -48,7 +70,7 @@ Pastikan lingkungan server lokal (seperti XAMPP, Laragon, Valet) dan perangkat C
    ```bash
    # Merangkul *Vendor* PHP
    composer install
-   
+
    # Merangkul Konstruksi *Node Modules* untuk desain Web Tailwind
    npm install
    ```
@@ -76,8 +98,9 @@ Pastikan lingkungan server lokal (seperti XAMPP, Laragon, Valet) dan perangkat C
    # Terminal Kedua (Kompilator Aset HMR Vite Tailwind CSS)
    npm run dev
    ```
+   > Alternatif: gunakan satu perintah terintegrasi `composer run dev` untuk menjalankan keduanya + queue listener + log watcher secara paralel menggunakan **concurrently**.
 
-🎉 Platform Administrasi Pustaka siap dimainkan lewat peramban web (*browser*) dengan menyentuh rute: `http://localhost:8000`. 
+🎉 Platform Administrasi Pustaka siap dimainkan lewat peramban web (*browser*) dengan menyentuh rute: `http://localhost:8000`.
 
 ## 🔒 Standar Kebersihan Rancang-Bangun Sistem
 
