@@ -104,11 +104,13 @@ class PenjagaPengembalianController extends Controller
             $hariTerlambat = now()->startOfDay()->diffInDays(Carbon::parse($borrowing->deadline)->startOfDay());
             $amount = $hariTerlambat * 2000; // Rp 2.000 per hari
 
-            Fine::create([
-                'borrowing_id' => $borrowing->id,
-                'amount'       => $amount,
-                'paid'         => false,
-            ]);
+            if (!$borrowing->fine) {
+                Fine::create([
+                    'borrowing_id' => $borrowing->id,
+                    'amount'       => $amount,
+                    'paid'         => false,
+                ]);
+            }
 
             $dendaMessage = " Terlambat $hariTerlambat hari. Denda Rp " . number_format($amount, 0, ',', '.') . " telah ditambahkan.";
         }

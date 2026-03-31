@@ -94,6 +94,24 @@ class UserController extends Controller
                 ->with('error', 'Tidak dapat menghapus akun sendiri.');
         }
 
+        $hasActiveBorrowings = \App\Models\Borrowing::where('user_id', $pengguna->id)
+            ->whereIn('status', ['booking', 'dipinjam'])
+            ->exists();
+
+        if ($hasActiveBorrowings) {
+            return redirect()->route('admin.pengguna.index')
+                ->with('error', 'Tidak dapat menghapus pengguna karena masih memiliki peminjaman aktif.');
+        }
+
+        $hasUnpaidFines = \App\Models\Fine::whereHas('borrowing', function ($query) use ($pengguna) {
+            $query->where('user_id', $pengguna->id);
+        })->where('payment_status', 'unpaid')->exists();
+
+        if ($hasUnpaidFines) {
+            return redirect()->route('admin.pengguna.index')
+                ->with('error', 'Tidak dapat menghapus pengguna karena masih memiliki denda belum dibayar.');
+        }
+
         $pengguna->delete();
 
         return redirect()->route('admin.pengguna.index')

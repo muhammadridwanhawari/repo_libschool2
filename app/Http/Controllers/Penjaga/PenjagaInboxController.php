@@ -11,9 +11,6 @@ class PenjagaInboxController extends Controller
 {
     public function index(Request $request)
     {
-        // Otomatis hapus pesan yang lebih dari 7 hari
-        Message::where('created_at', '<', now()->subDays(7))->delete();
-
         // 1. DATA INBOX PESAN
         $queryMessage = Message::with('user');
 

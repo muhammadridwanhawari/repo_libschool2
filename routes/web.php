@@ -53,7 +53,36 @@ Route::middleware(['auth', 'role:siswa'])
     ->name('siswa.')
     ->group(function () {
         Route::get('/dashboard', function () {
-            return view('siswa.dashboard');
+            $userId = Auth::id();
+            
+            $dipinjam = \App\Models\Borrowing::where('user_id', $userId)
+                ->where('status', 'dipinjam')
+                ->count();
+                
+            $belumKembali = \App\Models\Borrowing::where('user_id', $userId)
+                ->where('status', 'dipinjam')
+                ->whereNotNull('deadline')
+                ->whereDate('deadline', '<', now())
+                ->count();
+            
+            // Hitung Denda (Unpaid DB + Estimasi realtime yang belum masuk DB)
+            $dendaDariDB = abs(\App\Models\Fine::whereHas('borrowing', fn($q) => $q->where('user_id', $userId))
+                ->where('payment_status', 'unpaid')->sum('amount'));
+                
+            $lateLoansEstimasi = \App\Models\Borrowing::where('user_id', $userId)
+                ->where('status', 'dipinjam')
+                ->whereNotNull('deadline')
+                ->whereDate('deadline', '<', now())
+                ->doesntHave('fine')
+                ->get();
+                
+            $dendaEstimasi = $lateLoansEstimasi->sum(function ($loan) {
+                return now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($loan->deadline)->startOfDay()) * 2000;
+            });
+            
+            $dendaAktif = $dendaDariDB + $dendaEstimasi;
+
+            return view('siswa.dashboard', compact('dipinjam', 'belumKembali', 'dendaAktif'));
         })->name('dashboard');
 
         Route::get('/halaman', [\App\Http\Controllers\Siswa\SiswaHalamanController::class, 'index'])->name('halaman');
@@ -82,8 +111,8 @@ Route::middleware(['auth', 'role:siswa'])
         // Pengajuan
         Route::get('/pengajuan', [SiswaPengajuanController::class, 'index'])->name('pengajuan');
         Route::get('/pengajuan/create', [SiswaPengajuanController::class, 'create'])->name('pengajuan.create');
-        Route::post('/pengajuan', [SiswaPengajuanController::class, 'store'])->name('pengajuan.store');
-        Route::post('/pengajuan/pesan', [SiswaPengajuanController::class, 'sendMessage'])->name('pengajuan.pesan');
+        Route::post('/pengajuan', [SiswaPengajuanController::class, 'store'])->name('pengajuan.store')->middleware('throttle:10,1');
+        Route::post('/pengajuan/pesan', [SiswaPengajuanController::class, 'sendMessage'])->name('pengajuan.pesan')->middleware('throttle:10,1');
 
         // Ulasan Buku
         Route::post('/katalog/{id}/review', [SiswaKatalogController::class, 'review'])->name('katalog.review');

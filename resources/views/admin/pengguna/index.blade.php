@@ -8,11 +8,13 @@
     .breadcrumb a { color: #4361ee; text-decoration: none; }
     .breadcrumb span { color: #666; }
 
-    /* Top Bar */
-    .page-topbar {
+    /* Page Header */
+    .page-header {
         display: flex; align-items: center;
-        justify-content: flex-end; margin-bottom: 18px;
+        justify-content: space-between; margin-bottom: 20px;
     }
+    .page-header h1 { font-size: 1.4rem; font-weight: 700; color: #222; margin: 0 0 4px; }
+    .page-header p { font-size: 0.82rem; color: #4361ee; margin: 0; }
     .btn-primary {
         background: linear-gradient(135deg, #4361ee, #3a56d4);
         color: #fff; border: none; border-radius: 10px;
@@ -131,7 +133,7 @@
 
     /* Responsive */
     @media (max-width: 768px) {
-        .page-topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+        .page-header { flex-direction: column; align-items: flex-start; gap: 14px; }
         .btn-primary { width: 100%; justify-content: center; }
     }
     @media (max-width: 640px) {
@@ -142,14 +144,12 @@
 @endpush
 
 @section('content')
-    {{-- Breadcrumb --}}
-    <div class="breadcrumb">
-        <a href="{{ route('admin.dashboard') }}">Kelola Pengguna</a>
-        <span> / Data Pengguna</span>
-    </div>
-
-    {{-- Top bar --}}
-    <div class="page-topbar">
+    {{-- Page Header --}}
+    <div class="page-header">
+        <div>
+            <h1>Data Pengguna</h1>
+            <p>Kelola data dan akun pengguna perpustakaan</p>
+        </div>
         <button class="btn-primary" id="btnTambahPengguna">+ Tambah Pengguna</button>
     </div>
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Borrowing;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PenjagaPeminjamanController extends Controller
 {
@@ -75,20 +76,32 @@ class PenjagaPeminjamanController extends Controller
             'borrowing_id' => 'required|exists:borrowings,id',
         ]);
 
-        $borrowing = Borrowing::with('book')->findOrFail($request->borrowing_id);
+        // [H-02] Gunakan DB transaction + lockForUpdate untuk cegah double-konfirmasi
+        try {
+            DB::transaction(function () use ($request) {
+                $borrowing = Borrowing::with('book')
+                    ->lockForUpdate()
+                    ->findOrFail($request->borrowing_id);
 
-        if ($borrowing->status !== 'booking') {
-            return back()->with('error', 'Peminjaman ini sudah diproses sebelumnya.');
+                if ($borrowing->status !== 'booking') {
+                    throw new \Exception('Peminjaman ini sudah diproses sebelumnya.');
+                }
+
+                // Update borrowing: booking → dipinjam
+                // (stok TIDAK dikurangi lagi, sudah dikurangi saat booking)
+                $borrowing->update([
+                    'status'      => 'dipinjam',
+                    'borrow_date' => now()->toDateString(),
+                    'deadline'    => now()->addDays($borrowing->duration ?? 7)->toDateString(),
+                ]);
+            });
+
+            $borrowing = Borrowing::with('book')->findOrFail($request->borrowing_id);
+            return redirect()->route('penjaga.peminjaman')
+                ->with('success', "Peminjaman buku \"{$borrowing->book->title}\" berhasil dikonfirmasi! Deadline: " . now()->addDays($borrowing->duration ?? 7)->format('d M Y'));
+
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage() ?: 'Terjadi kesalahan. Silakan coba lagi.');
         }
-
-        // Update borrowing: booking → dipinjam (stok TIDAK dikurangi lagi, sudah dikurangi saat booking)
-        $borrowing->update([
-            'status'      => 'dipinjam',
-            'borrow_date' => now()->toDateString(),
-            'deadline'    => now()->addDays($borrowing->duration ?? 7)->toDateString(),
-        ]);
-
-        return redirect()->route('penjaga.peminjaman')
-            ->with('success', "Peminjaman buku \"{$borrowing->book->title}\" berhasil dikonfirmasi! Deadline: " . now()->addDays($borrowing->duration ?? 7)->format('d M Y'));
     }
 }

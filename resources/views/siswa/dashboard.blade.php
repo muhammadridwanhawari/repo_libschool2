@@ -24,7 +24,7 @@
                 </div>
                 <div>
                     <p class="text-[0.75rem] text-slate-400 font-medium">Buku Dipinjam</p>
-                    <p class="text-2xl font-bold text-indigo-950">0</p>
+                    <p class="text-2xl font-bold text-indigo-950">{{ $dipinjam ?? 0 }}</p>
                 </div>
             </div>
         </div>
@@ -39,7 +39,7 @@
                 </div>
                 <div>
                     <p class="text-[0.75rem] text-slate-400 font-medium">Belum Dikembalikan</p>
-                    <p class="text-2xl font-bold text-indigo-950">0</p>
+                    <p class="text-2xl font-bold text-indigo-950">{{ $belumKembali ?? 0 }}</p>
                 </div>
             </div>
         </div>
@@ -54,7 +54,7 @@
                 </div>
                 <div>
                     <p class="text-[0.75rem] text-slate-400 font-medium">Denda Aktif</p>
-                    <p class="text-2xl font-bold text-indigo-950">Rp 0</p>
+                    <p class="text-2xl font-bold text-indigo-950">Rp {{ number_format($dendaAktif ?? 0, 0, ',', '.') }}</p>
                 </div>
             </div>
         </div>

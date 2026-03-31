@@ -224,8 +224,11 @@
         width: 36px; height: 36px; border-radius: 50%;
         margin-right: 16px; object-fit: cover; flex-shrink: 0;
         background: linear-gradient(to bottom right, #a8edea, #fed6e3); border: 2px solid #fff;
-        display: flex; align-items: center; justify-content: center;
+        display: flex; align-items: center; justify-content: center; overflow: hidden;
         color: #2c3e50; font-weight: 800; font-size: 0.9rem; letter-spacing: -0.5px;
+    }
+    .hof-list-avatar img {
+        width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
     }
     .hof-list-info { flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
     .hof-list-name {

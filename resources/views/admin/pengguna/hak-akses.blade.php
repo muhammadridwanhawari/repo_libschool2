@@ -8,10 +8,10 @@
     .breadcrumb a { color: #4361ee; text-decoration: none; }
     .breadcrumb span { color: #666; }
 
-    .page-title {
-        font-size: 1.4rem; font-weight: 700; color: #1a1a1a;
-        margin: 0 0 24px;
-    }
+    /* Page Header */
+    .page-header { margin-bottom: 20px; }
+    .page-header h1 { font-size: 1.4rem; font-weight: 700; color: #222; margin: 0 0 4px; }
+    .page-header p { font-size: 0.82rem; color: #4361ee; margin: 0; }
 
     /* Module description cards */
     .module-cards {
@@ -142,16 +142,38 @@
         padding: 60px 20px; color: #999; font-size: 0.9rem;
         border: 2px dashed #e0e0e0; border-radius: 16px;
     }
+
+    /* Responsive Layout */
+    @media (max-width: 1200px) {
+        .module-cards {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+    @media (max-width: 900px) {
+        .petugas-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    @media (max-width: 768px) {
+        .module-cards {
+            grid-template-columns: 1fr;
+        }
+        .form-hakakses-grid {
+            grid-template-columns: 1fr;
+        }
+        .empty-petugas {
+            grid-column: 1 / -1;
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-    {{-- Breadcrumb --}}
-    <div class="breadcrumb">
-        <a href="{{ route('admin.pengguna.index') }}">Kelola Pengguna</a>
-        <span> / Hak Akses</span>
+    {{-- Page Header --}}
+    <div class="page-header">
+        <h1>Hak Akses</h1>
+        <p>Pengaturan hak akses pengguna.</p>
     </div>
-    <h1 class="page-title">Pengaturan hak akses pengguna.</h1>
 
     {{-- Module Info Cards --}}
     <div class="module-cards">

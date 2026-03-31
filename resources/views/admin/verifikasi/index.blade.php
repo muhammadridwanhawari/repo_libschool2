@@ -5,12 +5,12 @@
 @push('styles')
 <style>
     /* ─── Page Header ─────────────────────────────────── */
-    .page-topbar {
+    .page-header {
         display: flex; align-items: center;
         justify-content: space-between; margin-bottom: 24px;
     }
-    .page-topbar-left h1 { font-size: 1.3rem; font-weight: 700; color: #1a1a2e; margin: 0 0 3px; }
-    .page-topbar-left p  { font-size: 0.83rem; color: #888; margin: 0; }
+    .page-header h1 { font-size: 1.4rem; font-weight: 700; color: #222; margin: 0 0 4px; }
+    .page-header p { font-size: 0.82rem; color: #4361ee; margin: 0; }
     .btn-all {
         display: inline-flex; align-items: center; gap: 7px;
         background: linear-gradient(135deg, #4361ee, #3a56d4); color: #fff;
@@ -150,20 +150,20 @@
     }
     @media (max-width: 640px) {
         .stat-grid { grid-template-columns: 1fr; }
-        .page-topbar { flex-direction: column; align-items: flex-start; gap: 12px; }
+        .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
         .filter-bar { flex-wrap: wrap; gap: 8px; }
         .divider-v { display: none; }
         .filter-bar select { width: 100%; }
-        .page-topbar-left h1 { font-size: 1.15rem; }
+        .page-header h1 { font-size: 1.15rem; }
     }
 </style>
 @endpush
 
 @section('content')
 
-{{-- Top Bar --}}
-<div class="page-topbar">
-    <div class="page-topbar-left">
+{{-- Page Header --}}
+<div class="page-header">
+    <div>
         <h1>Verifikasi Anggota</h1>
         <p>Kelola pendaftaran anggota baru yang menunggu verifikasi</p>
     </div>

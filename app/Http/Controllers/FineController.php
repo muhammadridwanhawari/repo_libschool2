@@ -79,11 +79,13 @@ class FineController extends Controller
             $hariTerlambat = now()->startOfDay()->diffInDays(Carbon::parse($denda->deadline)->startOfDay());
             $amount = $hariTerlambat * 2000;
 
-            Fine::create([
-                'borrowing_id' => $denda->id,
-                'amount'       => $amount,
-                'paid'         => false,
-            ]);
+            if (!$denda->fine) {
+                Fine::create([
+                    'borrowing_id' => $denda->id,
+                    'amount'       => $amount,
+                    'paid'         => false,
+                ]);
+            }
         }
 
         $denda->update([

@@ -86,9 +86,9 @@
     
     .badge-tersedia {
         position: absolute; top: 12px; left: 12px; z-index: 10;
-        background: #22c55e; color: #fff; border-radius: 9999px;
+        background: #16a34a; color: #fff; border-radius: 9999px;
         padding: 4px 10px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;
-        display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(34,197,94,0.3);
+        display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(22,163,74,0.3);
     }
     .badge-tersedia .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; opacity: 0.9; }
 
@@ -243,11 +243,11 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                     <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
                 </svg>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Judul, Penulis, Sinopsis, atau ISBN...">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Judul, Penulis, Sinopsis, atau ISBN..." aria-label="Pencarian Buku">
             </div>
 
             {{-- Filter Kategori --}}
-            <select name="category" onchange="document.getElementById('searchFilterForm').submit()" class="filter-dropdown">
+            <select name="category" onchange="document.getElementById('searchFilterForm').submit()" class="filter-dropdown" aria-label="Filter Kategori">
                 <option value="">Semua Kategori</option>
                 @foreach($categories as $cat)
                     <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
@@ -261,7 +261,7 @@
     {{-- Grid Buku --}}
     <div class="book-grid">
         @forelse ($books as $book)
-        <div class="book-card" data-url="{{ route('siswa.katalog.show', $book->id) }}" onclick="window.location.href=this.dataset.url;">
+        <a href="{{ route('siswa.katalog.show', $book->id) }}" class="book-card" style="text-decoration:none; color:inherit;">
             {{-- Cover Area --}}
             <div class="book-cover-area">
                 @if($book->stock > 0)
@@ -297,7 +297,7 @@
                 <p class="book-title" title="{{ $book->title }}">{{ $book->title }}</p>
                 <p class="book-author">{{ $book->author ?? 'Tidak diketahui' }}</p>
             </div>
-        </div>
+        </a>
         @empty
             <div class="empty-panel">
                 <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">

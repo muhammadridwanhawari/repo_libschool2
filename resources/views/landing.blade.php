@@ -89,7 +89,7 @@
 <nav class="fixed top-2 left-0 right-0 z-50 px-4 md:px-8 py-2">
   <div class="max-w-6xl mx-auto flex items-center justify-between h-14 px-5 md:px-8 bg-white/70 backdrop-blur-md rounded-full shadow-sm border border-white/20">
     <div class="flex items-center gap-2 flex-shrink-0">
-      <img src="{{ asset('images/logo/LogoBlack.png') }}" alt="LibSchool Logo" class="h-9 w-auto object-contain">
+      <img src="{{ asset('images/logo/LogoBlack.png') }}" alt="LibSchool Logo" class="h-7 w-auto object-contain">
     </div>
 
     <ul class="hidden md:flex gap-8 list-none absolute left-1/2 -translate-x-1/2 bg-white/60 backdrop-blur-sm px-6 py-2 rounded-full shadow-sm">
@@ -129,13 +129,13 @@
   <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 items-center gap-8 md:gap-10 px-5 md:px-8 lg:px-16 pt-32 pb-12 md:pt-40 md:pb-20 min-h-screen">
     <div class="animate-fadeUp text-center md:text-left pr-0 md:pr-10">
       <h1 class="text-[clamp(36px,7vw,72px)] font-extrabold leading-tight tracking-tight text-navy mb-4">
-        Perpustakaan Digital Sekolah Modern <span class=" text-blue decoration-blue/40 underline-offset-4">Hemat Waktu, Pinjam Buku Instant!</span><br>
+        Temukan Keajaiban di Setiap Halaman dan<span class=" text-blue decoration-blue/40 underline-offset-4"> Petualangan Kecil di Setiap Buku!</span><br>
       </h1>
       <p class="text-[clamp(16px,2.5vw,20px)] leading-relaxed text-slate-500 max-w-md mx-auto md:mx-0 mb-8">
-        Mulailah perjalanan sastra yang belum pernah ada sebelumnya dengan aplikasi perpustakaan revolusioner kami! Memperkenalkan pengalaman tanpa hambatan yang melampaui batasan tradisional, di mana Anda dapat dengan mudah mencari buku favorit Anda. ✨
+        Perpustakaan sekolah kita kini hadir di genggamanmu, siap membawamu ke dunia-dunia ajaib yang belum pernah terbayangkan. Seperti melangkah ke dalam film Ghibli, temukan cerita-cerita baru yang menanti untuk diceritakan.
       </p>
       <a href="#fitur" class="inline-flex items-center gap-2 bg-blue text-white px-7 py-3.5 rounded-xl text-sm font-bold hover:bg-blue-dark hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(37,99,235,.3)] transition-all no-underline">
-        Mulai sekarang
+       Ayo, Jelajahi Sekarang!
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0L6.59 1.41 12.17 7H0v2h12.17l-5.58 5.59L8 16l8-8-8-8z"/></svg>
       </a>
     </div>

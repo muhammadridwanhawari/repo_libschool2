@@ -10,6 +10,7 @@ use App\Models\Category;
 use App\Models\Favorite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SiswaKatalogController extends Controller
 {
@@ -123,7 +124,18 @@ class SiswaKatalogController extends Controller
      */
     public function pinjam(Request $request, $id)
     {
-        $book = Book::findOrFail($id);
+        // Validasi input tambahan (menghindari durasi ekstrem)
+        $request->validate([
+            'durasi' => 'nullable|integer|min:1|max:14',
+        ]);
+
+        // [H-04] Cek verifikasi akun siswa
+        if (!Auth::user()->is_verified) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akun kamu belum diverifikasi oleh admin. Silakan hubungi petugas perpustakaan.',
+            ], 403);
+        }
 
         // Cek apakah siswa punya denda yang belum dilunasi
         $hasUnpaidFine = \App\Models\Fine::whereHas(
@@ -135,26 +147,6 @@ class SiswaKatalogController extends Controller
                 'success' => false,
                 'message' => 'Akun kamu dibatasi karena memiliki tagihan denda yang belum dilunasi. Silakan lunasi denda terlebih dahulu di menu Riwayat & Denda.',
             ], 403);
-        }
-
-        // Cek batas maksimal pinjaman aktif
-        $activeCount = Borrowing::where('user_id', Auth::id())
-            ->whereIn('status', ['booking', 'dipinjam'])
-            ->count();
-
-        if ($activeCount >= 5) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Kamu sudah mencapai batas maksimal 5 pinjaman aktif. Kembalikan salah satu buku terlebih dahulu sebelum meminjam buku baru.',
-            ], 422);
-        }
-
-        // Cek stok buku
-        if ($book->stock < 1) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Stok buku sudah habis.',
-            ], 422);
         }
 
         // Cek apakah siswa sudah punya booking/peminjaman aktif untuk buku ini
@@ -171,52 +163,104 @@ class SiswaKatalogController extends Controller
             ], 422);
         }
 
-        // Generate kode booking
-        $bookingCode = Borrowing::generateBookingCode();
+        // [H-01] Bungkus dalam DB transaction + lockForUpdate untuk cegah race condition
+        try {
+            $result = DB::transaction(function () use ($id, $request) {
+                // Kalkulasi batasan aktif siswa secara real-time (mencegah bypass)
+                $activeCount = Borrowing::where('user_id', Auth::id())
+                    ->whereIn('status', ['booking', 'dipinjam'])
+                    ->lockForUpdate()
+                    ->count();
 
-        // Simpan booking dan langsung kurangi stok buku
-        Borrowing::create([
-            'user_id'      => Auth::id(),
-            'book_id'      => $id,
-            'booking_code' => $bookingCode,
-            'borrow_date'  => now()->toDateString(),
-            'duration'     => $request->input('durasi', 7),
-            'status'       => 'booking',
-        ]);
+                if ($activeCount >= 5) {
+                    return [
+                        'success' => false,
+                        'message' => 'Kamu sudah mencapai batas maksimal 5 pinjaman aktif.',
+                        'status'  => 422,
+                    ];
+                }
 
-        // Kurangi stok buku saat booking berhasil dibuat
-        $book->decrement('stock');
+                // Lock baris buku agar tidak bisa diubah proses lain secara bersamaan
+                $book = Book::lockForUpdate()->findOrFail($id);
 
-        return response()->json([
-            'success'      => true,
-            'booking_code' => $bookingCode,
-            'book_title'   => $book->title,
-            'book_author'  => $book->author,
-            'message'      => 'Kode booking berhasil dibuat! Tunjukkan kode ini kepada penjaga perpustakaan.',
-        ]);
+                // Cek stok buku di dalam transaction (setelah lock)
+                if ($book->stock < 1) {
+                    return [
+                        'success' => false,
+                        'message' => 'Stok buku sudah habis.',
+                        'status'  => 422,
+                    ];
+                }
+
+                // Generate kode booking unik
+                $bookingCode = Borrowing::generateBookingCode();
+
+                // Simpan booking
+                Borrowing::create([
+                    'user_id'      => Auth::id(),
+                    'book_id'      => $id,
+                    'booking_code' => $bookingCode,
+                    'borrow_date'  => now()->toDateString(),
+                    'duration'     => $request->input('durasi', 7),
+                    'status'       => 'booking',
+                ]);
+
+                // Kurangi stok buku di dalam transaction
+                $book->decrement('stock');
+
+                return [
+                    'success'      => true,
+                    'booking_code' => $bookingCode,
+                    'book_title'   => $book->title,
+                    'book_author'  => $book->author,
+                    'message'      => 'Kode booking berhasil dibuat! Tunjukkan kode ini kepada penjaga perpustakaan.',
+                    'status'       => 200,
+                ];
+            });
+
+            $status = $result['status'];
+            unset($result['status']);
+            return response()->json($result, $status);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memproses booking. Silakan coba lagi.',
+            ], 500);
+        }
     }
     /**
      * AJAX: Batal Booking
      */
     public function batalBooking($id)
     {
-        $borrowing = Borrowing::with('book')
-            ->where('id', $id)
-            ->where('user_id', Auth::id())
-            ->where('status', 'booking')
-            ->firstOrFail();
+        try {
+            $result = DB::transaction(function () use ($id) {
+                /** @var \App\Models\Borrowing $borrowing */
+                $borrowing = Borrowing::with('book')
+                    ->where('id', $id)
+                    ->where('user_id', Auth::id())
+                    ->where('status', 'booking')
+                    ->lockForUpdate()
+                    ->firstOrFail();
 
-        // Kembalikan stok buku
-        if ($borrowing->book) {
-            $borrowing->book->increment('stock');
+                // Kembalikan stok buku
+                if ($borrowing->book) {
+                    $borrowing->book->increment('stock');
+                }
+
+                // Hapus data booking
+                $borrowing->delete();
+
+                return ['success' => true, 'message' => 'Booking berhasil dibatalkan dan stok buku telah dikembalikan.'];
+            });
+
+            return response()->json($result);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['success' => false, 'message' => 'Booking tidak ditemukan.'], 404);
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'message' => 'Gagal membatalkan booking. Silakan coba lagi.'], 500);
         }
-
-        // Hapus data booking
-        $borrowing->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Booking berhasil dibatalkan dan stok buku telah dikembalikan.',
-        ]);
     }
 }

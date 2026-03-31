@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Borrowing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class SiswaTransaksiController extends Controller
 {
@@ -141,10 +142,19 @@ class SiswaTransaksiController extends Controller
 
         $userId = Auth::id();
 
-        // Get all unpaid fines
+        // Cek apakah ada pembayaran yang sedang di-'pending' (sedang diverifikasi logikanya)
+        $isPending = \App\Models\Fine::whereHas('borrowing', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })->where('paid', false)->where('payment_status', 'pending')->exists();
+
+        if ($isPending) {
+            return back()->with('error', 'Pembayaran denda terbaru kamu sedang diproses oleh penjaga. Harap tunggu verifikasinya selesai sebelum submit lagi.');
+        }
+
+        // Get all unpaid fines that are NOT pending
         $unpaidFines = \App\Models\Fine::whereHas('borrowing', function ($q) use ($userId) {
             $q->where('user_id', $userId);
-        })->where('paid', false)->get();
+        })->where('paid', false)->where('payment_status', '!=', 'pending')->get();
 
         if ($unpaidFines->isEmpty()) {
             return back()->with('error', 'Tidak ada tagihan denda yang perlu di bayar at the moment.');
@@ -154,6 +164,13 @@ class SiswaTransaksiController extends Controller
         $proofPath = null;
 
         if ($request->payment_method === 'digital' && $request->hasFile('payment_proof')) {
+            // Hapus file bukti lampau dari Storage jika ada untuk mencegah Storage Bloat (sampah)
+            foreach ($unpaidFines as $fine) {
+                if ($fine->payment_proof && Storage::disk('public')->exists($fine->payment_proof)) {
+                    Storage::disk('public')->delete($fine->payment_proof);
+                }
+            }
+            
             $proofPath = $request->file('payment_proof')->store('payments', 'public');
         }
 
