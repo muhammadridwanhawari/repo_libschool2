@@ -28,6 +28,42 @@ Sistem ini mensyaratkan tiga jenis hak akses untuk menjaga privasi data dan mela
 
 ---
 
+## Rincian Ekosistem Fitur Sistem
+
+Secara teknis, platform web LibSchool mengkategorisasikan otorisasi fiturnya secara hierarki ke dalam tiga tingkatan jenis pilar pengguna:
+
+### 1. 🌐 Fungsionalitas Umum
+*   **Keamanan Autentikasi Berlapis**: Mulai dari integrasi Login sandi terenkripsi, pendaftaran Registrasi independen (khusus siswa baru), hingga penanganan aman "*Lupa Kata Sandi*" melalui email (SMTP).
+*   **Halaman Beranda (Landing Page) Pintar**: Front-end pertama kali yang secara pintar bisa mendeteksi jika peramban komputer klien memiliki sesi *login* yang sedang aktif dan mengalihkan mereka menembus ke dasbornya secara seketika.
+*   **Proteksi Middleware Role**: Menolak keras pengguna yang "nakal" untuk mengakses dasbor antar-peran (Skeptis secara baku).
+
+### 2. 👨‍🎓 Penjelajah Siswa (Anggota Reguler)
+*   **Dasbor Kalkulator Pintar**: Menyajikan matrik visual tentang jumlah koleksi bacaan di saku pengguna hingga ke kemampuan sistem menghitung pergerakan denda harian secara *real-time* yang dibebankan kepada siswa telat mengembalikan buku.
+*   **Eksplorasi Katalog Buku Pintar**: Mesin jelajah digital estetik dengan filterisasi. Menyediakan pandangan halaman buku lengkap lewat ringkasan pustakawan.
+*   **Ulasan Kepuasan (Review)**: Modul untuk memupuk literasi berkelompok yang mengizinkan siswa berpendapat, merating, dan memberikan kritik/saran mengenai kepuasan baca terhadap buku tertentu.
+*   **Booking Pintar Online**: Sistem reservasi / "*hold*" buku terdigitalisasi, agar buku impian siswa aman dari rebutan pelajar lain sembari siswa berangkat menuju bangunan perpustakaan di sekolah.
+*   **Manajemen Koleksi (Wishlist) Pribadi**: Fasilitas me-#tag "*Favorite*" buku yang ingin dibaca esok hari untuk disimpan di pustaka favorit internal akun.
+*   **Histori Transaksi Absolut**: Pengarsipan masa pendaftaran pesanan (`BK-***`), pelunasan pinalti digital mandiri, sampai *deadline* jatuh tempo pengembalian.
+*   **Manajemen Custom Identitas & Kartu Visual**: Upload Avatar sesuka hati dan ekspor identitas sebagai format grafis "Kartu Tanda Anggota" elektronik.
+*   **Pusat Pengajuan Bantuan (Helpdesk)**: Formulir pengaduan perihal pesanan meleset hingga mengirim sinyal keluhan (*ticket chat*) personal kepada staff yang bertugas tanpa butuh berhadapan langsung.
+
+### 3. 👨‍💼 Staf Penjaga (Operasional Pustakawan Frontliner)
+*   **Konfirmasi Peminjaman (Booking Validator)**: Halaman dinamis memanggil kode pemesanan siswa untuk secara syah mengkonversikan status buku yang menempel/booking ke status hukum peminjaman aktif.
+*   **Integrasi Pengembalian Buku Otomatis**: Layar mesin pemeriksa penyetoran kembali barang inventaris. Apabila kalender melewati hari *deadline*, ia akan serempak menyambar memunculkan beban pinalti harga denda tepat di layar petugas.
+*   **Rekap Log Riwayat Harian**: Lacak *flow* arus masuk keluar inventaris komoditi.
+*   **Manajemen Pesan Kotak Masuk (Inbox)**: Merespons, memperbaharui progres validitas pesanan dan membelas rentetan *ticket* yang digulirkan dari pengguna/siswa tanpa perlu membuka aplikasi surel luar.
+
+### 4. 👑 Administrator Jaringan (Super User)
+*   **Kendali Operasional Pengguna (CRUD)**: Punya alat komplit untuk melahirkan pengguna abdi baru, membekukan/mem-Banned pihak nakal, mendisiplinkan para sandi yang terpejam hingga mengubah nasib otoritas pangkat bawahan.
+*   **Verifikasi KYC Anti-Bot (Aktifasi Validitas Peminjam Dasar)**: Sistem penyaringan pintu untuk siswa murid mendaftar bebas. Tidak peduli seberapa gencar murid memesan buku, mereka *freeze* tanpa pesetujuan aktivasi centang dari Sang Admin tingkat atas.
+
+**Kewenangan Gabungan / Hak Akses Tersanding (Admin & Penjaga)**:
+*   **Data Induk Utama**: Modul manajemen pengayaan pustaka (Buku, Kategori Spesifik, Series Labeling).
+*   **Pusat Penarikan Denda**: Validator "Kasir" untuk meregistrasi bahwa denda lunas ke dalam neraca pendapatan atau tetap menjadi rekor tagihan (hutang tak tertagih).
+*   **Pencari Bukti Elektronik Laporan**: Mesin kalkulasi tarikan *record SQL* transaksi besar-besaran untuk dirangkai ulang ke wujud rapi tabel laporan manajerial dan *export* menjadi arsip PDF.
+
+---
+
 ## Spesifikasi Teknis
 
 Platform LibSchool dikembangkan di atas arsitektur peranti lunak terkini guna memastikan keamanan, performa tinggi, serta kemudahan proses uji coba (development):
