@@ -1,110 +1,94 @@
 # LibSchool - Sistem Informasi Manajemen Perpustakaan Sekolah
 
-**LibSchool** adalah sebuah sistem informasi manajemen perpustakaan modern berbasis web yang dikembangkan menggunakan ekosistem **Laravel 12** dan dipoles antarmukanya menggunakan **Tailwind CSS**. Sistem ini dirancang secara khusus untuk mempermudah proses sirkulasi peminjaman buku, manajemen inventaris pustaka, pengelolaan operasional sanksi denda, hingga integrasi rekam jejak (*history*) anggota sekolah dalam satu ruang lingkup profesional.
+LibSchool adalah sistem informasi manajemen perpustakaan modern berbasis web. Dibangun dengan framework Laravel 12 dan antarmuka dinamis Tailwind CSS, platform ini dirancang khusus untuk memenuhi standar profesional dalam mengelola sirkulasi buku, administrasi rak dan kategori, manajemen denda, hingga integrasi rekam jejak setiap anggota sekolah dalam satu ruang lingkup terpusat.
 
-## 🌟 Fitur Utama & Multi-Role (Tiga Hak Akses)
+## Tinjauan Antarmuka dan Fitur Utama
 
-Aplikasi dipisah menjadi 3 pintu gerbang utama untuk membatasi privasi data:
+Sistem ini mensyaratkan tiga jenis hak akses untuk menjaga privasi data dan melancarkan alur operasional. Berikut adalah ringkasan fitur utama yang dilengkapi dengan visualisasi antarmuka:
 
-### 1. Admin (Administrator Senior)
-Berfungsi sebagai pusat manajemen pengaturan dengan kuasa kontrol penuh atas aplikasi web ini.
-- **Kelola Data Induk Pustaka**: Mulai dari integrasi rak Kategori Buku, pembagian _Series_ (Seri) Buku secara linear, hingga pencatatan kuantitas sirkulasi stok.
-- **Kelola Daftar Pengguna**: Eksekusi tambah, ubah kata sandi rahasia, dan blokir/hapus akses untuk setiap Penjaga maupun Siswa.
-- **Verifikasi Anggota (KYC Internal)**: Layar pemvalidasi pendaftaran baru. Siswa tidak akan diizinkan *booking* peminjaman hingga akun tervalidasi oleh Admin.
-- **Manajemen Global Otoritas**: Mengontrol rekam jejak pembayaran denda masuk, mengaudit daftar pinjaman buku mandek, dan mengubah batasan otorisasi sistem.
-- **Export Laporan (Reporting)**: Tarik dan *download* rekapitulasi data krusial secara berkala menggunakan **DomPDF**.
+### 1. Halaman Beranda (Landing Page)
+<img src="public/images/readme.md image/landing-page.png" alt="Landing Page" width="100%">
+**Deskripsi:** Antarmuka awal yang dioptimalkan untuk menyambut pengunjung dengan tampilan elegan dan responsif pada berbagai perangkat layar.
+**Keunggulan:** Desain modern, struktur navigasi yang jelas, dan pemuatan elemen cepat. Pengunjung dapat langsung memperoleh gambaran singkat mengenai fasilitas sirkulasi perpustakaan sebelum masuk ke sistem.
 
-### 2. Penjaga (Pustakawan Front-End)
-Berfungsi sebagai ujung tombak pelaksana operasional harian fisik perpustakaan.
-- **Peminjaman Buku Instan**: Posisi Penjaga perpustakaan untuk mengeksekusi pinjaman serta menyerahkan objek buku fisik berdasar pengajuan *booking* daring otomatis dari ranah siswa.
-- **Pengembalian Otomatis**: Layar untuk mengonfirmasi dan meregristrasikan sistem pengembalian buku tepat jadwal, atau mengeksekusi perhitungan penagihan denda keterlambatan secara matematis (Otomasi sistem per-hari telat).
-- **Manajemen Inbox Pengajuan**: Berinteraksi merespons korespondensi surat dan dokumen permintaan akses sirkulasi.
+### 2. Dashboard Administrator
+<img src="public/images/readme.md image/dashboard-admin.png" alt="Dashboard Administrator" width="100%">
+**Deskripsi:** Pusat kendali tingkat tertinggi yang diperuntukkan bagi manajer perpustakaan atau staf teknologi informasi sekolah.
+**Keunggulan:** Menyediakan kontrol penuh dan visualisasi data statistik yang komprehensif. Admin dapat mengelola persetujuan KYC siswa (verifikasi anggota), manajemen inventaris buku secara terperinci, mengekspor laporan kinerja ke format PDF menggunakan DomPDF, serta mengelola akses seluruh staf dan member.
 
-### 3. Siswa (Member Regular)
-Berfungsi sebagai pengunjung loyal penikmat literasi sekolah, dapat mengakses sistem via gawai genggam/telepon seluler.
-- **Katalog Buku Interaktif**: Mesin perpustakaan mutakhir agar siswa bisa dengan elegan mencari literatur bacaan, merangkai filter *series*/kategori, melihat ulasan deskripsi lengkap, serta menciptakan perpustakaan pribadi menggunakan fitur simpan *Favorite*.
-- **Booking Mandiri Real-Time**: Ajukan pinjaman melalui perangkat kapanpun dan biarkan Pustakawan memproses dokumen reservasi Anda sebelum menjemput koleksinya di gedung sekolah.
-- **Monitor Riwayat Akun Transparan**: Tampilan layar interaktif khusus guna mengeksplor histori tagihan terlambat bayar, rekap log pinjaman sukses/balik gudang, serta penampil tenggat batas (Deadline) peminjaman.
-- **Kustomisasi Profil Mandiri**: Fleksibilitas unggah Avatar *profil* baru dan mutasi kunci kata sandi akun dengan desain antarmuka modern yang estetik.
-- **Reset Kata Sandi via Email**: Fitur lupa kata sandi yang mengirimkan tautan reset melalui sistem notifikasi email (SMTP).
+### 3. Dashboard Petugas Perpustakaan
+<img src="public/images/readme.md image/dashboard-petugas.png" alt="Dashboard Petugas Perpustakaan" width="100%">
+**Deskripsi:** Ruang kerja khusus untuk pustakawan dalam menangani urusan operasional sirkulasi fisik perpustakaan dari hari ke hari.
+**Keunggulan:** Menyajikan tabel informasi real-time mengenai permintaan peminjaman dan jadwal pengembalian. Petugas dipermudah dengan automasi sistem kalkulasi denda keterlambatan baku, serta pencatatan sirkulasi pergerakan inventaris yang transparan dan akurat.
 
-## 🛠️ Modul Teknologi
-
-| Komponen | Detail |
-|---|---|
-| **Core / Backend Framework** | Laravel 12.x (PHP ^8.2) |
-| **Database Management** | Relational Database — MySQL / MariaDB |
-| **Frontend UI Ecosystem** | Blade Templating Engine + Alpine.js v3 |
-| **Struktur Visual Rendering** | Tailwind CSS v3 + Vanilla CSS (Responsive / Mobile Friendly) |
-| **Build Tool** | Vite v6 + laravel-vite-plugin |
-| **Infrastruktur Autentikasi** | Laravel Breeze v2 (Session Guards + Role-Based Middleware) |
-| **Export Laporan PDF** | barryvdh/laravel-dompdf v3 |
-| **HTTP Client** | Axios v1 |
-| **Notification System** | Laravel Mail Notification (SMTP — Reset Password) |
-
-## 🗂️ Struktur Model (Eloquent)
-
-Berikut adalah daftar model Eloquent yang aktif digunakan dalam proyek ini:
-
-- **User** — Data akun pengguna (Admin, Penjaga, Siswa) beserta verifikasi, avatar, dan poin.
-- **Book** — Data buku pustaka beserta stok, sinopsis, jumlah halaman, cover, dan relasi kategori/seri.
-- **Category** — Kategori / genre buku.
-- **BookSeries** — Seri / serial buku (relasi ke banyak buku).
-- **Borrowing** — Rekaman transaksi peminjaman dengan kode booking unik (`BK-YYYYMMDD-XXXX`), status, dan deadline.
-- **Fine** — Data denda keterlambatan beserta status dan metode pembayaran.
-- **Favorite** — Bookmark buku favorit per-siswa.
-- **BookReview** — Ulasan/review buku oleh siswa.
-- **Pengajuan** — Pengajuan/permohonan sirkulasi dari siswa ke Penjaga.
-- **Message** — Sistem pesan internal antar pengguna.
-
-## 🚀 Panduan Ringkas Pemasangan Standar (Development)
-
-Pastikan lingkungan server lokal (seperti XAMPP, Laragon, Valet) dan perangkat Composer serta NodeJS telah beroperasi mulus di atas mesin komputer Anda.
-
-1. **Pengunduhan Repositori Source Code Penuh**
-   ```bash
-   git clone <link-repositori-anda>
-   cd LIBSCHOOL
-   ```
-2. **Memulihkan Kumpulan Paket Fundamental**
-   ```bash
-   # Merangkul *Vendor* PHP
-   composer install
-
-   # Merangkul Konstruksi *Node Modules* untuk desain Web Tailwind
-   npm install
-   ```
-3. **Menggandakan Parameter Lingkungan Otomatis**
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-   > Jangan lupa, tautkan dan edit variabel `DB_DATABASE=libschool` ke database kosong Anda!
-4. **Instalasi Skema dan Isi (Seeder) Database Awal**
-   ```bash
-   php artisan migrate:fresh --seed
-   ```
-5. **Memautkan Ekosistem Aset Gambar Publik**
-   Guna memastikan gambar logo buku, pratinjau PDF, dan cover Siswa tidak pecah pada tatap muka aplikasi:
-   ```bash
-   php artisan storage:link
-   ```
-6. **Pembangkitan Dua Terminal *Dual Engine* Lokal (Running Platform)**
-   Buka *Command Prompt / Bash Terminal*, sediakan menjadi dua halaman layar dan ketik rutinitas komando ini secara masing-masing:
-   ```bash
-   # Terminal Pertama (Jantung Back-end Laravel Node Lokal Server)
-   php artisan serve
-
-   # Terminal Kedua (Kompilator Aset HMR Vite Tailwind CSS)
-   npm run dev
-   ```
-   > Alternatif: gunakan satu perintah terintegrasi `composer run dev` untuk menjalankan keduanya + queue listener + log watcher secara paralel menggunakan **concurrently**.
-
-🎉 Platform Administrasi Pustaka siap dimainkan lewat peramban web (*browser*) dengan menyentuh rute: `http://localhost:8000`.
-
-## 🔒 Standar Kebersihan Rancang-Bangun Sistem
-
-Bahan baku konstruksi dari baris sumber LIBSCHOOL disajikan berdasar paradigma **Clean Code Principles**, yang meliputi pemisahan fungsional via ekosistem berlapis (Middlewares, Controllers, Models, Routes) sembari tetap menyandarkan fleksibel UI dan kompatibilitas peramban telepon melalui implementasi murni *Single Point Design* Flex/Grid Layout di atas Tailwind.
+### 4. Dashboard Siswa (Member)
+<img src="public/images/readme.md image/dashboard-siswa.png" alt="Dashboard Siswa" width="100%">
+**Deskripsi:** Portal interaktif mandiri yang dikhususkan bagi siswa (anggota aktif) untuk berpartisipasi dalam program literasi perpustakaan.
+**Keunggulan:** Menawarkan fitur penelusuran katalog cerdas. Siswa dapat melakukan pengecekan ketersediaan stok buku, mengajukan proses pemesanan (booking) sirkulasi dari jauh secara mandiri, melacak rekam jejak denda dan detail riwayat peminjaman mereka, serta menyimpan literatur favorit.
 
 ---
-*Dibangun dengan komitmen guna merevolusi ranah administrasi perpustakaan, menuju masa depan administrasi digital yang presisi, ringan, interaktif, dan terstruktur kuat.*
+
+## Spesifikasi Teknis
+
+Platform LibSchool dikembangkan di atas arsitektur peranti lunak terkini guna memastikan keamanan, performa tinggi, serta kemudahan proses uji coba (development):
+
+*   **Pondasi Backend:** Laravel 12 (Membutuhkan PHP versi ^8.2)
+*   **Akses Basis Data:** Konfigurasi standar mesin MySQL atau MariaDB
+*   **Perancangan Frontend:** Kombinasi Laravel Blade Templating Engine dan Alpine.js
+*   **Kerangka Gaya (Styling):** Tailwind CSS v3 murni
+*   **Pemoles Aset (Bundler):** Vite v6 terintegrasi (laravel-vite-plugin)
+*   **Infrastruktur Autentikasi:** Laravel Breeze v2 (Menggunakan session guard otentikasi konvensional)
+*   **Sistem Ekspor Dokumen:** barryvdh/laravel-dompdf (Generasi laporan analitik format PDF)
+
+## Panduan Instalasi Lokal
+
+Langkah-langkah berikut akan membantu tahapan penyetelan (setup) awal bagi pengembang untuk menjalankan aplikasi LibSchool di lingkungan server mesin komputer lokal (seperti sistem XAMPP, Laragon, atau Herd). Pastikan Composer dan NodeJS telah terpasang dengan versi spesifikasi di atas.
+
+**1. Kloning Repositori**
+Unduh keseluruhan berkas kode sumber dari repositori ke dalam memori komputer dan masuk ke direktori proyek.
+```bash
+git clone <url-repositori>
+cd LIBSCHOOL
+```
+
+**2. Instalasi Dependensi Pihak Ketiga**
+Pasang pustaka bawaan framework PHP dan susun ekstensi modul node (Javascript) aplikasi.
+```bash
+composer install
+npm install
+```
+
+**3. Konfigurasi Lingkungan Server**
+Gandakan berkas contoh konfigurasi *environment* dan hasilkan token kunci aplikasi.
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+*(Catatan: Konfigurasi pengaturan koneksi database Anda di bagian `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` di dalam berkas `.env` sebelum ke tahap selanjutnya)*
+
+**4. Migrasi Skema dan Pembenihan Data**
+Eksekusi struktur tabel rancangan sistem sekaligus memasukkan pangkalan data pengujian awalan (dummy data).
+```bash
+php artisan migrate:fresh --seed
+```
+
+**5. Pembuatan Tautan Direktori Berkas Publik**
+Untuk menjamin gambar pratinjau buku dan aset file lainnya dapat diakses pada ranah publik sistem antarmuka web.
+```bash
+php artisan storage:link
+```
+
+**6. Menjalankan Server Publik**
+Buka dua terminal terpisah pada lingkungan direktori yang sama dan operasikan kedua mesin pelayan berikut ini:
+
+Terminal Pertama (Menjalankan pelayan pengujian backend Laravel):
+```bash
+php artisan serve
+```
+
+Terminal Kedua (Menjalankan proses pemantauan aset gaya (CSS/JS) web interaktif menggunakan Vite):
+```bash
+npm run dev
+```
+
+Akses sistem di peramban web melalui pranala: `http://localhost:8000`.

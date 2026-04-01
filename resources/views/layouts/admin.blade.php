@@ -204,7 +204,6 @@
 <body style="display:flex; min-height:100vh; background:#fff;">
 
     {{-- [MEDIUM-A04] Fix: Skip to main content link --}}
-    <a href="#main-content" class="absolute -top-[100px] left-0 bg-blue-600 text-white px-4 py-3 z-[9999] focus:top-0 transition-all font-bold rounded-br-lg shadow-lg">Langsung ke konten utama</a>
 
     {{-- Mobile Topbar --}}
     <header class="admin-topbar">
