@@ -36,12 +36,10 @@ class SiswaTransaksiController extends Controller
 
         $dendaDariDB = abs(\App\Models\Fine::whereHas('borrowing', fn($q) => $q->where('user_id', $userId))
             ->where('payment_status', 'unpaid')->sum('amount'));
-        $lateLoansEstimasi = Borrowing::where('user_id', $userId)
-            ->where('status', 'dipinjam')->whereNotNull('deadline')->whereDate('deadline', '<', now())
-            ->doesntHave('fine')->get();
-        $dendaEstimasi = $lateLoansEstimasi->sum(function ($loan) {
-            return now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($loan->deadline)->startOfDay()) * 2000;
-        });
+            
+        // [MEDIUM-F05] Fix: Gunakan private method untuk kalkulasi estimasi denda
+        ['estimasiAmount' => $dendaEstimasi, 'lateLoans' => $lateLoansEstimasi] = $this->getEstimatedFineData($userId);
+        
         $totalDenda = $dendaDariDB + $dendaEstimasi;
 
         return view('siswa.transaksi', compact('transactions', 'totalActive', 'totalSegeraKembali', 'totalSelesai', 'totalDenda'));
@@ -98,18 +96,8 @@ class SiswaTransaksiController extends Controller
             ->where('payment_status', 'unpaid')
             ->sum('amount'));
 
-        // Estimasi denda real-time untuk pinjaman aktif terlambat (belum ada fine)
-        $lateLoansEstimasi = Borrowing::with('fine')
-            ->where('user_id', $userId)
-            ->where('status', 'dipinjam')
-            ->whereNotNull('deadline')
-            ->whereDate('deadline', '<', now()->toDateString())
-            ->doesntHave('fine')
-            ->get();
-
-        $dendaEstimasi = $lateLoansEstimasi->sum(function ($loan) {
-            return now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($loan->deadline)->startOfDay()) * 2000;
-        });
+        // [MEDIUM-F05] Fix: Kalkulasi menggunakan private method agar DRY
+        ['estimasiAmount' => $dendaEstimasi, 'lateLoans' => $lateLoansEstimasi] = $this->getEstimatedFineData($userId);
 
         $totalDenda = $dendaDariDB + $dendaEstimasi; // Ini untuk unpaid
         $totalSemuaDenda = $totalSemuaDendaDB + $dendaEstimasi; // Ini untuk keseluruhan (histori)
@@ -157,7 +145,8 @@ class SiswaTransaksiController extends Controller
         })->where('paid', false)->where('payment_status', '!=', 'pending')->get();
 
         if ($unpaidFines->isEmpty()) {
-            return back()->with('error', 'Tidak ada tagihan denda yang perlu di bayar at the moment.');
+            // [LOW-F10] Fix: pesan error konsisten dalam Bahasa Indonesia
+            return back()->with('error', 'Tidak ada tagihan denda yang perlu dibayar saat ini.');
         }
 
         $paymentCode = 'PAY-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -4));
@@ -184,5 +173,28 @@ class SiswaTransaksiController extends Controller
         }
 
         return back()->with('success', 'terimakasih sudah membayar denda! pembayaran kamu akan segera di proses oleh Penjaga perpustakaan.');
+    }
+
+    /**
+     * [MEDIUM-F05] Fix: Helper method untuk menghitung estimasi denda (DRY)
+     */
+    private function getEstimatedFineData(int $userId): array
+    {
+        $lateLoans = Borrowing::with('fine')
+            ->where('user_id', $userId)
+            ->where('status', 'dipinjam')
+            ->whereNotNull('deadline')
+            ->whereDate('deadline', '<', now()->toDateString())
+            ->doesntHave('fine')
+            ->get();
+
+        $estimasiAmount = $lateLoans->sum(function ($loan) {
+            return now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($loan->deadline)->startOfDay()) * 2000;
+        });
+
+        return [
+            'estimasiAmount' => $estimasiAmount,
+            'lateLoans'      => $lateLoans,
+        ];
     }
 }

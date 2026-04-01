@@ -74,7 +74,7 @@
 
                 <div>
                     <label class="block text-[15px] font-medium text-slate-800 mb-2">Telepon</label>
-                    <input type="tel" name="telepon" autocomplete="off"
+                    <input type="tel" name="telepon" autocomplete="off" maxlength="15"
                            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                            class="w-full border border-gray-300 rounded-xl px-4 py-3 text-[15px] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-[#4475F2] focus:ring-[3px] focus:ring-[#4475F2]/20"
                            value="{{ old('telepon') }}" required>

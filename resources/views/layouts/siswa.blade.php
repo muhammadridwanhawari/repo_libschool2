@@ -170,6 +170,8 @@
     @stack('styles')
 </head>
 <body>
+    {{-- [MEDIUM-A04] Fix: Skip to main content link --}}
+    <a href="#main-content" class="absolute -top-[100px] left-0 bg-blue-600 text-white px-4 py-3 z-[9999] focus:top-0 transition-all font-bold rounded-br-lg shadow-lg">Langsung ke konten utama</a>
 
     {{-- Mobile Header --}}
     <header class="mobile-header">
@@ -286,13 +288,14 @@
         <div class="sidebar-logout">
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
-                <button type="submit" class="logout-btn">Logout →</button>
+                {{-- [LOW-A08] Fix: Tambahkan aria-label pada tombol logout --}}
+                <button type="submit" class="logout-btn" aria-label="Keluar dari akun">Logout →</button>
             </form>
         </div>
     </aside>
 
     {{-- Main Content --}}
-    <div class="main-content">
+    <div class="main-content" id="main-content">
         @yield('content')
     </div>
 

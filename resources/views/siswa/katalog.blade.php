@@ -44,8 +44,12 @@
     .filter-dropdown:focus { border-color: #6366f1; }
 
     @media (max-width: 500px) {
-        .search-input-wrap { min-width: 100%; }
-        .filter-dropdown { min-width: 100%; }
+        .filter-form-wrapper { flex-direction: column; align-items: stretch; }
+        .search-input-wrap, .filter-dropdown { min-width: 100%; width: 100%; }
+        .mobile-filter-label { display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; }
+    }
+    @media (min-width: 501px) {
+        .mobile-filter-label { display: none; }
     }
 
     /* ===== BOOK GRID ===== */
@@ -247,12 +251,26 @@
             </div>
 
             {{-- Filter Kategori --}}
-            <select name="category" onchange="document.getElementById('searchFilterForm').submit()" class="filter-dropdown" aria-label="Filter Kategori">
-                <option value="">Semua Kategori</option>
-                @foreach($categories as $cat)
-                    <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
-                @endforeach
-            </select>
+            <div style="flex:1;">
+                <span class="mobile-filter-label">Kategori</span>
+                <select name="category" onchange="document.getElementsByName('series')[0].value=''; document.getElementById('searchFilterForm').submit()" class="filter-dropdown" style="width:100%;" aria-label="Filter Kategori">
+                    <option value="">Semua Kategori</option>
+                    @foreach($categories as $cat)
+                        <option value="{{ $cat->id }}" {{ request('category') == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            {{-- Filter Series --}}
+            <div style="flex:1;">
+                <span class="mobile-filter-label">Series Buku</span>
+                <select name="series" onchange="document.getElementsByName('category')[0].value=''; document.getElementById('searchFilterForm').submit()" class="filter-dropdown" style="width:100%;" aria-label="Filter Series">
+                    <option value="">Semua Series</option>
+                    @foreach($seriesList as $series)
+                        <option value="{{ $series->id }}" {{ request('series') == $series->id ? 'selected' : '' }}>{{ $series->name }}</option>
+                    @endforeach
+                </select>
+            </div>
 
 
         </form>
@@ -272,7 +290,8 @@
 
 
                 @if($book->cover)
-                    <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->title }}" class="book-cover-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    {{-- [MEDIUM-A03] Fix: alt text deskriptif --}}
+                    <img src="{{ asset('storage/' . $book->cover) }}" alt="Cover buku: {{ $book->title }}" class="book-cover-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="book-icon-wrapper" style="display:none; color:#84a98c;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                             <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
@@ -318,18 +337,20 @@
 
 {{-- MODAL DETAIL BUKU --}}
 @if($selected)
-<div class="modal-overlay" id="detailModal">
+{{-- [HIGH-A01] Fix: tambah role dialog + aria-modal untuk aksesibilitas keyboard --}}
+<div class="modal-overlay" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
     <div class="modal-box">
         <div class="detail-modal-header">
             @if($selected->cover)
-                <img src="{{ asset('storage/' . $selected->cover) }}" class="detail-modal-cover" alt="Cover">
+                {{-- [MEDIUM-A03] Fix: alt text deskriptif --}}
+                <img src="{{ asset('storage/' . $selected->cover) }}" class="detail-modal-cover" alt="Cover buku: {{ $selected->title }}">
             @else
                 <div class="detail-modal-cover" style="display:flex;align-items:center;justify-content:center;color:#84a98c;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
                 </div>
             @endif
             <div class="detail-modal-info">
-                <h3>{{ $selected->title }}</h3>
+                <h3 id="detailModalTitle">{{ $selected->title }}</h3>
                 <p>{{ $selected->author }}</p>
                 <div class="detail-stats-row">
                     <span class="detail-stat-badge">Kategori: {{ $selected->categories->isNotEmpty() ? $selected->categories->pluck('name')->join(', ') : ($selected->category->name ?? 'Umum') }}</span>
@@ -347,9 +368,18 @@
         </div>
 
         <div class="modal-actions">
-            <button class="btn-batal" onclick="closeDetailModal()">Batal</button>
+            <button class="btn-batal" id="detailModalCloseBtn" onclick="closeDetailModal()">Batal</button>
+            {{-- [HIGH-F01] Fix: cek status verifikasi akun di sisi view --}}
+            {{-- [HIGH-E01] Fix: gunakan data-* attribute, jangan sisipkan judul buku di onclick --}}
             @if($selected->stock > 0)
-                <button class="btn-pinjam-modal" onclick="doPinjam('{{ $selected->id }}', '{{ addslashes($selected->title) }}')">Pinjam Buku</button>
+                @if(Auth::user()->is_verified)
+                    <button class="btn-pinjam-modal"
+                        data-book-id="{{ $selected->id }}"
+                        data-book-title="{{ e($selected->title) }}"
+                        onclick="doPinjamFromData(this)">Pinjam Buku</button>
+                @else
+                    <button class="btn-pinjam-modal" disabled title="Akun belum diverifikasi oleh admin">Akun Belum Diverifikasi</button>
+                @endif
             @else
                 <button class="btn-pinjam-modal" disabled>Stok Habis</button>
             @endif
@@ -359,12 +389,13 @@
 @endif
 
 {{-- MODAL KODE BOOKING --}}
-<div class="modal-overlay" id="bookingModal">
+{{-- [HIGH-A01] Fix: tambah role dialog + aria-modal --}}
+<div class="modal-overlay" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingModalTitle">
     <div class="modal-box modal-center">
         <div class="modal-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="#4361ee" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
         </div>
-        <p class="modal-title">Booking Berhasil! 🎉</p>
+        <p class="modal-title" id="bookingModalTitle">Booking Berhasil! 🎉</p>
         <p class="modal-sub" id="modalStatus">Kode booking berhasil dibuat!</p>
         <div class="modal-book" id="modalBookTitle">—</div>
         <div class="modal-code-wrap">
@@ -372,7 +403,7 @@
             <div class="modal-code" id="modalBookCode">—</div>
         </div>
         <div>
-            <button class="modal-copy-btn" onclick="copyCode()">📋 Salin Kode</button>
+            <button class="modal-copy-btn" id="bookingCopyBtn" onclick="copyCode()">📋 Salin Kode</button>
             <button class="btn-batal" onclick="closeBookingModal()">Tutup</button>
         </div>
     </div>
@@ -392,9 +423,23 @@ function selectBook(bookId) {
 document.addEventListener("DOMContentLoaded", function() {
     const isSelected = "{{ $selected ? '1' : '' }}" === "1";
     if (isSelected) {
-        document.getElementById('detailModal').classList.add('active');
+        const modal = document.getElementById('detailModal');
+        modal.classList.add('active');
         document.body.style.overflow = 'hidden';
+        // [HIGH-A01] Fix: pindahkan fokus keyboard ke tombol pertama di dalam modal
+        const firstBtn = modal.querySelector('button');
+        if (firstBtn) setTimeout(() => firstBtn.focus(), 100);
     }
+
+    // [HIGH-A01] Fix: tutup modal saat user tekan tombol Escape
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const detailModal = document.getElementById('detailModal');
+            const bookingModal = document.getElementById('bookingModal');
+            if (detailModal && detailModal.classList.contains('active')) closeDetailModal();
+            if (bookingModal && bookingModal.classList.contains('active')) closeBookingModal();
+        }
+    });
 });
 
 function closeDetailModal() {
@@ -440,10 +485,20 @@ function toggleFav(bookId, btn) {
 // === PINJAM BUKU via AJAX ===
 const CSRF = document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}';
 
+// [HIGH-E01] Fix: gunakan data-* attribute untuk mencegah XSS via onclick
+// Cara salah lama: onclick="doPinjam(bookId, judul_buku_langsung)"
+// Cara benar baru: data-book-id dan data-book-title dibaca di JS, tidak via onclick string
+function doPinjamFromData(btn) {
+    const bookId    = btn.getAttribute('data-book-id');
+    const bookTitle = btn.getAttribute('data-book-title');
+    doPinjam(bookId, bookTitle);
+}
+
 function doPinjam(bookId, bookTitle) {
     // Tutup detail modal
     if(document.getElementById('detailModal')) {
         document.getElementById('detailModal').classList.remove('active');
+        document.body.style.overflow = '';
     }
 
     fetch(`/siswa/pinjam/${bookId}`, {
@@ -457,16 +512,44 @@ function doPinjam(bookId, bookTitle) {
     .then(res => res.json())
     .then(data => {
         if (data.success) {
+            // [HIGH-F02] Fix: update badge stok di kartu buku tanpa reload halaman
+            updateStockBadgeInGrid(bookId);
             showBookingModal(data.booking_code, data.book_title);
         } else {
             if (data.booking_code) {
                 showBookingModal(data.booking_code, bookTitle, true);
             } else {
-                alert('Gagal: ' + data.message);
+                // [MEDIUM-E04] Fix: tampilkan pesan error dalam modal, bukan alert() native
+                showInlineError(data.message || 'Terjadi kesalahan.');
             }
         }
     })
-    .catch(() => alert('Terjadi kesalahan. Silakan coba lagi.'));
+    .catch(() => showInlineError('Koneksi bermasalah. Silakan coba lagi.'));
+}
+
+// [HIGH-F02] Perbarui badge TERSEDIA/HABIS di kartu grid tanpa reload
+function updateStockBadgeInGrid(bookId) {
+    // Cari kartu buku berdasarkan link href yang mengandung id
+    const link = document.querySelector(`a.book-card[href*="/katalog/${bookId}"]`);
+    if (!link) return;
+    const badgeTersedia = link.querySelector('.badge-tersedia');
+    if (badgeTersedia) {
+        badgeTersedia.className = 'badge-habis';
+        badgeTersedia.innerHTML = '<div class="dot"></div> HABIS';
+    }
+}
+
+// [MEDIUM-E04] Tampilkan error dalam elemen di halaman, bukan alert() native
+function showInlineError(msg) {
+    // Buat elemen notifikasi error sementara
+    const existing = document.getElementById('katalog-error-toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.id = 'katalog-error-toast';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fee2e2;color:#991b1b;border:1.5px solid #fecaca;border-radius:12px;padding:14px 24px;font-size:0.88rem;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.15);max-width:90vw;text-align:center;';
+    toast.textContent = '✗ ' + msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
 }
 
 function showBookingModal(code, title, isExisting = false) {

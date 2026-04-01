@@ -36,9 +36,10 @@
 
     /* Warning / Yellow (Wait) */
     .pj-stat-wait { background: #fefce8; border-color: #fef08a; }
-    .pj-stat-wait .pj-stat-label  { color: #ca8a04; }
-    .pj-stat-wait .pj-stat-value  { color: #ca8a04; }
-    .pj-stat-wait .pj-stat-icon   { background: #fef08a; }
+    /* [MEDIUM-A02] Fix: Kontras warna diperkuat (dari ca8a04 ke 92400e/amber-800) sesuai standar WCAG AA */
+    .pj-stat-wait .pj-stat-label  { color: #92400e; }
+    .pj-stat-wait .pj-stat-value  { color: #92400e; }
+    .pj-stat-wait .pj-stat-icon   { background: #fef08a; color: #92400e; }
 
     /* Success / Green */
     .pj-stat-ok { background: #f0fdf4; border-color: #bbf7d0; }
@@ -75,7 +76,8 @@
         {{-- Buku Dipinjam --}}
         <div class="pj-stat pj-stat-blue">
             <div>
-                <p class="pj-stat-label">Buku Dipinjam</p>
+                <!-- [MEDIUM-F07] Fix: Label lebih akurat karena menghitung semua record Borrowing -->
+                <p class="pj-stat-label">Total Transaksi</p>
                 <p class="pj-stat-value">{{ $totalBorrowed }}</p>
             </div>
             <div class="pj-stat-icon">
@@ -322,10 +324,22 @@
                                     {{ $loan->return_date ? $loan->return_date->format('d M Y') : ($loan->deadline ? $loan->deadline->format('d M Y') : '—') }}
                                 </td>
                                 <td class="px-5 py-3.5 align-middle">
-                                    @if($isReturnedLate)
+                                    {{-- [MEDIUM-F06] Fix: badge status harus handle semua kemungkinan, --}}
+                                    {{-- tidak boleh langsung TEPAT WAKTU untuk semua buku non-terlambat --}}
+                                    @if($loan->status === 'booking')
+                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dbeafe] text-[#1d4ed8]">BOOKING</span>
+                                    @elseif($isReturnedLate)
                                         <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fee2e2] text-[#dc2626]">TERLAMBAT</span>
-                                    @else
+                                    @elseif($loan->status === 'dikembalikan')
                                         <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dcfce7] text-[#16a34a]">TEPAT WAKTU</span>
+                                    @elseif($isLate)
+                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fee2e2] text-[#dc2626]">TERLAMBAT</span>
+                                    @elseif($isDeadline)
+                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#ffedd5] text-[#ea580c]">DEADLINE</span>
+                                    @elseif($loan->status === 'dipinjam')
+                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fef9c3] text-[#a16207]">AKTIF</span>
+                                    @else
+                                        <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-slate-100 text-slate-500">—</span>
                                     @endif
                                 </td>
                                 {{-- Denda --}}

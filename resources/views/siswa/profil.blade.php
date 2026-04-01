@@ -446,8 +446,9 @@
             <div class="member-id">{{ $memberId }}</div>
             <div class="card-info-grid">
                 <div class="card-info-item">
-                    <div class="label">Nama Pengguna</div>
-                    <div class="value">{{ $user->username }}</div>
+                    {{-- [HIGH-F03] Fix: baris pertama tampilkan nama lengkap, bukan username --}}
+                    <div class="label">Nama Lengkap</div>
+                    <div class="value">{{ $user->name ?? $user->username }}</div>
                 </div>
                 <div class="card-info-item">
                     <div class="label">Username</div>

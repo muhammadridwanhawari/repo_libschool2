@@ -61,10 +61,12 @@
     .hero-points-val { font-size: 1.4rem; font-weight: 900; color: #f39c12; line-height: 1; }
     .hero-points-label { font-size: 0.72rem; color: #5f6f73; font-weight: 800; margin-top: 2px; }
     @media (max-width: 600px) {
-        .hero-card { flex-direction: column; align-items: flex-start; padding: 20px; gap: 16px; }
+        .hero-card { flex-direction: column; align-items: flex-start; padding: 20px; gap: 16px; position: relative; }
         .hero-avatar { width: 60px; height: 60px; font-size: 1.5rem; }
         .hero-name { font-size: 1.25rem; }
         .hero-points-badge { width: 100%; justify-content: center; }
+        .right-section { width: 100%; position: static; }
+        .notif-wrapper { position: absolute; top: 20px; right: 20px; align-self: auto; margin: 0; z-index: 20; }
     }
 
     /* ── Hall of Fame Podium ── */
@@ -245,7 +247,15 @@
     .hof-list-role-text { font-size: 0.65rem; color: #5f6f73; font-weight: 600; }
     .hof-list-points { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; margin-left: 12px; }
     .hof-list-xp { font-size: 0.85rem; font-weight: 800; color: #f39c12; letter-spacing: 0.5px; }
-    .hof-list-lvl { font-size: 0.65rem; font-weight: 600; color: #5f6f73; }
+    .hof-list-lvl { font-size: 0.6rem; font-weight: 700; color: #5f6f73; display: none; }
+    
+    @media (max-width: 600px) {
+        .hof-list-role-text { display: none; }
+        .hof-list-lvl { display: block; }
+        .hof-list-item { padding: 12px 14px; }
+        .hof-list-avatar { margin-right: 12px; }
+        .hof-list-rank { width: 24px; }
+    }
 
     /* ── Book Grid & Cards ── */
     .book-grid {
@@ -398,13 +408,13 @@
     </div>
     
     <!-- Bagian Kanan Kumpulan Info & Notifikasi -->
-    <div class="flex flex-col items-end gap-3 z-10 relative">
+    <div class="right-section flex flex-col items-end gap-3 z-10 relative">
         @php
             $notifCount = ($hasUnpaidFine ? 1 : 0) + (isset($deadlineLoans) ? $deadlineLoans->count() : 0);
         @endphp
         
         <!-- Bell Icon / Notifikasi (DI ATAS POIN) -->
-        <div>
+        <div class="notif-wrapper">
             <button id="notifBtn" onclick="document.getElementById('modalNotif').classList.add('show')" class="relative flex items-center justify-center p-1.5 outline-none transition-transform hover:scale-105" title="Notifikasi">
                 <!-- Ikon Lonceng Solid Putih + Bayangan Lembut -->
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="currentColor" viewBox="0 0 24 24" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));">
@@ -561,6 +571,7 @@
                         </div>
                         <div class="hof-list-points" style="justify-content: center;">
                             <div class="hof-list-xp">{{ number_format($student->points) }} POIN</div>
+                            <div class="hof-list-lvl">ANGGOTA AKTIF</div>
                         </div>
                     </div>
                 @endforeach

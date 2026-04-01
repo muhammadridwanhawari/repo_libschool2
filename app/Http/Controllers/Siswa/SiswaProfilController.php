@@ -29,7 +29,8 @@ class SiswaProfilController extends Controller
         $validated = $request->validate([
             'username' => ['required', 'string', 'max:255', 'unique:users,username,' . $user->id],
             'email'    => ['required', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'telepon'  => ['nullable', 'string', 'max:20'],
+            // [MEDIUM-F08] Fix: Validasi telepon diperketat (hanya angka, +, -, spasi, kurung)
+            'telepon'  => ['nullable', 'string', 'max:20', 'regex:/^([0-9\s\-\+\(\)]*)$/'],
         ]);
 
         $user->update($validated);

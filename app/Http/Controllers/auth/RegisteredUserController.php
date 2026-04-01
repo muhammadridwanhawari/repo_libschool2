@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
             'nik'            => 'nullable|string|max:20|unique:users',
             'username'       => 'required|string|max:255|unique:users',
             'email'          => 'required|string|email|max:255|unique:users',
-            'telepon'        => 'required|string|regex:/^[0-9]+$/|max:20',
+            'telepon'        => 'required|string|regex:/^[0-9]+$/|max:15',
             'tanggal_lahir'  => 'required|date|before_or_equal:today|after:1900-01-01',
             'gender'         => 'required|in:Laki-laki,Perempuan',
             'password'       => ['required', 'confirmed', Rules\Password::defaults()],

@@ -118,7 +118,7 @@
 
         {{-- Logo --}}
         <div class="logo-wrap">
-            <img src="{{ asset('images/logo/LogoBlack.png') }}" alt="LibSchool">
+            <img src="{{ isset($message) ? $message->embed(public_path('images/logo/LogoBlack.png')) : asset('images/logo/LogoBlack.png') }}" alt="LibSchool">
         </div>
 
         <div class="card">

@@ -132,6 +132,17 @@ class BookController extends Controller
 
     public function destroy(Book $buku)
     {
+        // [HIGH-E05] Cegah hapus buku yang masih dipinjam/di-booking
+        // Jika dihapus, borrowing.book_id menjadi null → crash di halaman Penjaga & Siswa
+        $hasActiveBorrowings = \App\Models\Borrowing::where('book_id', $buku->id)
+            ->whereIn('status', ['booking', 'dipinjam'])
+            ->exists();
+
+        if ($hasActiveBorrowings) {
+            return redirect()->route('admin.buku.index')
+                ->with('error', 'Buku "' . $buku->title . '" tidak dapat dihapus karena masih ada peminjaman atau booking aktif. Selesaikan semua transaksi terlebih dahulu.');
+        }
+
         $categoryIds = $buku->categories()->pluck('categories.id')->toArray();
 
         if ($buku->cover) {

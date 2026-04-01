@@ -361,8 +361,12 @@
         </div>
 
         {{-- Tombol Pinjam --}}
+        {{-- [HIGH-E01] Fix: data-* attribute mencegah XSS, tidak ada judul buku di onclick --}}
         @if($book->stock > 0 && !$hasUnpaidFine && $activeCount < 5)
-            <button class="btn-pinjam" id="pinjamBtn" onclick="doPinjam('{{ $book->id }}', '{{ addslashes($book->title) }}')">
+            <button class="btn-pinjam" id="pinjamBtn"
+                data-book-id="{{ $book->id }}"
+                data-book-title="{{ e($book->title) }}"
+                onclick="doPinjamFromData(this)">
                 + Pinjam Buku Sekarang
             </button>
         @elseif($book->stock < 1)
@@ -505,12 +509,13 @@
 </div>
 
 {{-- Modal Kode Booking --}}
-<div class="modal-overlay" id="bookingModal" style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;">
+{{-- [HIGH-A01] Fix: tambah role=dialog + aria-modal + aria-labelledby --}}
+<div class="modal-overlay" id="bookingModal" role="dialog" aria-modal="true" aria-labelledby="bookingModalHeading" style="position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;">
     <div style="background:#fff;border-radius:20px;padding:32px;width:420px;max-width:92vw;position:relative;box-shadow:0 25px 60px rgba(0,0,0,0.25);transform:scale(0.95);transition:transform 0.25s;" id="bookingBox">
         <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#e0e7ff,#c7d2fe);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="#4361ee" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>
         </div>
-        <p style="font-size:1.25rem;font-weight:800;color:#1e293b;margin-bottom:6px;text-align:center;">Booking Berhasil! 🎉</p>
+        <p style="font-size:1.25rem;font-weight:800;color:#1e293b;margin-bottom:6px;text-align:center;" id="bookingModalHeading">Booking Berhasil! 🎉</p>
         <p style="font-size:0.9rem;color:#64748b;margin-bottom:20px;text-align:center;" id="modalStatus">Kode booking berhasil dibuat!</p>
         <div style="font-size:0.95rem;color:#334155;font-weight:700;background:#f8fafc;border-radius:10px;padding:12px;border:1px solid #e2e8f0;margin-bottom:16px;text-align:center;" id="modalBookTitle">—</div>
         <div style="background:linear-gradient(135deg,#4361ee,#3a56d4);border-radius:14px;padding:24px;margin-bottom:24px;text-align:center;">
@@ -518,7 +523,7 @@
             <div style="font-family:'Courier New',monospace;font-size:2rem;font-weight:800;color:#fff;letter-spacing:4px;" id="modalBookCode">—</div>
         </div>
         <div style="display:flex;gap:8px;">
-            <button onclick="copyCode()" style="flex:1;background:#4361ee;color:#fff;border:none;border-radius:10px;padding:12px;font-size:0.88rem;font-weight:700;cursor:pointer;">📋 Salin Kode</button>
+            <button id="bookingCopyBtn" onclick="copyCode()" style="flex:1;background:#4361ee;color:#fff;border:none;border-radius:10px;padding:12px;font-size:0.88rem;font-weight:700;cursor:pointer;">📋 Salin Kode</button>
             <button onclick="closeBookingModal()" style="background:#f1f5f9;color:#475569;border:none;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer;">Tutup</button>
         </div>
     </div>
@@ -583,6 +588,21 @@ updateDurasi();
 // === Pinjam via AJAX ===
 const CSRF = document.querySelector('meta[name="csrf-token"]')?.content || '';
 
+// [HIGH-E01] Fix: baca data dari data-* attribute, bukan dari string onclick
+function doPinjamFromData(btn) {
+    window.pendingBookId    = btn.getAttribute('data-book-id');
+    window.pendingBookTitle = btn.getAttribute('data-book-title');
+    document.getElementById('confirmBookTitle').textContent = '"' + window.pendingBookTitle + '"';
+    const modal = document.getElementById('confirmPinjamModal');
+    const box   = document.getElementById('confirmPinjamBox');
+    modal.style.opacity = '1';
+    modal.style.pointerEvents = 'all';
+    box.style.transform = 'scale(1)';
+    document.body.style.overflow = 'hidden';
+    // [HIGH-A01] Fix: pindahkan fokus ke tombol pertama dalam modal
+    setTimeout(() => modal.querySelector('button')?.focus(), 100);
+}
+
 function doPinjam(bookId, bookTitle) {
     window.pendingBookId = bookId;
     window.pendingBookTitle = bookTitle;
@@ -594,6 +614,8 @@ function doPinjam(bookId, bookTitle) {
     modal.style.pointerEvents = 'all';
     box.style.transform = 'scale(1)';
     document.body.style.overflow = 'hidden';
+    // [HIGH-A01] Fix: pindahkan fokus ke tombol pertama dalam modal
+    setTimeout(() => modal.querySelector('button')?.focus(), 100);
 }
 
 function closeConfirmModal() {
@@ -603,6 +625,8 @@ function closeConfirmModal() {
     modal.style.pointerEvents = 'none';
     box.style.transform = 'scale(0.95)';
     document.body.style.overflow = '';
+    // [HIGH-A01] Fix: kembalikan fokus ke tombol pinjam setelah modal ditutup
+    document.getElementById('pinjamBtn')?.focus();
 }
 
 document.getElementById('btnProceedPinjam').addEventListener('click', function() {
@@ -628,11 +652,24 @@ document.getElementById('btnProceedPinjam').addEventListener('click', function()
             if (data.booking_code) {
                 showBookingModal(data.booking_code, window.pendingBookTitle, true);
             } else {
+                // [MEDIUM-E04] Fix: gunakan showErrorModal, bukan alert() native
                 showErrorModal(data.message);
             }
         }
     })
-    .catch(() => alert('Terjadi kesalahan. Silakan coba lagi.'));
+    // [MEDIUM-E04] Fix: terjadi error koneksi → gunakan showErrorModal, bukan alert()
+    .catch(() => showErrorModal('Koneksi bermasalah. Silakan coba lagi.'));
+});
+
+// [HIGH-A01] Fix: tutup semua modal saat Escape ditekan
+document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    const bookingModal = document.getElementById('bookingModal');
+    const confirmModal = document.getElementById('confirmPinjamModal');
+    const errorModal   = document.getElementById('errorModal');
+    if (bookingModal  && bookingModal.style.opacity  === '1') closeBookingModal();
+    if (confirmModal  && confirmModal.style.opacity  === '1') closeConfirmModal();
+    if (errorModal    && errorModal.style.opacity    === '1') closeErrorModal();
 });
 
 function showBookingModal(code, title, isExisting = false) {

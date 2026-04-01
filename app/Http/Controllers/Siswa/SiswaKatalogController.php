@@ -8,6 +8,7 @@ use App\Models\BookReview;
 use App\Models\Borrowing;
 use App\Models\Category;
 use App\Models\Favorite;
+use App\Models\BookSeries;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,7 @@ class SiswaKatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Book::with(['category', 'categories']);
+        $query = Book::with(['category', 'categories', 'series']);
 
         // Search
         if ($request->search) {
@@ -39,11 +40,17 @@ class SiswaKatalogController extends Controller
         }
 
 
+        // Filter by series
+        if ($request->series) {
+            $query->where('book_series_id', $request->series);
+        }
+
         // Sort: stock habis paling bawah, lalu A-Z
         $query->orderByRaw('stock <= 0 ASC')->orderBy('title');
 
         $books      = $query->paginate(10);
         $categories = Category::all();
+        $seriesList = BookSeries::all();
 
         // Selected book
         $selected = null;
@@ -61,7 +68,7 @@ class SiswaKatalogController extends Controller
             ->whereIn('status', ['booking', 'dipinjam'])
             ->count();
 
-        return view('siswa.katalog', compact('books', 'categories', 'selected', 'favoritedIds', 'activeCount'));
+        return view('siswa.katalog', compact('books', 'categories', 'seriesList', 'selected', 'favoritedIds', 'activeCount'));
     }
 
     /**
