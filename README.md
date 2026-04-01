@@ -28,39 +28,41 @@ Sistem ini mensyaratkan tiga jenis hak akses untuk menjaga privasi data dan mela
 
 ---
 
-## Rincian Ekosistem Fitur Sistem
+## Fitur-fitur Lengkap Aplikasi
 
-Secara teknis, platform web LibSchool mengkategorisasikan otorisasi fiturnya secara hierarki ke dalam tiga tingkatan jenis pilar pengguna:
+Aplikasi LibSchool membagi rentetan fiturnya menjadi 3 pilar jenis pengguna (Admin, Petugas, dan Siswa). Berikut adalah penjelasan santai dan mudah dipahami untuk semua fitur yang ada:
 
-### 1. 🌐 Fungsionalitas Umum
-*   **Keamanan Autentikasi Berlapis**: Mulai dari integrasi Login sandi terenkripsi, pendaftaran Registrasi independen (khusus siswa baru), hingga penanganan aman "*Lupa Kata Sandi*" melalui email (SMTP).
-*   **Halaman Beranda (Landing Page) Pintar**: Front-end pertama kali yang secara pintar bisa mendeteksi jika peramban komputer klien memiliki sesi *login* yang sedang aktif dan mengalihkan mereka menembus ke dasbornya secara seketika.
-*   **Proteksi Middleware Role**: Menolak keras pengguna yang "nakal" untuk mengakses dasbor antar-peran (Skeptis secara baku).
+### 1. 🌐 Fitur Umum & Keamanan
+*   **Login & Register Mudah**: Pengguna bisa login dengan aman, siswa baru bisa mendaftar akun sekolah secara mandiri, dan ada fitur *Reset Password* via email kalau sewaktu-waktu lupa sandi.
+*   **Pendeteksi Login Otomatis**: Jika pengguna sudah pernah masuk (*login*) sebelumnya, ketika membuka website akan langsung diarahkan masuk ke dasbornya masing-masing tanpa harus login ulang, sangat efisien.
+*   **Pembatasan Akses (Aman dari Orang Iseng)**: Fitur keamanan kuat yang mencegah siswa menyusup ke halaman Admin, begitupun sebaliknya. Setiap orang hanya bisa melihat halaman yang memang sesuai porsinya.
 
-### 2. 👨‍🎓 Penjelajah Siswa (Anggota Reguler)
-*   **Dasbor Kalkulator Pintar**: Menyajikan matrik visual tentang jumlah koleksi bacaan di saku pengguna hingga ke kemampuan sistem menghitung pergerakan denda harian secara *real-time* yang dibebankan kepada siswa telat mengembalikan buku.
-*   **Eksplorasi Katalog Buku Pintar**: Mesin jelajah digital estetik dengan filterisasi. Menyediakan pandangan halaman buku lengkap lewat ringkasan pustakawan.
-*   **Ulasan Kepuasan (Review)**: Modul untuk memupuk literasi berkelompok yang mengizinkan siswa berpendapat, merating, dan memberikan kritik/saran mengenai kepuasan baca terhadap buku tertentu.
-*   **Booking Pintar Online**: Sistem reservasi / "*hold*" buku terdigitalisasi, agar buku impian siswa aman dari rebutan pelajar lain sembari siswa berangkat menuju bangunan perpustakaan di sekolah.
-*   **Manajemen Koleksi (Wishlist) Pribadi**: Fasilitas me-#tag "*Favorite*" buku yang ingin dibaca esok hari untuk disimpan di pustaka favorit internal akun.
-*   **Histori Transaksi Absolut**: Pengarsipan masa pendaftaran pesanan (`BK-***`), pelunasan pinalti digital mandiri, sampai *deadline* jatuh tempo pengembalian.
-*   **Manajemen Custom Identitas & Kartu Visual**: Upload Avatar sesuka hati dan ekspor identitas sebagai format grafis "Kartu Tanda Anggota" elektronik.
-*   **Pusat Pengajuan Bantuan (Helpdesk)**: Formulir pengaduan perihal pesanan meleset hingga mengirim sinyal keluhan (*ticket chat*) personal kepada staff yang bertugas tanpa butuh berhadapan langsung.
+### 2. 👨‍🎓 Fitur Khusus Siswa
+*   **Dasbor Pintar**: Tampilan beranda yang langsung ngasih tahu siswa info penting, seperti "Berapa buku yang sedang saya pinjam?" dan "Berapa hari lagi harus dikembalikan?". Sistem juga otomatis memantau hitungan denda telat secara langsung!
+*   **Katalog Buku Seru**: Tempat siswa bebas mencari dan melihat koleksi buku. Ada fitur filter canggih buat nemuin buku yang persis sedang dicari.
+*   **Berbagi Ulasan**: Selesai baca? Siswa bisa memberi bintang (*rating*) dan menulis komentar pendapat tentang buku tersebut, agar teman lain termotivasi membacanya.
+*   **Booking Buku dari Rumah**: Punya buku incaran tapi takut dipinjam teman lain? Booking saja lewat HP dari rumah, lalu ambil aman ke perpustakaan sekolah.
+*   **Rak Favorit Kita**: Kalau lagi naksir buku tapi tidak sempat pinjam hari ini, tinggal tandai masuk ke rak "*Favorite*" supaya gampang dicari besok lagi.
+*   **Riwayat Bacaan Personal**: Menampilkan jejak rekam buku apa saja yang pernah sukses dipinjam sampai dikembalikan, hingga nota pelunasan denda juga tercatat abadi.
+*   **Ubah Kartu Tanda Anggota**: Siswa bisa ganti foto pas *Avatar* sendiri dan bahkan mencetak visual grafis "Kartu Anggota Elektronik"-nya.
+*   **Chat Pelayanan (Helpdesk)**: Enggan mendatangi staf perpus untuk komplain pelayanan? Siswa tinggal menulis pesan (*chat*) laporan melalui pusat pengaduan.
 
-### 3. 👨‍💼 Staf Penjaga (Operasional Pustakawan Frontliner)
-*   **Konfirmasi Peminjaman (Booking Validator)**: Halaman dinamis memanggil kode pemesanan siswa untuk secara syah mengkonversikan status buku yang menempel/booking ke status hukum peminjaman aktif.
-*   **Integrasi Pengembalian Buku Otomatis**: Layar mesin pemeriksa penyetoran kembali barang inventaris. Apabila kalender melewati hari *deadline*, ia akan serempak menyambar memunculkan beban pinalti harga denda tepat di layar petugas.
-*   **Rekap Log Riwayat Harian**: Lacak *flow* arus masuk keluar inventaris komoditi.
-*   **Manajemen Pesan Kotak Masuk (Inbox)**: Merespons, memperbaharui progres validitas pesanan dan membelas rentetan *ticket* yang digulirkan dari pengguna/siswa tanpa perlu membuka aplikasi surel luar.
+### 3. 👨‍💼 Fitur Khusus Petugas Perpustakaan
+*   **Persetujuan Pinjam Buku (Klik Tombol)**: Tempat petugas memeriksa kode booking dari anak-anak (Contoh: `BK-001`). Setelah anak mengambil fisik bukunya di meja perpus, petugas tinggal tekan "Konfirmasi" dan sah sudah dipinjam!
+*   **Kasir Denda Berjalan**: Disaat mendata anak yang mengembalikan buku melewati hari batas waktu (*deadline*), sistem yang akan memikirkan hitungan denda dan seketika langsung menghardik muncul di hadapan layar petugas otomatis.
+*   **Catatan Aktivitas Staf Harian**: Rangkuman arus buku apa saja di luar rak, dan ada berapa buku yang tersimpan siang itu.
+*   **Buka Surat Keluhan (Inbox)**: Menerima, membaca, dan menyelesaikan laporan pertolongan yang masuk dari aplikasi si anak.
 
-### 4. 👑 Administrator Jaringan (Super User)
-*   **Kendali Operasional Pengguna (CRUD)**: Punya alat komplit untuk melahirkan pengguna abdi baru, membekukan/mem-Banned pihak nakal, mendisiplinkan para sandi yang terpejam hingga mengubah nasib otoritas pangkat bawahan.
-*   **Verifikasi KYC Anti-Bot (Aktifasi Validitas Peminjam Dasar)**: Sistem penyaringan pintu untuk siswa murid mendaftar bebas. Tidak peduli seberapa gencar murid memesan buku, mereka *freeze* tanpa pesetujuan aktivasi centang dari Sang Admin tingkat atas.
+### 4. 👑 Fitur Pemilik Toko (Administrator)
+*   **Pantauan Semesta (Dasbor)**: Seluruh gerak operasional perpustakaan tergambar rapi lewat statistik jumlah di layar ini.
+*   **Kekuasaan Mutlak Pengguna**: Admin memegang kendali menambah petugas baru tanpa batas, membekukan/memecat akun yang jelek, mengganti isi bio info orang lain, atau merubah sandi orang yang susah masuk.
+*   **Kunci Pintu (Validasi Member Baru)**: Fitur ampuh menghindari siswa bodong masuk. Setiap pendaftar baru tidak bisa main pesan (*Booking*) buku tanpa verifikasi status "Boleh Pinjam" dari jari Sang Admin di layar validasi. Bot palsu tidak akan bisa hidup disini.
+*   **Sulap Kekuatan Peran**: Hanya butuh 1 klik admin untuk merendahkan staf penjaga menjadi peran anak siswa standar, kejam dan dinamis.
 
-**Kewenangan Gabungan / Hak Akses Tersanding (Admin & Penjaga)**:
-*   **Data Induk Utama**: Modul manajemen pengayaan pustaka (Buku, Kategori Spesifik, Series Labeling).
-*   **Pusat Penarikan Denda**: Validator "Kasir" untuk meregistrasi bahwa denda lunas ke dalam neraca pendapatan atau tetap menjadi rekor tagihan (hutang tak tertagih).
-*   **Pencari Bukti Elektronik Laporan**: Mesin kalkulasi tarikan *record SQL* transaksi besar-besaran untuk dirangkai ulang ke wujud rapi tabel laporan manajerial dan *export* menjadi arsip PDF.
+**Akses Fitur Kolaborasi Pekerjaan (Bisa Dilakukan Admin + Petugas)**:
+*   **Mengisi Rak Buku Utama**: Kegiatan merapikan laci-laci etalase dari nama judul buku, menyusun buku fiksi berseri, dan membagi rak Kategori A / B.
+*   **Verifikasi Tutup Denda Hutang**: Menekan sah pelunasan tagihan anak yang membawa uang koin denda dan memastikan rekamnya terganti menjadi "Lunas".
+*   **Sulap Dokumen Laporan**: Cukup sentuh cetak, triliunan mili catatan historis orang yang lalang pinjam di sulap rekayasa sistem berubah menjadi Kertas elektronik PDF (Buku Laporan Penjaga).
 
 ---
 
