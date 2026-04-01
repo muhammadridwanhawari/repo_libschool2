@@ -8,6 +8,27 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use App\Notifications\ResetPasswordNotification;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string|null $nik
+ * @property string $username
+ * @property string $email
+ * @property string|null $telepon
+ * @property string|null $tanggal_lahir
+ * @property string|null $gender
+ * @property string $role
+ * @property string $password
+ * @property string|null $permissions
+ * @property bool $is_verified
+ * @property \Illuminate\Support\Carbon|null $verified_at
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property string|null $avatar
+ * @property int $points
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */

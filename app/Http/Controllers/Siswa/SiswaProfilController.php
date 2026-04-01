@@ -8,11 +8,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\Password;
+use App\Models\User;
 
 class SiswaProfilController extends Controller
 {
     public function index()
     {
+        /** @var User $user */
         $user = Auth::user();
         $memberId = 'ID-' . $user->id . '-PX-' . $user->created_at->format('Y');
         $isVerified = (bool) $user->is_verified;
@@ -24,6 +26,7 @@ class SiswaProfilController extends Controller
 
     public function update(Request $request)
     {
+        /** @var User $user */
         $user = Auth::user();
 
         $validated = $request->validate([
@@ -45,6 +48,7 @@ class SiswaProfilController extends Controller
             'password'         => ['required', 'confirmed', Password::defaults()],
         ]);
 
+        /** @var User $user */
         $user = Auth::user();
 
         if (!Hash::check($request->current_password, $user->password)) {
@@ -62,6 +66,7 @@ class SiswaProfilController extends Controller
             'avatar' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
         ]);
 
+        /** @var User $user */
         $user = Auth::user();
 
         // Delete old avatar if exists

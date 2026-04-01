@@ -65,7 +65,9 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         // Redirect berdasarkan role
-        $role = Auth::user()->role;
+        /** @var \App\Models\User $authUser */
+        $authUser = Auth::user();
+        $role = $authUser->role;
         return match($role) {
             'admin'   => redirect()->route('admin.dashboard'),
             'penjaga' => redirect()->route('penjaga.dashboard'),

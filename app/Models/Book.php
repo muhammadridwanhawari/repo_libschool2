@@ -4,6 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string $title
+ * @property string|null $isbn
+ * @property string|null $author
+ * @property string|null $publisher
+ * @property string|null $year
+ * @property int|null $pages
+ * @property int $stock
+ * @property string|null $cover
+ * @property string|null $location
+ * @property string|null $sinopsis
+ * @property int|null $book_series_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class Book extends Model
 {
     protected $fillable = [
