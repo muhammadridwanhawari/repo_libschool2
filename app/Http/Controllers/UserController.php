@@ -107,7 +107,10 @@ class UserController extends Controller
 
         $hasUnpaidFines = \App\Models\Fine::whereHas('borrowing', function ($query) use ($pengguna) {
             $query->where('user_id', $pengguna->id);
-        })->where('payment_status', 'unpaid')->exists();
+        })->where('paid', false)
+          ->where(function ($q) {
+              $q->where('payment_status', '!=', 'pending')->orWhereNull('payment_status');
+          })->exists();
 
         if ($hasUnpaidFines) {
             return redirect()->route('admin.pengguna.index')

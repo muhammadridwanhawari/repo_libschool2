@@ -6,38 +6,40 @@
     <title>Login - LibSchool</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    @vite('resources/css/app.css')
+    <?php echo app('Illuminate\Foundation\Vite')('resources/css/app.css'); ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-@php
+<?php
     $loginPopup = session('login_popup');
     $inlineErrors = collect($errors->getMessages())->except('throttle')->flatten();
-@endphp
+?>
 <body class="min-h-screen flex items-center justify-center p-4 relative" style="background: linear-gradient(135deg, #4475F2 0%, #A2BEF8 100%);">
 
-    @if ($loginPopup)
+    <?php if($loginPopup): ?>
         <div id="login-alert-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4">
             <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-                <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full {{ ($loginPopup['type'] ?? 'warning') === 'blocked' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600' }}">
+                <div class="mb-4 flex h-12 w-12 items-center justify-center rounded-full <?php echo e(($loginPopup['type'] ?? 'warning') === 'blocked' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'); ?>">
                     <span class="text-2xl font-bold">!</span>
                 </div>
                 <h2 class="text-xl font-bold text-slate-900">
-                    {{ $loginPopup['title'] ?? 'Peringatan Login' }}
+                    <?php echo e($loginPopup['title'] ?? 'Peringatan Login'); ?>
+
                 </h2>
                 <p id="login-alert-message" class="mt-3 text-sm leading-6 text-slate-600">
-                    {{ $loginPopup['message'] ?? '' }}
+                    <?php echo e($loginPopup['message'] ?? ''); ?>
+
                 </p>
-                @if (!empty($loginPopup['retry_after']))
+                <?php if(!empty($loginPopup['retry_after'])): ?>
                     <div class="mt-4 rounded-2xl bg-slate-100 px-4 py-3 text-sm font-medium text-slate-700">
                         Sisa waktu tunggu:
-                        <span id="login-alert-countdown" data-seconds="{{ (int) $loginPopup['retry_after'] }}">
-                            {{ (int) $loginPopup['retry_after'] }} detik
+                        <span id="login-alert-countdown" data-seconds="<?php echo e((int) $loginPopup['retry_after']); ?>">
+                            <?php echo e((int) $loginPopup['retry_after']); ?> detik
                         </span>
                     </div>
-                @endif
+                <?php endif; ?>
                 <div class="mt-6 flex justify-end">
                     <button type="button" id="login-alert-close"
                         class="rounded-xl bg-[#4475F2] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-600">
@@ -46,52 +48,53 @@
                 </div>
             </div>
         </div>
-    @endif
+    <?php endif; ?>
 
-    {{-- Kartu Login --}}
+    
     <div class="w-full max-w-[500px] bg-white rounded-3xl shadow-xl px-10 py-12 relative z-10">
 
-        {{-- Logo --}}
+        
         <div class="flex justify-center mb-6">
-            <img src="{{ asset('images/logo/LogoBlack.png') }}" alt="LibSchool Logo" class="h-14 w-auto object-contain">
+            <img src="<?php echo e(asset('images/logo/LogoBlack.png')); ?>" alt="LibSchool Logo" class="h-14 w-auto object-contain">
         </div>
 
-        {{-- Judul / Subtitle --}}
+        
         <p class="text-[15px] font-medium text-slate-700 text-center mb-8">
             Masukan Nama Pengguna dan Kata Sandi Anda
         </p>
 
-        {{-- Status / Error --}}
-        @if (session('status'))
+        
+        <?php if(session('status')): ?>
             <div class="mb-5 px-4 py-3 bg-green-50 border border-green-200 rounded-xl text-green-600 text-sm">
-                {{ session('status') }}
-            </div>
-        @endif
+                <?php echo e(session('status')); ?>
 
-        @if ($inlineErrors->isNotEmpty())
+            </div>
+        <?php endif; ?>
+
+        <?php if($inlineErrors->isNotEmpty()): ?>
             <div class="mb-5 px-4 py-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
                 <ul class="list-none p-0 m-0">
-                    @foreach ($inlineErrors as $error)
-                        <li>• {{ $error }}</li>
-                    @endforeach
+                    <?php $__currentLoopData = $inlineErrors; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li>• <?php echo e($error); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
             </div>
-        @endif
+        <?php endif; ?>
 
-        <form method="POST" action="{{ route('login') }}" autocomplete="off" id="login-form">
-            @csrf
+        <form method="POST" action="<?php echo e(route('login')); ?>" autocomplete="off" id="login-form">
+            <?php echo csrf_field(); ?>
 
-            {{-- Input Email (Aslinya username di backend, namun label menyesuaikan UI) --}}
+            
             <div class="mb-5">
                 <label for="username" class="block text-[15px] font-medium text-slate-800 mb-2">Nama Pengguna</label>
                 <input type="text" name="username" id="username"
                        class="w-full border border-gray-300 rounded-xl px-4 py-3 text-[15px] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-[#4475F2] focus:ring-[3px] focus:ring-[#4475F2]/20"
-                       value="{{ $errors->has('username') ? '' : old('username') }}"
+                       value="<?php echo e($errors->has('username') ? '' : old('username')); ?>"
                        autocomplete="off"
                        required autofocus>
             </div>
 
-            {{-- Input Kata Sandi --}}
+            
             <div class="mb-2">
                 <label for="password" class="block text-[15px] font-medium text-slate-800 mb-2">Kata sandi</label>
                 <div class="relative">
@@ -102,7 +105,7 @@
                     <button type="button"
                             class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
                             onclick="togglePassword('password', this)">
-                        {{-- Icon Eye Slash --}}
+                        
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
                         </svg>
@@ -110,25 +113,25 @@
                 </div>
             </div>
 
-            {{-- Lupa Kata Sandi --}}
+            
             <div class="flex justify-end mb-8 mt-2">
-                <a href="{{ route('password.request') }}"
+                <a href="<?php echo e(route('password.request')); ?>"
                    class="text-[14px] font-bold text-[#4475F2] hover:text-blue-700 no-underline transition-colors">
                     Lupa kata sandi
                 </a>
             </div>
 
-            {{-- Tombol Submit --}}
+            
             <button type="submit" id="login-submit"
                     class="w-full bg-[#4475F2] text-white rounded-xl py-3.5 text-[16px] font-bold tracking-wide transition-all hover:bg-blue-600 shadow-md hover:shadow-lg hover:-translate-y-0.5 active:bg-blue-700 active:shadow-md">
                 Login
             </button>
         </form>
 
-        {{-- Register Link --}}
+        
         <div class="mt-8 text-center text-[14.5px] text-gray-800">
             Belum punya akun? 
-            <a href="{{ route('register') }}" class="font-bold text-[#4475F2] hover:text-blue-700 hover:underline">
+            <a href="<?php echo e(route('register')); ?>" class="font-bold text-[#4475F2] hover:text-blue-700 hover:underline">
                 Klik disini untuk register
             </a>
         </div>
@@ -229,3 +232,4 @@
     </script>
 </body>
 </html>
+<?php /**PATH C:\xampp\htdocs\LIBSCHOOL\resources\views/auth/login.blade.php ENDPATH**/ ?>

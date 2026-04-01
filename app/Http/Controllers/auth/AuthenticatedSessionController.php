@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class AuthenticatedSessionController extends Controller
@@ -18,7 +19,15 @@ class AuthenticatedSessionController extends Controller
 
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        try {
+            $request->authenticate();
+        } catch (ValidationException $exception) {
+            return back()
+                ->withErrors($exception->errors())
+                ->withInput($request->only('username'))
+                ->with('login_popup', $request->lockoutPayload());
+        }
+
         $request->session()->regenerate();
 
         $role = Auth::user()->role;

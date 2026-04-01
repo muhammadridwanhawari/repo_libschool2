@@ -43,9 +43,11 @@
     }
     .filter-dropdown:focus { border-color: #6366f1; }
 
+    .filter-col { width: 220px; flex-shrink: 0; }
     @media (max-width: 500px) {
         .filter-form-wrapper { flex-direction: column; align-items: stretch; }
         .search-input-wrap, .filter-dropdown { min-width: 100%; width: 100%; }
+        .filter-col { width: 100%; }
         .mobile-filter-label { display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 4px; }
     }
     @media (min-width: 501px) {
@@ -194,6 +196,23 @@
     .modal-copy-btn { background: #4361ee; color: #fff; border: none; border-radius: 10px; padding: 12px 24px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: background 0.2s; margin-right: 8px; }
     .modal-copy-btn:hover { background: #3a56d4; }
 
+    /* ── Section title for Buku Terfavorit ── */
+    .hof-title-light {
+        font-size: 1.25rem; font-weight: 800; color: #1e293b;
+        display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+    }
+    .hof-title-light svg { transition: all 0.2s; }
+    .hof-subtitle-light { font-size: 0.78rem; color: #94a3b8; margin-top: -4px; margin-bottom: 24px; }
+    .peringkat-container { background: #fff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
+    .hof-empty { text-align: center; padding: 30px 0; color: #2c3e50; font-size: 0.95rem; font-weight: 600; }
+    
+    @media (max-width: 500px) {
+        .peringkat-container { padding: 16px; }
+        .hof-title-light { font-size: 0.95rem; }
+        .hof-title-light svg { width: 16px; height: 16px; }
+        .hof-subtitle-light { font-size: 0.65rem; margin-bottom: 16px; }
+    }
+
     /* Pagination */
     .pagination-wrap {
         padding: 16px; border-top: 1px solid #f0f0f0;
@@ -238,6 +257,60 @@
 </div>
 @endif
 
+<div class="peringkat-container" style="margin-bottom: 24px;">
+    {{-- Buku Terfavorit (Grid of 5 Books) --}}
+    <div class="hof-title-light" style="margin-bottom: 12px; font-size: 1.25rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="#4361ee" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        Buku Terfavorit Bulan Ini
+    </div>
+    <div class="hof-subtitle-light" style="margin-top:-6px; margin-bottom: 24px;">5 Buku paling sering dipinjam bulan {{ $now->translatedFormat('F Y') }}</div>
+
+    @if($topBooks->isEmpty())
+        <div class="hof-empty" style="padding: 40px; background: #f8fafc; border-radius: 12px;">Belum ada peminjaman buku bulan ini.</div>
+    @else
+        <div class="book-grid" style="margin-bottom:0;">
+            @foreach($topBooks as $book)
+            <div class="book-card" data-url="{{ route('siswa.katalog.show', $book->id) }}" onclick="window.location.href=this.dataset.url;">
+                {{-- Cover Area --}}
+                <div class="book-cover-area">
+                    @if($book->stock > 0)
+                        <div class="badge-tersedia"><div class="dot"></div> TERSEDIA</div>
+                    @else
+                        <div class="badge-habis"><div class="dot"></div> HABIS</div>
+                    @endif
+
+                    @if($book->cover)
+                        <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->title }}" class="book-cover-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                        <div class="book-icon-wrapper" style="display:none; color:#84a98c; padding:20px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+                            </svg>
+                        </div>
+                    @else
+                        <div class="book-icon-wrapper" style="color:#84a98c; padding:20px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                            </svg>
+                        </div>
+                    @endif
+
+                    <div class="hover-overlay">
+                        <span class="btn-lihat-detail">Lihat detail: {{ \Illuminate\Support\Str::limit($book->title, 20) }}</span>
+                    </div>
+                </div>
+
+                {{-- Info Area --}}
+                <div class="book-info">
+                    <p class="book-category">{{ $book->categories->isNotEmpty() ? $book->categories->pluck('name')->join(', ') : ($book->category->name ?? 'UMUM') }}</p>
+                    <p class="book-title" title="{{ $book->title }}">{{ $book->title }}</p>
+                    <p class="book-author">{{ $book->author ?? 'Tidak diketahui' }}</p>
+                </div>
+            </div>
+            @endforeach
+        </div>
+    @endif
+</div>
+
 <div class="katalog-container">
     {{-- Search & Filter Header --}}
     <div class="search-filter-row">
@@ -251,7 +324,7 @@
             </div>
 
             {{-- Filter Kategori --}}
-            <div style="flex:1;">
+            <div class="filter-col">
                 <span class="mobile-filter-label">Kategori</span>
                 <select name="category" onchange="document.getElementsByName('series')[0].value=''; document.getElementById('searchFilterForm').submit()" class="filter-dropdown" style="width:100%;" aria-label="Filter Kategori">
                     <option value="">Semua Kategori</option>
@@ -262,7 +335,7 @@
             </div>
 
             {{-- Filter Series --}}
-            <div style="flex:1;">
+            <div class="filter-col">
                 <span class="mobile-filter-label">Series Buku</span>
                 <select name="series" onchange="document.getElementsByName('category')[0].value=''; document.getElementById('searchFilterForm').submit()" class="filter-dropdown" style="width:100%;" aria-label="Filter Series">
                     <option value="">Semua Series</option>
@@ -371,17 +444,19 @@
             <button class="btn-batal" id="detailModalCloseBtn" onclick="closeDetailModal()">Batal</button>
             {{-- [HIGH-F01] Fix: cek status verifikasi akun di sisi view --}}
             {{-- [HIGH-E01] Fix: gunakan data-* attribute, jangan sisipkan judul buku di onclick --}}
-            @if($selected->stock > 0)
-                @if(Auth::user()->is_verified)
-                    <button class="btn-pinjam-modal"
-                        data-book-id="{{ $selected->id }}"
-                        data-book-title="{{ e($selected->title) }}"
-                        onclick="doPinjamFromData(this)">Pinjam Buku</button>
-                @else
-                    <button class="btn-pinjam-modal" disabled title="Akun belum diverifikasi oleh admin">Akun Belum Diverifikasi</button>
-                @endif
-            @else
+            @if(!Auth::user()->is_verified)
+                <button class="btn-pinjam-modal" disabled title="Akun belum diverifikasi oleh admin">Anda belum terverifikasi</button>
+            @elseif($selected->stock < 1)
                 <button class="btn-pinjam-modal" disabled>Stok Habis</button>
+            @elseif($hasUnpaidFine)
+                <button class="btn-pinjam-modal" disabled title="Lunasi denda terlebih dahulu" style="background: #94a3b8; cursor: not-allowed;">Anda memiliki denda</button>
+            @elseif($activeCount >= 5)
+                <button class="btn-pinjam-modal" disabled title="Batas 5 pinjaman aktif tercapai">Batas Pinjaman Tercapai</button>
+            @else
+                <button class="btn-pinjam-modal"
+                    data-book-id="{{ $selected->id }}"
+                    data-book-title="{{ e($selected->title) }}"
+                    onclick="doPinjamFromData(this)">Pinjam Buku</button>
             @endif
         </div>
     </div>

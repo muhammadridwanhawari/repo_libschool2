@@ -17,30 +17,6 @@ class SiswaHalamanController extends Controller
         $month = $now->month;
         $year = $now->year;
 
-        // Top 3 Buku
-        $topBooksIds = DB::table('borrowings')
-            ->select('book_id', DB::raw('COUNT(id) as total_borrowed'))
-            ->whereMonth('borrow_date', $month)
-            ->whereYear('borrow_date', $year)
-            ->groupBy('book_id')
-            ->orderByDesc('total_borrowed')
-            ->limit(5)
-            ->get();
-
-        $booksData = \App\Models\Book::with(['categories', 'category'])
-            ->whereIn('id', $topBooksIds->pluck('book_id'))
-            ->get()
-            ->keyBy('id');
-
-        $topBooks = $topBooksIds->map(function($item) use ($booksData) {
-            $book = $booksData->get($item->book_id);
-            if ($book) {
-                $book->total_borrowed = $item->total_borrowed;
-                return $book;
-            }
-            return null;
-        })->filter();
-
         // Top 3 Siswa berdasarkan poin
         $topStudents = DB::table('users')
             ->select('id', 'name', 'avatar', 'points',
@@ -81,10 +57,13 @@ class SiswaHalamanController extends Controller
 
         $totalDenda = $dendaDariDB + $dendaEstimasi;
 
-        // Cek apakah siswa punya denda yang belum lunas
+        // Cek apakah siswa punya denda yang belum lunas (belum dibayar ATAU ditolak, exclude pending)
         $hasUnpaidFine = \App\Models\Fine::whereHas(
             'borrowing', fn($q) => $q->where('user_id', $userId)
-        )->where('paid', false)->exists();
+        )->where('paid', false)
+         ->where(function ($q) {
+             $q->where('payment_status', '!=', 'pending')->orWhereNull('payment_status');
+         })->exists();
 
         // Buku yang sudah mau deadline atau telat
         $deadlineLoans = Borrowing::with('book')
@@ -99,7 +78,7 @@ class SiswaHalamanController extends Controller
             });
 
         return view('siswa.halaman.index', compact(
-            'topBooks', 'topStudents', 'now', 
+            'topStudents', 'now', 
             'totalSelesai', 'activeBorrowed', 'totalDenda', 'deadlineLoans',
             'hasUnpaidFine', 'userPoints'
         ));

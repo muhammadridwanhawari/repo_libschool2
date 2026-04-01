@@ -68,7 +68,43 @@ class SiswaKatalogController extends Controller
             ->whereIn('status', ['booking', 'dipinjam'])
             ->count();
 
-        return view('siswa.katalog', compact('books', 'categories', 'seriesList', 'selected', 'favoritedIds', 'activeCount'));
+        $now = \Carbon\Carbon::now();
+        $month = $now->month;
+        $year = $now->year;
+
+        // Cek denda belum lunas
+        $hasUnpaidFine = \App\Models\Fine::whereHas(
+            'borrowing', fn($q) => $q->where('user_id', Auth::id())
+        )->where('paid', false)
+         ->where(function ($q) {
+             $q->where('payment_status', '!=', 'pending')->orWhereNull('payment_status');
+         })->exists();
+
+        // Top 5 Buku Terfavorit
+        $topBooksIds = DB::table('borrowings')
+            ->select('book_id', DB::raw('COUNT(id) as total_borrowed'))
+            ->whereMonth('borrow_date', $month)
+            ->whereYear('borrow_date', $year)
+            ->groupBy('book_id')
+            ->orderByDesc('total_borrowed')
+            ->limit(5)
+            ->get();
+
+        $booksData = Book::with(['categories', 'category'])
+            ->whereIn('id', $topBooksIds->pluck('book_id'))
+            ->get()
+            ->keyBy('id');
+
+        $topBooks = $topBooksIds->map(function($item) use ($booksData) {
+            $book = $booksData->get($item->book_id);
+            if ($book) {
+                $book->total_borrowed = $item->total_borrowed;
+                return $book;
+            }
+            return null;
+        })->filter();
+
+        return view('siswa.katalog', compact('books', 'categories', 'seriesList', 'selected', 'favoritedIds', 'activeCount', 'topBooks', 'now', 'hasUnpaidFine'));
     }
 
     /**
@@ -94,10 +130,13 @@ class SiswaKatalogController extends Controller
             ->whereIn('status', ['dipinjam', 'dikembalikan'])
             ->exists();
 
-        // Cek apakah user punya denda belum lunas
+        // Cek apakah user punya denda yang belum lunas (belum dibayar ATAU ditolak, exclude pending)
         $hasUnpaidFine = \App\Models\Fine::whereHas(
             'borrowing', fn($q) => $q->where('user_id', Auth::id())
-        )->where('paid', false)->exists();
+        )->where('paid', false)
+         ->where(function ($q) {
+             $q->where('payment_status', '!=', 'pending')->orWhereNull('payment_status');
+         })->exists();
 
         // Hitung pinjaman aktif (booking + dipinjam)
         $activeCount = Borrowing::where('user_id', Auth::id())
@@ -144,10 +183,13 @@ class SiswaKatalogController extends Controller
             ], 403);
         }
 
-        // Cek apakah siswa punya denda yang belum dilunasi
+        // Cek apakah siswa punya denda yang belum dilunasi (belum dibayar ATAU ditolak, exclude pending)
         $hasUnpaidFine = \App\Models\Fine::whereHas(
             'borrowing', fn($q) => $q->where('user_id', Auth::id())
-        )->where('paid', false)->exists();
+        )->where('paid', false)
+         ->where(function ($q) {
+             $q->where('payment_status', '!=', 'pending')->orWhereNull('payment_status');
+         })->exists();
 
         if ($hasUnpaidFine) {
             return response()->json([
@@ -230,6 +272,7 @@ class SiswaKatalogController extends Controller
             return response()->json($result, $status);
 
         } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Error saat pinjam buku: ' . $e->getMessage() . ' di ' . $e->getFile() . ':' . $e->getLine());
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat memproses booking. Silakan coba lagi.',

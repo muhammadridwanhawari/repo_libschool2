@@ -362,24 +362,28 @@
 
         {{-- Tombol Pinjam --}}
         {{-- [HIGH-E01] Fix: data-* attribute mencegah XSS, tidak ada judul buku di onclick --}}
-        @if($book->stock > 0 && !$hasUnpaidFine && $activeCount < 5)
-            <button class="btn-pinjam" id="pinjamBtn"
-                data-book-id="{{ $book->id }}"
-                data-book-title="{{ e($book->title) }}"
-                onclick="doPinjamFromData(this)">
-                + Pinjam Buku Sekarang
+        @if(!Auth::user()->is_verified)
+            <button class="btn-pinjam" disabled style="background: #94a3b8; cursor: not-allowed;" title="Akun belum diverifikasi oleh admin">
+                Anda belum terverifikasi
             </button>
         @elseif($book->stock < 1)
             <button class="btn-pinjam" disabled>
                 Stok Habis
             </button>
         @elseif($hasUnpaidFine)
-            <button class="btn-pinjam" disabled title="Lunasi denda terlebih dahulu">
-                Ada Tagihan Denda
+            <button class="btn-pinjam" disabled title="Lunasi denda terlebih dahulu" style="background: #94a3b8; cursor: not-allowed;">
+                Anda memiliki denda
+            </button>
+        @elseif($activeCount >= 5)
+            <button class="btn-pinjam" disabled title="Batas 5 pinjaman aktif tercapai" style="background: #94a3b8; cursor: not-allowed;">
+                Batas Pinjaman Tercapai
             </button>
         @else
-            <button class="btn-pinjam" disabled title="Batas 5 pinjaman aktif tercapai">
-                Batas Pinjaman Tercapai
+            <button class="btn-pinjam" id="pinjamBtn"
+                data-book-id="{{ $book->id }}"
+                data-book-title="{{ e($book->title) }}"
+                onclick="doPinjamFromData(this)">
+                + Pinjam Buku Sekarang
             </button>
         @endif
     </div>
@@ -544,20 +548,7 @@
     </div>
 </div>
 
-{{-- Modal Error / Pembatasan --}}
-<div id="errorModal" style="position:fixed;inset:0;z-index:10000;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s;">
-    <div id="errorBox" style="background:#fff;border-radius:20px;padding:32px;width:420px;max-width:92vw;position:relative;box-shadow:0 25px 60px rgba(0,0,0,0.25);transform:scale(0.95);transition:transform 0.25s;text-align:center;">
-        <div style="width:60px;height:60px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
-        </div>
-        <p style="font-size:1.1rem;font-weight:800;color:#1e293b;margin-bottom:8px;">Tidak Dapat Meminjam</p>
-        <p id="errorModalMsg" style="font-size:0.88rem;color:#64748b;margin-bottom:20px;line-height:1.6;"></p>
-        <div style="display:flex;gap:8px;justify-content:center;">
-            <a href="{{ route('siswa.riwayat') }}" style="flex:1;background:#dc2626;color:#fff;border:none;border-radius:10px;padding:12px;font-size:0.88rem;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center;">Lunasi Denda</a>
-            <button onclick="closeErrorModal()" style="flex:1;background:#f1f5f9;color:#475569;border:none;border-radius:10px;padding:12px;font-size:0.88rem;font-weight:700;cursor:pointer;">Tutup</button>
-        </div>
-    </div>
-</div>
+
 
 @endsection
 
@@ -666,10 +657,8 @@ document.addEventListener('keydown', function(e) {
     if (e.key !== 'Escape') return;
     const bookingModal = document.getElementById('bookingModal');
     const confirmModal = document.getElementById('confirmPinjamModal');
-    const errorModal   = document.getElementById('errorModal');
     if (bookingModal  && bookingModal.style.opacity  === '1') closeBookingModal();
     if (confirmModal  && confirmModal.style.opacity  === '1') closeConfirmModal();
-    if (errorModal    && errorModal.style.opacity    === '1') closeErrorModal();
 });
 
 function showBookingModal(code, title, isExisting = false) {
@@ -706,22 +695,14 @@ function copyCode() {
     });
 }
 function showErrorModal(message) {
-    document.getElementById('errorModalMsg').textContent = message;
-    const modal = document.getElementById('errorModal');
-    const box   = document.getElementById('errorBox');
-    modal.style.opacity = '1';
-    modal.style.pointerEvents = 'all';
-    box.style.transform = 'scale(1)';
-    document.body.style.overflow = 'hidden';
-}
-
-function closeErrorModal() {
-    const modal = document.getElementById('errorModal');
-    const box   = document.getElementById('errorBox');
-    modal.style.opacity = '0';
-    modal.style.pointerEvents = 'none';
-    box.style.transform = 'scale(0.95)';
-    document.body.style.overflow = '';
+    const existing = document.getElementById('katalog-error-toast');
+    if (existing) existing.remove();
+    const toast = document.createElement('div');
+    toast.id = 'katalog-error-toast';
+    toast.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fee2e2;color:#991b1b;border:1.5px solid #fecaca;border-radius:12px;padding:14px 24px;font-size:0.88rem;font-weight:600;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.15);max-width:90vw;text-align:center;';
+    toast.textContent = '✗ ' + message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
 }
 </script>
 @endpush

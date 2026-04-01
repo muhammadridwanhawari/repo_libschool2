@@ -32,12 +32,12 @@ Sistem ini mensyaratkan tiga jenis hak akses untuk menjaga privasi data dan mela
 
 Aplikasi LibSchool membagi rentetan fiturnya menjadi 3 pilar jenis pengguna (Admin, Petugas, dan Siswa). Berikut adalah penjelasan santai dan mudah dipahami untuk semua fitur yang ada:
 
-### 1. 🌐 Fitur Umum & Keamanan
+### 1. Fitur Umum & Keamanan
 *   **Login & Register Mudah**: Pengguna bisa login dengan aman, siswa baru bisa mendaftar akun sekolah secara mandiri, dan ada fitur *Reset Password* via email kalau sewaktu-waktu lupa sandi.
 *   **Pendeteksi Login Otomatis**: Jika pengguna sudah pernah masuk (*login*) sebelumnya, ketika membuka website akan langsung diarahkan masuk ke dasbornya masing-masing tanpa harus login ulang, sangat efisien.
 *   **Pembatasan Akses (Aman dari Orang Iseng)**: Fitur keamanan kuat yang mencegah siswa menyusup ke halaman Admin, begitupun sebaliknya. Setiap orang hanya bisa melihat halaman yang memang sesuai porsinya.
 
-### 2. 👨‍🎓 Fitur Khusus Siswa
+### 2. Fitur Khusus Siswa
 *   **Dasbor Pintar**: Tampilan beranda yang langsung ngasih tahu siswa info penting, seperti "Berapa buku yang sedang saya pinjam?" dan "Berapa hari lagi harus dikembalikan?". Sistem juga otomatis memantau hitungan denda telat secara langsung!
 *   **Katalog Buku Seru**: Tempat siswa bebas mencari dan melihat koleksi buku. Ada fitur filter canggih buat nemuin buku yang persis sedang dicari.
 *   **Berbagi Ulasan**: Selesai baca? Siswa bisa memberi bintang (*rating*) dan menulis komentar pendapat tentang buku tersebut, agar teman lain termotivasi membacanya.
@@ -47,13 +47,13 @@ Aplikasi LibSchool membagi rentetan fiturnya menjadi 3 pilar jenis pengguna (Adm
 *   **Ubah Kartu Tanda Anggota**: Siswa bisa ganti foto pas *Avatar* sendiri dan bahkan mencetak visual grafis "Kartu Anggota Elektronik"-nya.
 *   **Chat Pelayanan (Helpdesk)**: Enggan mendatangi staf perpus untuk komplain pelayanan? Siswa tinggal menulis pesan (*chat*) laporan melalui pusat pengaduan.
 
-### 3. 👨‍💼 Fitur Khusus Petugas Perpustakaan
+### 3. Fitur Khusus Petugas Perpustakaan
 *   **Persetujuan Pinjam Buku (Klik Tombol)**: Tempat petugas memeriksa kode booking dari anak-anak (Contoh: `BK-001`). Setelah anak mengambil fisik bukunya di meja perpus, petugas tinggal tekan "Konfirmasi" dan sah sudah dipinjam!
 *   **Kasir Denda Berjalan**: Disaat mendata anak yang mengembalikan buku melewati hari batas waktu (*deadline*), sistem yang akan memikirkan hitungan denda dan seketika langsung menghardik muncul di hadapan layar petugas otomatis.
 *   **Catatan Aktivitas Staf Harian**: Rangkuman arus buku apa saja di luar rak, dan ada berapa buku yang tersimpan siang itu.
 *   **Buka Surat Keluhan (Inbox)**: Menerima, membaca, dan menyelesaikan laporan pertolongan yang masuk dari aplikasi si anak.
 
-### 4. 👑 Fitur Pemilik Toko (Administrator)
+### 4. Fitur Pemilik Toko (Administrator)
 *   **Pantauan Semesta (Dasbor)**: Seluruh gerak operasional perpustakaan tergambar rapi lewat statistik jumlah di layar ini.
 *   **Kekuasaan Mutlak Pengguna**: Admin memegang kendali menambah petugas baru tanpa batas, membekukan/memecat akun yang jelek, mengganti isi bio info orang lain, atau merubah sandi orang yang susah masuk.
 *   **Kunci Pintu (Validasi Member Baru)**: Fitur ampuh menghindari siswa bodong masuk. Setiap pendaftar baru tidak bisa main pesan (*Booking*) buku tanpa verifikasi status "Boleh Pinjam" dari jari Sang Admin di layar validasi. Bot palsu tidak akan bisa hidup disini.
