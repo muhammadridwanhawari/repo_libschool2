@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LibSchool - Cari dan ulas buku favorite Anda dengan mudah</title>
+<link rel="icon" href="{{ asset('images/logo/LOGO.png') }}" type="image/png">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   tailwind.config = {

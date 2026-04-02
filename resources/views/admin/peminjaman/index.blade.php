@@ -86,7 +86,20 @@
                 <tbody class="divide-y divide-slate-50">
                     @forelse ($borrowings as $p)
                     @php
-                        $statusDisplay = $p->status_display;
+                        $isLate = false;
+                        $isDeadline = false;
+
+                        if ($p->status === 'dipinjam' && $p->deadline) {
+                            $deadlineDate = \Carbon\Carbon::parse($p->deadline)->startOfDay();
+                            $today = now()->startOfDay();
+                            $diff = $today->diffInDays($deadlineDate, false);
+
+                            if ($diff < 0) {
+                                $isLate = true;
+                            } elseif ($diff >= 0 && $diff <= 1) {
+                                $isDeadline = true;
+                            }
+                        }
                     @endphp
                     <tr class="hover:bg-slate-50/60 transition-colors">
                         {{-- Kode Booking --}}
@@ -129,7 +142,7 @@
                         {{-- Deadline --}}
                         <td class="px-5 py-3.5 text-slate-500 text-[0.78rem] align-middle">
                             @if($p->deadline)
-                                <span class="{{ $statusDisplay === 'terlambat' ? 'text-red-500 font-semibold' : '' }}">
+                                <span class="{{ $p->status_display === 'terlambat' ? 'text-red-500 font-semibold' : '' }}">
                                     {{ \Carbon\Carbon::parse($p->deadline)->format('d M Y') }}
                                 </span>
                             @else
@@ -138,12 +151,18 @@
                         </td>
                         {{-- Status --}}
                         <td class="px-5 py-3.5 align-middle">
-                            @if($statusDisplay === 'terlambat')
+                            @if($p->status === 'booking')
+                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dbeafe] text-[#1d4ed8]">BOOKING</span>
+                            @elseif($isDeadline)
+                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#ffedd5] text-[#ea580c]">DEADLINE</span>
+                            @elseif($isLate || $p->status_display === 'terlambat')
                                 <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fee2e2] text-[#dc2626]">TERLAMBAT</span>
-                            @elseif($statusDisplay === 'dipinjam')
-                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fef9c3] text-[#92400e]">AKTIF</span>
-                            @elseif($statusDisplay === 'dikembalikan')
-                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dcfce7] text-[#16a34a]">DIKEMBALIKAN</span>
+                            @elseif($p->status === 'dipinjam')
+                                <span class="inline-block px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#fef9c3] text-[#a16207]">AKTIF</span>
+                            @elseif($p->status === 'dikembalikan')
+                                <span class="inline-flex items-center gap-1 px-3 py-1 rounded-lg font-bold text-[0.65rem] tracking-wide bg-[#dcfce7] text-[#16a34a]">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-[#16a34a] inline-block"></span>DIKEMBALIKAN
+                                </span>
                             @endif
                         </td>
                         {{-- Aksi --}}

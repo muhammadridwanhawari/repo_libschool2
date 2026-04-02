@@ -26,25 +26,30 @@
     }
 
     /* ─── Stat Cards ─────────────────────────────────── */
-    .stat-grid {
-        display: grid; grid-template-columns: repeat(3, 1fr);
+    .stat-cards {
+        display: grid; grid-template-columns: repeat(2, 1fr);
         gap: 16px; margin-bottom: 24px;
     }
     .stat-card {
         background: #fff; border-radius: 14px;
-        border: 1px solid #e8e8e8; padding: 20px 22px;
-        display: flex; align-items: center; gap: 16px;
+        padding: 20px 24px; border: 1.5px solid #e5e7eb;
+        display: flex; align-items: center; justify-content: space-between;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.04);
     }
-    .stat-icon {
-        width: 44px; height: 44px; border-radius: 12px;
+    .stat-card-info {
+        display: flex; flex-direction: column;
+    }
+    .stat-card-label { font-size: 0.8rem; color: #666; margin: 0 0 4px; font-weight: 500; }
+    .stat-card-value { font-size: 2rem; font-weight: 700; color: #222; margin: 0; line-height: 1; }
+    .stat-card-value.warning { color: #d97706; }
+    .stat-card-value.success { color: #16a34a; }
+    .stat-card-icon {
+        width: 44px; height: 44px;
         display: flex; align-items: center; justify-content: center;
-        flex-shrink: 0;
+        border-radius: 50%; flex-shrink: 0;
     }
-    .stat-icon.yellow { background: #fef9c3; }
-    .stat-icon.green  { background: #dcfce7; }
-    .stat-icon.red    { background: #fee2e2; }
-    .stat-label { font-size: 0.78rem; color: #888; margin-bottom: 2px; }
-    .stat-value { font-size: 1.7rem; font-weight: 800; color: #1a1a2e; line-height: 1; }
+    .stat-card:nth-child(1) .stat-card-icon { background: #fef9c3; color: #d97706; }
+    .stat-card:nth-child(2) .stat-card-icon { background: #dcfce7; color: #16a34a; }
 
     /* ─── Filter bar ─────────────────────────────────── */
     .filter-bar {
@@ -146,10 +151,10 @@
 
     /* Responsive */
     @media (max-width: 1024px) {
-        .stat-grid { grid-template-columns: repeat(2, 1fr); }
+        .stat-cards { grid-template-columns: repeat(2, 1fr); }
     }
     @media (max-width: 640px) {
-        .stat-grid { grid-template-columns: 1fr; }
+        .stat-cards { grid-template-columns: 1fr; }
         .page-header { flex-direction: column; align-items: flex-start; gap: 12px; }
         .filter-bar { flex-wrap: wrap; gap: 8px; }
         .divider-v { display: none; }
@@ -176,38 +181,27 @@
 </div>
 
 {{-- Stat Cards --}}
-<div class="stat-grid">
+<div class="stat-cards">
     <div class="stat-card">
-        <div class="stat-icon yellow">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="#d97706" stroke-width="2" viewBox="0 0 24 24">
+        <div class="stat-card-info">
+            <p class="stat-card-label">Menunggu Verifikasi</p>
+            <p class="stat-card-value warning">{{ $totalPending }}</p>
+        </div>
+        <div class="stat-card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
         </div>
-        <div>
-            <div class="stat-label">Menunggu Verifikasi</div>
-            <div class="stat-value">{{ $totalPending }}</div>
-        </div>
     </div>
     <div class="stat-card">
-        <div class="stat-icon green">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="#16a34a" stroke-width="2" viewBox="0 0 24 24">
+        <div class="stat-card-info">
+            <p class="stat-card-label">Aktif</p>
+            <p class="stat-card-value success">{{ $totalAktif }}</p>
+        </div>
+        <div class="stat-card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-        </div>
-        <div>
-            <div class="stat-label">Aktif</div>
-            <div class="stat-value">{{ $totalAktif }}</div>
-        </div>
-    </div>
-    <div class="stat-card">
-        <div class="stat-icon red">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="#dc2626" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-        </div>
-        <div>
-            <div class="stat-label">Ditolak</div>
-            <div class="stat-value">{{ $totalDitolak }}</div>
         </div>
     </div>
 </div>
@@ -222,15 +216,6 @@
             <input type="text" name="search" value="{{ $search ?? '' }}"
                    placeholder="Cari Nama, Email, atau Telepon...">
         </div>
-        <div class="divider-v"></div>
-        <select name="tanggal" onchange="this.form.submit()" style="min-width:130px;">
-            <option value="">Semua Tanggal</option>
-            @foreach($pending->pluck('created_at')->map(fn($d) => $d->format('Y-m-d'))->unique()->sort()->reverse() as $tgl)
-                <option value="{{ $tgl }}" {{ ($tanggal ?? '') === $tgl ? 'selected' : '' }}>
-                    {{ \Carbon\Carbon::parse($tgl)->format('d M Y') }}
-                </option>
-            @endforeach
-        </select>
         <div class="divider-v"></div>
         <select name="urutan" onchange="this.form.submit()">
             <option value="terbaru" {{ ($urutan ?? 'terbaru') === 'terbaru' ? 'selected' : '' }}>Terbaru</option>
