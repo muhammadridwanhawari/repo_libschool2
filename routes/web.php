@@ -11,7 +11,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\Siswa\FavoriteController;
 use App\Http\Controllers\Siswa\SiswaKatalogController;
 use App\Http\Controllers\Siswa\SiswaTransaksiController;
-use App\Http\Controllers\Siswa\SiswaKartuController;
 use App\Http\Controllers\Siswa\SiswaProfilController;
 use App\Http\Controllers\Siswa\SiswaPengajuanController;
 use App\Http\Controllers\Penjaga\PenjagaInboxController;
@@ -52,38 +51,6 @@ Route::middleware(['auth', 'role:siswa'])
     ->prefix('siswa')
     ->name('siswa.')
     ->group(function () {
-        Route::get('/dashboard', function () {
-            $userId = Auth::id();
-            
-            $dipinjam = \App\Models\Borrowing::where('user_id', $userId)
-                ->where('status', 'dipinjam')
-                ->count();
-                
-            $belumKembali = \App\Models\Borrowing::where('user_id', $userId)
-                ->where('status', 'dipinjam')
-                ->whereNotNull('deadline')
-                ->whereDate('deadline', '<', now())
-                ->count();
-            
-            // Hitung Denda (Unpaid DB + Estimasi realtime yang belum masuk DB)
-            $dendaDariDB = abs(\App\Models\Fine::whereHas('borrowing', fn($q) => $q->where('user_id', $userId))
-                ->where('payment_status', 'unpaid')->sum('amount'));
-                
-            $lateLoansEstimasi = \App\Models\Borrowing::where('user_id', $userId)
-                ->where('status', 'dipinjam')
-                ->whereNotNull('deadline')
-                ->whereDate('deadline', '<', now())
-                ->doesntHave('fine')
-                ->get();
-                
-            $dendaEstimasi = $lateLoansEstimasi->sum(function ($loan) {
-                return now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($loan->deadline)->startOfDay()) * 2000;
-            });
-            
-            $dendaAktif = $dendaDariDB + $dendaEstimasi;
-
-            return view('siswa.dashboard', compact('dipinjam', 'belumKembali', 'dendaAktif'));
-        })->name('dashboard');
 
         Route::get('/halaman', [\App\Http\Controllers\Siswa\SiswaHalamanController::class, 'index'])->name('halaman');
 
@@ -99,8 +66,6 @@ Route::middleware(['auth', 'role:siswa'])
         Route::get('/riwayat', [SiswaTransaksiController::class, 'riwayat'])->name('riwayat');
         Route::post('/denda/bayar', [SiswaTransaksiController::class, 'bayarDenda'])->name('denda.bayar');
 
-        // Kartu Anggota (legacy route, kept for backward compat)
-        Route::get('/kartu-anggota', [SiswaKartuController::class, 'index'])->name('kartu');
 
         // Profil Siswa
         Route::get('/profil', [SiswaProfilController::class, 'index'])->name('profil');

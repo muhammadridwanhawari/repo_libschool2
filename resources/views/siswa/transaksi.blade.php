@@ -66,8 +66,8 @@
 
     {{-- Header --}}
     <div class="mb-6">
-        <h1 class="text-[1.35rem] font-bold text-indigo-950">Pinjaman Saya</h1>
-        <p class="text-slate-500 text-[0.875rem] mt-1">Rekap status peminjaman</p>
+        <h1 class="text-[1.35rem] font-bold text-indigo-950">Petualanganmu Saat Ini</h1>
+        <p class="text-slate-500 text-[0.875rem] mt-1">Buku-buku yang sedang menemanimu menjelajahi dunia imajinasi hari ini</p>
     </div>
 
     {{-- ── 4 Stat Cards ─────────────────── --}}

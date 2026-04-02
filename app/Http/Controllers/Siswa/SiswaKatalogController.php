@@ -68,6 +68,12 @@ class SiswaKatalogController extends Controller
             ->whereIn('status', ['booking', 'dipinjam'])
             ->count();
 
+        // ID buku yang sedang aktif dipinjam/dibooking oleh siswa ini
+        $activeBorrowedBookIds = Borrowing::where('user_id', Auth::id())
+            ->whereIn('status', ['booking', 'dipinjam'])
+            ->pluck('book_id')
+            ->toArray();
+
         $now = \Carbon\Carbon::now();
         $month = $now->month;
         $year = $now->year;
@@ -104,7 +110,7 @@ class SiswaKatalogController extends Controller
             return null;
         })->filter();
 
-        return view('siswa.katalog', compact('books', 'categories', 'seriesList', 'selected', 'favoritedIds', 'activeCount', 'topBooks', 'now', 'hasUnpaidFine'));
+        return view('siswa.katalog', compact('books', 'categories', 'seriesList', 'selected', 'favoritedIds', 'activeCount', 'topBooks', 'now', 'hasUnpaidFine', 'activeBorrowedBookIds'));
     }
 
     /**
@@ -143,7 +149,13 @@ class SiswaKatalogController extends Controller
             ->whereIn('status', ['booking', 'dipinjam'])
             ->count();
 
-        return view('siswa.katalog.show', compact('book', 'reviews', 'avgRating', 'myReview', 'isFav', 'hasBorrowed', 'hasUnpaidFine', 'activeCount'));
+        // Cek apakah buku ini sedang aktif dipinjam/dibooking oleh user saat ini
+        $isCurrentlyBorrowed = Borrowing::where('user_id', Auth::id())
+            ->where('book_id', $book->id)
+            ->whereIn('status', ['booking', 'dipinjam'])
+            ->exists();
+
+        return view('siswa.katalog.show', compact('book', 'reviews', 'avgRating', 'myReview', 'isFav', 'hasBorrowed', 'hasUnpaidFine', 'activeCount', 'isCurrentlyBorrowed'));
     }
 
     /**

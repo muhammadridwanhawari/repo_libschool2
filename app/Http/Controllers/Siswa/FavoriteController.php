@@ -20,7 +20,13 @@ class FavoriteController extends Controller
             ->latest()
             ->get();
 
-        return view('siswa.favorite', compact('favorites'));
+        // ID buku yang sedang aktif dipinjam/dibooking oleh siswa ini
+        $activeBorrowedBookIds = \App\Models\Borrowing::where('user_id', Auth::id())
+            ->whereIn('status', ['booking', 'dipinjam'])
+            ->pluck('book_id')
+            ->toArray();
+
+        return view('siswa.favorite', compact('favorites', 'activeBorrowedBookIds'));
     }
 
     /**

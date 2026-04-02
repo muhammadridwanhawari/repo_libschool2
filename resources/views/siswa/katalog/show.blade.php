@@ -358,13 +358,14 @@
                 <span class="label">Jatuh tempo:</span>
                 <span class="val" id="tglTempo">{{ now()->addDays(7)->format('d M Y') }}</span>
             </div>
-        </div>
-
-        {{-- Tombol Pinjam --}}
-        {{-- [HIGH-E01] Fix: data-* attribute mencegah XSS, tidak ada judul buku di onclick --}}
+               {{-- Tombol Pinjam --}}
         @if(!Auth::user()->is_verified)
             <button class="btn-pinjam" disabled style="background: #94a3b8; cursor: not-allowed;" title="Akun belum diverifikasi oleh admin">
                 Anda belum terverifikasi
+            </button>
+        @elseif($isCurrentlyBorrowed)
+            <button class="btn-pinjam" disabled style="background: #7c3aed; cursor: not-allowed;" title="Kamu sedang meminjam buku ini">
+                Buku Sedang Di Pinjam
             </button>
         @elseif($book->stock < 1)
             <button class="btn-pinjam" disabled>
@@ -386,6 +387,7 @@
                 + Pinjam Buku Sekarang
             </button>
         @endif
+    </div>
     </div>
 
     {{-- Right: Book Info --}}

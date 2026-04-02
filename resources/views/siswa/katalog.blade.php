@@ -106,6 +106,16 @@
     }
     .badge-habis .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; opacity: 0.9; }
 
+    /* Badge buku yang sedang dipinjam oleh siswa ini */
+    .badge-my-borrowed {
+        position: absolute; top: 12px; left: 12px; z-index: 10;
+        background: #7c3aed; color: #fff; border-radius: 9999px;
+        padding: 4px 10px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;
+        display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(124,58,237,0.4);
+    }
+    .badge-my-borrowed .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; opacity: 0.9; animation: pulse-dot 1.5s infinite; }
+    @keyframes pulse-dot { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.3; } }
+
     .fav-btn {
         position: absolute; top: 12px; right: 12px; z-index: 10;
         width: 32px; height: 32px; border-radius: 50%;
@@ -196,28 +206,275 @@
     .modal-copy-btn { background: #4361ee; color: #fff; border: none; border-radius: 10px; padding: 12px 24px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: background 0.2s; margin-right: 8px; }
     .modal-copy-btn:hover { background: #3a56d4; }
 
-    /* ── Section title for Buku Terfavorit ── */
-    .hof-title-light {
-        font-size: 1.25rem; font-weight: 800; color: #1e293b;
-        display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+    /* ── Hero Book Slider ── */
+    .book-slider-wrap {
+        position: relative;
+        border-radius: 18px;
+        overflow: hidden;
+        margin-bottom: 24px;
+        box-shadow: 0 10px 30px rgba(37,99,235,0.18);
+        user-select: none;
     }
-    .hof-title-light svg { transition: all 0.2s; }
-    .hof-subtitle-light { font-size: 0.78rem; color: #94a3b8; margin-top: -4px; margin-bottom: 24px; }
-    .peringkat-container { background: #fff; border-radius: 12px; padding: 32px; box-shadow: 0 4px 20px rgba(0,0,0,0.02); }
-    .hof-empty { text-align: center; padding: 30px 0; color: #2c3e50; font-size: 0.95rem; font-weight: 600; }
-    
-    @media (max-width: 500px) {
-        .peringkat-container { padding: 16px; }
-        .hof-title-light { font-size: 0.95rem; }
-        .hof-title-light svg { width: 16px; height: 16px; }
-        .hof-subtitle-light { font-size: 0.65rem; margin-bottom: 16px; }
+    .book-slider-track {
+        display: flex;
+        transition: transform 0.55s cubic-bezier(.4,0,.2,1);
+        will-change: transform;
+    }
+    .book-slide {
+        min-width: 100%;
+        box-sizing: border-box;
+        position: relative;
+        height: 320px;
+        cursor: pointer;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+    }
+    /* Background blur dari cover — lebih terang agar terlihat */
+    .slide-bg {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        filter: blur(20px) brightness(0.65) saturate(1.2);
+        transform: scale(1.18);
+        transition: opacity 0.4s;
+    }
+    .slide-bg-fallback {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to bottom right, #a8edea 0%, #fed6e3 100%);
+    }
+    /* Overlay gradient warna HOF (teal → pink) untuk keterbacaan teks */
+    .slide-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to right,
+            rgba(168,237,234,0.92) 0%,
+            rgba(200,241,238,0.78) 40%,
+            rgba(254,214,227,0.45) 75%,
+            rgba(254,214,227,0.08) 100%
+        );
+        z-index: 2;
+    }
+    /* Cover thumbnail kanan */
+    .slide-cover-wrap {
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 5;
+        height: 260px;
+        display: flex;
+        align-items: center;
+    }
+    .slide-cover-img {
+        height: 100%;
+        width: auto;
+        aspect-ratio: 2/3;
+        object-fit: cover;
+        border-radius: 12px;
+        box-shadow: 0 16px 48px rgba(0,0,0,0.6), 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .slide-cover-placeholder {
+        height: 100%;
+        aspect-ratio: 2/3;
+        background: linear-gradient(135deg, #4361ee22, #6366f122);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: rgba(255,255,255,0.4);
+    }
+    /* Info kiri */
+    .slide-info {
+        position: relative;
+        z-index: 10;
+        padding: 40px 48px;
+        max-width: 55%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .slide-rank-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(255,255,255,0.55);
+        border: 1px solid rgba(255,255,255,0.7);
+        color: #2c6e6b;
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        width: fit-content;
+    }
+    .slide-categories {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+    .slide-cat-tag {
+        background: rgba(255,255,255,0.55);
+        border: 1px solid rgba(255,255,255,0.7);
+        color: #2c3e50;
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        padding: 3px 10px;
+        border-radius: 9999px;
+        text-transform: uppercase;
+    }
+    .slide-title {
+        font-size: 2rem;
+        font-weight: 800;
+        color: #1a3a3a;
+        line-height: 1.15;
+        text-shadow: 0 1px 4px rgba(255,255,255,0.4);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .slide-author {
+        font-size: 0.88rem;
+        color: #5f6f73;
+        font-weight: 600;
+    }
+    .slide-sinopsis {
+        font-size: 0.8rem;
+        color: #5f6f73;
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .slide-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 6px;
+    }
+    .slide-btn-detail {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: #fff;
+        color: #1e293b;
+        font-size: 0.82rem;
+        font-weight: 700;
+        padding: 9px 20px;
+        border-radius: 9999px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+    .slide-btn-detail:hover { background: #f1f5f9; transform: translateY(-1px); }
+    .slide-stock-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        padding: 5px 12px;
+        border-radius: 9999px;
+        letter-spacing: 0.5px;
+    }
+    .slide-stock-badge.available  { background: rgba(34,197,94,0.18); color: #166534; border: 1px solid rgba(34,197,94,0.4); }
+    .slide-stock-badge.unavailable { background: rgba(239,68,68,0.15); color: #991b1b; border: 1px solid rgba(239,68,68,0.35); }
+    .slide-stock-badge.borrowed    { background: rgba(124,58,237,0.18); color: #5b21b6; border: 1px solid rgba(124,58,237,0.35); }
+    .slide-stock-badge .sdot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; display: inline-block; }
+    /* Tombol Nav (panah) */
+    .slider-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 20;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.6);
+        border: 1px solid rgba(255,255,255,0.85);
+        color: #2c3e50;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        transition: background 0.2s, transform 0.2s;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    .slider-nav-btn:hover { background: rgba(255,255,255,0.88); transform: translateY(-50%) scale(1.08); }
+    .slider-nav-btn.prev { left: 16px; }
+    .slider-nav-btn.next { right: 16px; }
+    /* Dots */
+    .slider-dots {
+        position: absolute;
+        bottom: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 7px;
+        z-index: 20;
+    }
+    .slider-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 9999px;
+        background: rgba(44,62,80,0.25);
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: all 0.3s;
+    }
+    .slider-dot.active {
+        background: #2c3e50;
+        width: 22px;
+    }
+    /* Empty fallback */
+    .slider-empty {
+        height: 200px;
+        background: #f8fafc;
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 24px;
+    }
+    /* Responsive */
+    @media (max-width: 768px) {
+        .book-slide { height: 240px; }
+        .slide-info { padding: 24px 24px; max-width: 65%; gap: 6px; }
+        .slide-title { font-size: 1.35rem; }
+        .slide-cover-wrap { right: 16px; height: 180px; }
+        .slide-sinopsis { display: none; }
+    }
+    @media (max-width: 480px) {
+        .book-slide { height: 200px; }
+        .slide-info { padding: 20px 18px; max-width: 60%; }
+        .slide-title { font-size: 1.1rem; }
+        .slide-cover-wrap { right: 12px; height: 150px; }
+        .slide-btn-detail { font-size: 0.72rem; padding: 7px 14px; }
+        .slider-nav-btn { width: 34px; height: 34px; }
     }
 
     /* Pagination */
     .pagination-wrap {
         padding: 16px; border-top: 1px solid #f0f0f0;
         display: flex; align-items: center; gap: 4px;
-        justify-content: center; /* Kept center alignment for catalog grid */
+        justify-content: center;
     }
     .pagination-wrap a, .pagination-wrap span {
         display: inline-flex; align-items: center; justify-content: center;
@@ -234,8 +491,8 @@
 @section('content')
 
 <div class="mb-6">
-    <h1 class="text-[1.35rem] font-bold text-indigo-950">Katalog Buku</h1>
-    <p class="text-slate-500 text-[0.875rem] mt-1">Klik pada buku untuk melihat detail dan meminjam</p>
+    <h1 class="text-[1.35rem] font-bold text-indigo-950">Melangkah ke Dunia Penuh Keajaiban</h1>
+    <p class="text-slate-500 text-[0.875rem] mt-1">Jelajahi koleksi cerita, seni, dan melodi yang akan membawamu bernostalgia ke dalam alam semesta</p>
 </div>
 
 @if(session('success'))
@@ -257,59 +514,126 @@
 </div>
 @endif
 
-<div class="peringkat-container" style="margin-bottom: 24px;">
-    {{-- Buku Terfavorit (Grid of 5 Books) --}}
-    <div class="hof-title-light" style="margin-bottom: 12px; font-size: 1.25rem;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="#4361ee" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-        Buku Terfavorit Bulan Ini
-    </div>
-    <div class="hof-subtitle-light" style="margin-top:-6px; margin-bottom: 24px;">5 Buku paling sering dipinjam bulan {{ $now->translatedFormat('F Y') }}</div>
+{{-- ═══ HERO BOOK BANNER SLIDER ═══ --}}
+@if($topBooks->isEmpty())
+    <div class="slider-empty">Belum ada data peminjaman buku bulan ini.</div>
+@else
+<div class="book-slider-wrap" id="bookSliderWrap">
+    {{-- Track --}}
+    <div class="book-slider-track" id="bookSliderTrack">
+        @foreach($topBooks as $i => $book)
+        @php
+            $isMyBorrowed = in_array($book->id, $activeBorrowedBookIds ?? []);
+            $coverUrl     = $book->cover ? asset('storage/' . $book->cover) : null;
+            $catName      = $book->categories->isNotEmpty()
+                            ? $book->categories->pluck('name')->join(', ')
+                            : ($book->category->name ?? 'Umum');
+            $rank         = $i + 1;
+        @endphp
+        <div class="book-slide"
+             role="group"
+             aria-label="Slide {{ $rank }} dari {{ $topBooks->count() }}: {{ $book->title }}"
+             data-url="{{ route('siswa.katalog.show', $book->id) }}"
+             onclick="window.location.href=this.dataset.url">
 
-    @if($topBooks->isEmpty())
-        <div class="hof-empty" style="padding: 40px; background: #f8fafc; border-radius: 12px;">Belum ada peminjaman buku bulan ini.</div>
-    @else
-        <div class="book-grid" style="margin-bottom:0;">
-            @foreach($topBooks as $book)
-            <div class="book-card" data-url="{{ route('siswa.katalog.show', $book->id) }}" onclick="window.location.href=this.dataset.url;">
-                {{-- Cover Area --}}
-                <div class="book-cover-area">
-                    @if($book->stock > 0)
-                        <div class="badge-tersedia"><div class="dot"></div> TERSEDIA</div>
-                    @else
-                        <div class="badge-habis"><div class="dot"></div> HABIS</div>
-                    @endif
+            {{-- Background blur --}}
+            @if($coverUrl)
+                <div class="slide-bg" style="background-image:url('{{ $coverUrl }}')"></div>
+            @else
+                <div class="slide-bg-fallback"></div>
+            @endif
 
-                    @if($book->cover)
-                        <img src="{{ asset('storage/' . $book->cover) }}" alt="{{ $book->title }}" class="book-cover-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        <div class="book-icon-wrapper" style="display:none; color:#84a98c; padding:20px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
-                            </svg>
-                        </div>
-                    @else
-                        <div class="book-icon-wrapper" style="color:#84a98c; padding:20px;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-                            </svg>
-                        </div>
-                    @endif
+            {{-- Overlay gradient --}}
+            <div class="slide-overlay"></div>
 
-                    <div class="hover-overlay">
-                        <span class="btn-lihat-detail">Lihat detail: {{ \Illuminate\Support\Str::limit($book->title, 20) }}</span>
-                    </div>
+            {{-- Info Kiri --}}
+            <div class="slide-info" onclick="event.stopPropagation()">
+                <span class="slide-rank-badge">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    #{{ $rank }} Terfavorit Bulan Ini
+                </span>
+
+                <div class="slide-categories">
+                    @foreach(explode(', ', $catName) as $cat)
+                        <span class="slide-cat-tag">{{ trim($cat) }}</span>
+                    @endforeach
                 </div>
 
-                {{-- Info Area --}}
-                <div class="book-info">
-                    <p class="book-category">{{ $book->categories->isNotEmpty() ? $book->categories->pluck('name')->join(', ') : ($book->category->name ?? 'UMUM') }}</p>
-                    <p class="book-title" title="{{ $book->title }}">{{ $book->title }}</p>
-                    <p class="book-author">{{ $book->author ?? 'Tidak diketahui' }}</p>
+                <div class="slide-title">{{ $book->title }}</div>
+                <div class="slide-author">{{ $book->author ?? 'Penulis tidak diketahui' }}</div>
+
+                @if($book->sinopsis)
+                    <div class="slide-sinopsis">{{ $book->sinopsis }}</div>
+                @endif
+
+                <div class="slide-actions">
+                    <a href="{{ route('siswa.katalog.show', $book->id) }}"
+                       class="slide-btn-detail"
+                       onclick="event.stopPropagation()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5-5 5M6 12h12"/></svg>
+                        Lihat Detail
+                    </a>
+
+                    @if($isMyBorrowed)
+                        <span class="slide-stock-badge borrowed">
+                            <span class="sdot"></span> Sedang Dipinjam
+                        </span>
+                    @elseif($book->stock > 0)
+                        <span class="slide-stock-badge available">
+                            <span class="sdot"></span> Tersedia · {{ $book->stock }} stok
+                        </span>
+                    @else
+                        <span class="slide-stock-badge unavailable">
+                            <span class="sdot"></span> Stok Habis
+                        </span>
+                    @endif
                 </div>
             </div>
-            @endforeach
+
+            {{-- Cover kanan --}}
+            <div class="slide-cover-wrap" onclick="event.stopPropagation()">
+                @if($coverUrl)
+                    <img src="{{ $coverUrl }}"
+                         alt="Cover buku: {{ $book->title }}"
+                         class="slide-cover-img"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="slide-cover-placeholder" style="display:none">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    </div>
+                @else
+                    <div class="slide-cover-placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                    </div>
+                @endif
+            </div>
         </div>
+        @endforeach
+    </div>
+
+    {{-- Tombol Panah Kiri --}}
+    @if($topBooks->count() > 1)
+    <button class="slider-nav-btn prev" id="sliderPrev" aria-label="Slide sebelumnya">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    </button>
+
+    {{-- Tombol Panah Kanan --}}
+    <button class="slider-nav-btn next" id="sliderNext" aria-label="Slide berikutnya">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+    </button>
+
+    {{-- Dots --}}
+    <div class="slider-dots" id="sliderDots" role="tablist" aria-label="Navigasi slide">
+        @foreach($topBooks as $i => $_)
+            <button class="slider-dot {{ $i === 0 ? 'active' : '' }}"
+                    role="tab"
+                    aria-label="Slide {{ $i + 1 }}"
+                    data-index="{{ $i }}"
+                    aria-selected="{{ $i === 0 ? 'true' : 'false' }}"></button>
+        @endforeach
+    </div>
     @endif
 </div>
+@endif
 
 <div class="katalog-container">
     {{-- Search & Filter Header --}}
@@ -355,7 +679,10 @@
         <a href="{{ route('siswa.katalog.show', $book->id) }}" class="book-card" style="text-decoration:none; color:inherit;">
             {{-- Cover Area --}}
             <div class="book-cover-area">
-                @if($book->stock > 0)
+                @php $isMyBorrowed = in_array($book->id, $activeBorrowedBookIds ?? []); @endphp
+                @if($isMyBorrowed)
+                    <div class="badge-my-borrowed"><div class="dot"></div> DIPINJAM</div>
+                @elseif($book->stock > 0)
                     <div class="badge-tersedia"><div class="dot"></div> TERSEDIA</div>
                 @else
                     <div class="badge-habis"><div class="dot"></div> HABIS</div>
@@ -446,6 +773,10 @@
             {{-- [HIGH-E01] Fix: gunakan data-* attribute, jangan sisipkan judul buku di onclick --}}
             @if(!Auth::user()->is_verified)
                 <button class="btn-pinjam-modal" disabled title="Akun belum diverifikasi oleh admin">Anda belum terverifikasi</button>
+            @elseif(in_array($selected->id, $activeBorrowedBookIds ?? []))
+                <button class="btn-pinjam-modal" disabled style="background:#7c3aed; cursor:not-allowed;" title="Kamu sedang meminjam buku ini">
+                    Buku Sedang Di Pinjam
+                </button>
             @elseif($selected->stock < 1)
                 <button class="btn-pinjam-modal" disabled>Stok Habis</button>
             @elseif($hasUnpaidFine)
@@ -515,6 +846,101 @@ document.addEventListener("DOMContentLoaded", function() {
             if (bookingModal && bookingModal.classList.contains('active')) closeBookingModal();
         }
     });
+
+    // ═══════════════════════════════════════════
+    // HERO BOOK SLIDER — init
+    // ═══════════════════════════════════════════
+    (function() {
+        const wrap  = document.getElementById('bookSliderWrap');
+        if (!wrap) return; // Tidak ada slider (topBooks kosong)
+
+        const track  = document.getElementById('bookSliderTrack');
+        const slides = track ? track.querySelectorAll('.book-slide') : [];
+        const total  = slides.length;
+        if (total <= 1) return; // Hanya 1 slide, tidak perlu carousel
+
+        const prevBtn = document.getElementById('sliderPrev');
+        const nextBtn = document.getElementById('sliderNext');
+        const dots    = document.querySelectorAll('#sliderDots .slider-dot');
+
+        let current   = 0;
+        let autoTimer = null;
+        let isPaused  = false;
+
+        // ── goTo: Pindah ke slide ke-n ──
+        function goTo(n) {
+            current = (n + total) % total; // wrap around
+            track.style.transform = `translateX(-${current * 100}%)`;
+
+            // Update dots
+            dots.forEach((d, i) => {
+                d.classList.toggle('active', i === current);
+                d.setAttribute('aria-selected', i === current ? 'true' : 'false');
+            });
+        }
+
+        // ── next / prev ──
+        function next() { goTo(current + 1); }
+        function prev() { goTo(current - 1); }
+
+        // ── Auto-slide setiap 5 detik ──
+        function startAuto() {
+            if (autoTimer) clearInterval(autoTimer);
+            autoTimer = setInterval(function() {
+                if (!isPaused) next();
+            }, 5000);
+        }
+
+        // ── Tombol panah ──
+        if (prevBtn) prevBtn.addEventListener('click', function(e) { e.stopPropagation(); prev(); startAuto(); });
+        if (nextBtn) nextBtn.addEventListener('click', function(e) { e.stopPropagation(); next(); startAuto(); });
+
+        // ── Dots ──
+        dots.forEach(function(dot) {
+            dot.addEventListener('click', function(e) {
+                e.stopPropagation();
+                goTo(parseInt(this.getAttribute('data-index'), 10));
+                startAuto();
+            });
+        });
+
+        // ── Keyboard ← → ──
+        wrap.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft')  { prev(); startAuto(); }
+            if (e.key === 'ArrowRight') { next(); startAuto(); }
+        });
+
+        // ── Pause on hover ──
+        wrap.addEventListener('mouseenter', function() { isPaused = true; });
+        wrap.addEventListener('mouseleave', function() { isPaused = false; });
+
+        // ── Touch / Swipe support ──
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isDragging  = false;
+
+        wrap.addEventListener('touchstart', function(e) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            isDragging  = true;
+        }, { passive: true });
+
+        wrap.addEventListener('touchend', function(e) {
+            if (!isDragging) return;
+            isDragging = false;
+            const dx = e.changedTouches[0].clientX - touchStartX;
+            const dy = e.changedTouches[0].clientY - touchStartY;
+            // Hanya geser horizontal jika delta X > delta Y (bukan scroll vertikal)
+            if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+                if (dx < 0) next();
+                else        prev();
+                startAuto();
+            }
+        }, { passive: true });
+
+        // ── Start ──
+        startAuto();
+    })();
 });
 
 function closeDetailModal() {
@@ -605,13 +1031,14 @@ function doPinjam(bookId, bookTitle) {
 // [HIGH-F02] Perbarui badge TERSEDIA/HABIS di kartu grid tanpa reload
 function updateStockBadgeInGrid(bookId) {
     // Cari kartu buku berdasarkan link href yang mengandung id
-    const link = document.querySelector(`a.book-card[href*="/katalog/${bookId}"]`);
-    if (!link) return;
-    const badgeTersedia = link.querySelector('.badge-tersedia');
-    if (badgeTersedia) {
-        badgeTersedia.className = 'badge-habis';
-        badgeTersedia.innerHTML = '<div class="dot"></div> HABIS';
-    }
+    const listCards = document.querySelectorAll(`.book-card[data-url*="/katalog/${bookId}"], a.book-card[href*="/katalog/${bookId}"]`);
+    listCards.forEach(link => {
+        const badgeTersedia = link.querySelector('.badge-tersedia') || link.querySelector('.badge-habis');
+        if (badgeTersedia) {
+            badgeTersedia.className = 'badge-my-borrowed';
+            badgeTersedia.innerHTML = '<div class="dot"></div> DIPINJAM';
+        }
+    });
 }
 
 // [MEDIUM-E04] Tampilkan error dalam elemen di halaman, bukan alert() native

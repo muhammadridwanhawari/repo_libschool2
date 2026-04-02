@@ -67,9 +67,13 @@
 
                 <div>
                     <label class="block text-[15px] font-medium text-slate-800 mb-2">Email</label>
-                    <input type="email" name="email" autocomplete="off"
+                    <input type="email" name="email" id="emailInput" autocomplete="off"
                            class="w-full border border-gray-300 rounded-xl px-4 py-3 text-[15px] text-slate-800 bg-white outline-none transition-all duration-200 focus:border-[#4475F2] focus:ring-[3px] focus:ring-[#4475F2]/20"
                            value="{{ old('email') }}" required>
+                    <p class="mt-1.5 flex items-center gap-1 text-[12.5px] font-semibold text-amber-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24" class="flex-shrink-0"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        Tolong masukan email asli!
+                    </p>
                 </div>
 
                 <div>
@@ -175,6 +179,8 @@
                 input.addEventListener('invalid', function(e) {
                     if (this.validity.valueMissing) {
                         this.setCustomValidity('Kolom ini wajib di isi');
+                    } else if (this.type === 'email' && this.validity.typeMismatch) {
+                        this.setCustomValidity('Tolong masukan email yang valid! Contoh: nama@gmail.com');
                     } else if (this.validity.rangeOverflow || this.validity.rangeUnderflow || this.validity.badInput || this.validity.typeMismatch) {
                         this.setCustomValidity('Format atau tanggal tidak sesuai (periksa tahun, bulan dan hari)');
                     }

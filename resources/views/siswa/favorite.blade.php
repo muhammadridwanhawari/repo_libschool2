@@ -69,6 +69,16 @@
     }
     .badge-habis .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; opacity: 0.9; }
 
+    /* Badge buku yang sedang dipinjam oleh siswa ini */
+    .badge-my-borrowed {
+        position: absolute; top: 12px; left: 12px; z-index: 10;
+        background: #7c3aed; color: #fff; border-radius: 9999px;
+        padding: 4px 10px; font-size: 0.65rem; font-weight: 800; letter-spacing: 0.5px;
+        display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 6px rgba(124,58,237,0.4);
+    }
+    .badge-my-borrowed .dot { width: 5px; height: 5px; background: #fff; border-radius: 50%; opacity: 0.9; animation: pulse-dot 1.5s infinite; }
+    @keyframes pulse-dot { 0%, 100% { opacity: 0.9; } 50% { opacity: 0.3; } }
+
     .fav-btn {
         position: absolute; top: 12px; right: 12px; z-index: 11;
         width: 32px; height: 32px; border-radius: 50%;
@@ -118,8 +128,8 @@
 @section('content')
 
 <div class="mb-6">
-    <h1 class="text-[1.35rem] font-bold text-indigo-950">Buku Favorit</h1>
-    <p class="text-slate-500 text-[0.875rem] mt-1">Koleksi buku yang kamu tandai sebagai favorit</p>
+    <h1 class="text-[1.35rem] font-bold text-indigo-950">Ruang Rahasia Penuh Keajaiban</h1>
+    <p class="text-slate-500 text-[0.875rem] mt-1">Kisah-kisah yang menolak untuk kamu lupakan. Simpan keajaibannya di sini</p>
 </div>
 
 @if(session('success'))
@@ -153,7 +163,10 @@
 
             {{-- Cover Area --}}
             <div class="book-cover-area">
-                @if($book->stock > 0)
+                @php $isMyBorrowed = in_array($book->id, $activeBorrowedBookIds ?? []); @endphp
+                @if($isMyBorrowed)
+                    <div class="badge-my-borrowed"><div class="dot"></div> DIPINJAM</div>
+                @elseif($book->stock > 0)
                     <div class="badge-tersedia"><div class="dot"></div> TERSEDIA</div>
                 @else
                     <div class="badge-habis"><div class="dot"></div> HABIS</div>

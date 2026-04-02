@@ -66,8 +66,8 @@
 
     {{-- Header --}}
     <div class="mb-6">
-        <h1 class="text-[1.5rem] font-bold text-slate-900">Riwayat & Denda</h1>
-        <p class="text-slate-500 text-[0.875rem] mt-1">Pantau riwayat transaksi dan denda Anda</p>
+        <h1 class="text-[1.5rem] font-bold text-slate-900">Jejak Langkah dan Ingatan</h1>
+        <p class="text-slate-500 text-[0.875rem] mt-1">Setiap petualangan meninggalkan jejak. Pastikan tidak ada janji pengembalian yang terlupakan</p>
     </div>
 
     {{-- ── 4 Stat Cards ─────────────────── --}}

@@ -164,6 +164,95 @@
         .alert-success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
         .alert-danger { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
 
+        /* ── Toast Notifications ── */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            border-radius: 8px;
+            padding: 16px 24px;
+            min-width: 450px;
+            max-width: 600px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 9999;
+            transform: translateX(120%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            overflow: hidden;
+            border-left: 6px solid;
+        }
+        .toast-notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .toast-success {
+            background-color: #d1fae5;
+            border-left-color: #10b981;
+            color: #065f46;
+        }
+        
+        .toast-error {
+            background-color: #fee2e2;
+            border-left-color: #ef4444;
+            color: #991b1b;
+        }
+        
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex: 1;
+        }
+        
+        .toast-message {
+            font-size: 1rem;
+            font-weight: 500;
+            line-height: 1.5;
+            color: inherit;
+        }
+        
+        .toast-close {
+            background: none;
+            border: none;
+            color: inherit;
+            opacity: 0.6;
+            cursor: pointer;
+            padding: 4px;
+            margin-left: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            border-radius: 4px;
+        }
+        .toast-close:hover {
+            opacity: 1;
+            background: rgba(0,0,0,0.05);
+        }
+        
+        .toast-progress {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            width: 100%;
+        }
+        
+        .toast-success .toast-progress { background: #34d399; }
+        .toast-error .toast-progress { background: #f87171; }
+        
+        @keyframes toastProgress {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+        .toast-notification.show .toast-progress {
+            animation: toastProgress 5s linear forwards;
+        }
+
         /* Status Badges */
         .badge {
             display: inline-block;
@@ -312,14 +401,28 @@
 
     {{-- Main Content --}}
     <div class="admin-main" id="main-content">
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-        @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
         @yield('content')
     </div>
+
+    {{-- Toast Notification --}}
+    @if(session('success') || session('error'))
+        <div id="toast-notification" class="toast-notification {{ session('success') ? 'toast-success' : 'toast-error' }}">
+            <div class="toast-content">
+                <span class="toast-icon">
+                    @if(session('success'))
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    @else
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    @endif
+                </span>
+                <span class="toast-message">{{ session('success') ?? session('error') }}</span>
+            </div>
+            <button class="toast-close" onclick="closeToast()" aria-label="Tutup notifikasi">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+            <div class="toast-progress"></div>
+        </div>
+    @endif
 
     @include('components.confirm-modal')
     @stack('scripts')
@@ -342,6 +445,31 @@
 
         sidebarToggle.addEventListener('click', openSidebar);
         sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Toast Notification Logic
+        const toast = document.getElementById('toast-notification');
+        let toastTimeout;
+
+        if (toast) {
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+
+            // Auto hide after 5 seconds
+            toastTimeout = setTimeout(() => {
+                closeToast();
+            }, 5000);
+        }
+
+        function closeToast() {
+            if (toast) {
+                toast.classList.remove('show');
+                clearTimeout(toastTimeout);
+                setTimeout(() => {
+                    toast.remove();
+                }, 400);
+            }
+        }
     </script>
 </body>
 </html>
