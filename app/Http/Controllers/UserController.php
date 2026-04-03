@@ -34,8 +34,8 @@ class UserController extends Controller
             'role'         => 'required|in:admin,penjaga,siswa',
             'password'     => ['required', 'min:8'],
             'name'         => 'nullable|string|max:255',
-            // [MEDIUM-F08] Fix: Validasi telepon diperketat
-            'telepon'      => ['nullable', 'string', 'max:20', 'regex:/^([0-9\s\-\+\(\)]*)$/'],
+            // [MEDIUM-F08] Fix: Validasi telepon diperketat (Hanya angka, maks 15)
+            'telepon'      => ['nullable', 'string', 'max:15', 'regex:/^[0-9]+$/'],
             'gender'       => 'nullable|in:Laki-laki,Perempuan',
             'tanggal_lahir'=> 'nullable|date',
             'nik'          => 'nullable|string|max:20|unique:users',
@@ -64,8 +64,8 @@ class UserController extends Controller
             'email'    => 'required|string|email|max:255|unique:users,email,' . $pengguna->id,
             'role'     => 'required|in:admin,penjaga,siswa',
             'name'     => 'nullable|string|max:255',
-            // [MEDIUM-F08] Fix: Validasi telepon diperketat
-            'telepon'  => ['nullable', 'string', 'max:20', 'regex:/^([0-9\s\-\+\(\)]*)$/'],
+            // [MEDIUM-F08] Fix: Validasi telepon diperketat (Hanya angka, maks 15)
+            'telepon'  => ['nullable', 'string', 'max:15', 'regex:/^[0-9]+$/'],
             'gender'   => 'nullable|in:Laki-laki,Perempuan',
         ]);
 

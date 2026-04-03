@@ -335,7 +335,7 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Nomor Telepon</label>
-                        <input type="text" name="telepon" id="inputTelepon" placeholder="08xx">
+                        <input type="text" name="telepon" id="inputTelepon" placeholder="08xx" maxlength="15" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                     </div>
                     <div class="form-group">
                         <label>Jenis Kelamin</label>

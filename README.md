@@ -40,6 +40,7 @@ Aplikasi LibSchool membagi rentetan fiturnya menjadi 3 pilar jenis pengguna (Adm
 ### 2. Fitur Khusus Siswa
 *   **Dasbor Pintar**: Tampilan beranda yang langsung ngasih tahu siswa info penting, seperti "Berapa buku yang sedang saya pinjam?" dan "Berapa hari lagi harus dikembalikan?". Sistem juga otomatis memantau hitungan denda telat secara langsung!
 *   **Katalog Buku Seru**: Tempat siswa bebas mencari dan melihat koleksi buku. Ada fitur filter canggih buat nemuin buku yang persis sedang dicari.
+*   **Papan Peringkat & Gelar Poin (Gamifikasi)**: Bersaing literasi dengan interaktif! Sistem memberikan hadiah Poin bagi siswa yang patuh mengembalikan buku tepat waktu (+10) atau memberikan ulasan/rating buku (+3). Hati-hati, poin akan berkurang (-5) jika kamu menunggak buku. Akumulasi Poin ini akan menempatkan siswa pada *Leaderboard* bergengsi untuk meraih tingkatan gelar mulai dari "Pemula", "Pembaca Aktif", "Kontributor", "Pakar Literasi", hingga "Duta Literasi"!
 *   **Berbagi Ulasan**: Selesai baca? Siswa bisa memberi bintang (*rating*) dan menulis komentar pendapat tentang buku tersebut, agar teman lain termotivasi membacanya.
 *   **Booking Buku dari Rumah**: Punya buku incaran tapi takut dipinjam teman lain? Booking saja lewat HP dari rumah, lalu ambil aman ke perpustakaan sekolah.
 *   **Rak Favorit Kita**: Kalau lagi naksir buku tapi tidak sempat pinjam hari ini, tinggal tandai masuk ke rak "*Favorite*" supaya gampang dicari besok lagi.
