@@ -409,25 +409,6 @@
     </div>
 </div>
 
-@if(session('success'))
-<div class="modal-overlay show" id="successModal" style="z-index: 9999;">
-    <div class="modal-box" style="text-align: center; max-width: 400px; animation: modalPopBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;">
-        <div style="width: 70px; height: 70px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" fill="none" stroke="#16a34a" stroke-width="3" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20 6L9 17l-5-5"/>
-            </svg>
-        </div>
-        <h2 style="font-size: 1.25rem; margin-bottom: 12px; color: #166534; border-bottom: none; padding-bottom: 0;">Pembayaran Berhasil!</h2>
-        <p style="font-size: 0.9rem; color: #475569; line-height: 1.5; margin-bottom: 24px;">
-            {{ session('success') }}
-        </p>
-        <button type="button" onclick="document.getElementById('successModal').classList.remove('show')" style="background: #16a34a; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; font-size: 0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#15803d'" onmouseout="this.style.background='#16a34a'">
-            Tutup
-        </button>
-    </div>
-</div>
-@endif
-
 @endsection
 
 @push('styles')

@@ -4,13 +4,6 @@
 
 @section('content')
 
-@if(session('success'))
-<div class="bg-green-50 border border-green-200 text-green-700 rounded-xl px-4 py-3 mb-6 text-sm flex items-center gap-2">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-    {{ session('success') }}
-</div>
-@endif
-
 <div class="w-full">
     {{-- Header --}}
     <div class="mb-6">

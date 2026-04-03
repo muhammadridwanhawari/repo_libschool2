@@ -255,13 +255,6 @@
 
 @section('content')
 
-@if(session('success'))
-    <div class="alert-success">✓ {{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert-error">✗ {{ session('error') }}</div>
-@endif
-
 {{-- Breadcrumb --}}
 <div class="breadcrumb-row">
     <a href="{{ route('siswa.katalog') }}">← Katalog Buku</a>
@@ -484,7 +477,13 @@
             @forelse ($reviews as $rev)
             <div class="review-item">
                 <div class="review-header">
-                    <div class="review-avatar">{{ strtoupper(substr($rev->user->name ?? 'U', 0, 2)) }}</div>
+                    <div class="review-avatar" style="overflow: hidden; padding: 0;">
+                        @if(!empty($rev->user->avatar))
+                            <img src="{{ asset('storage/' . $rev->user->avatar) }}" alt="{{ $rev->user->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        @else
+                            {{ strtoupper(substr($rev->user->name ?? 'U', 0, 2)) }}
+                        @endif
+                    </div>
                     <div>
                         <div class="review-name">{{ $rev->user->name ?? 'Pengguna' }}</div>
                         <div class="review-date">{{ $rev->created_at->format('d M Y') }}</div>

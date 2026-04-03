@@ -322,17 +322,6 @@
         <p>Kelola data series buku perpustakaan</p>
     </div>
 
-    @if(session('success'))
-    <div style="background:#d1fae5; color:#065f46; padding:12px; border-radius:8px; margin-bottom:16px; border:1px solid #a7f3d0; font-size: 0.85rem;">
-        {{ session('success') }}
-    </div>
-    @endif
-    @if(session('error'))
-    <div style="background:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:16px; border:1px solid #fecaca; font-size: 0.85rem;">
-        {{ session('error') }}
-    </div>
-    @endif
-
     <div class="kategori-wrapper">
         {{-- Left: Form --}}
         <div class="form-panel">

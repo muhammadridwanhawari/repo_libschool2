@@ -132,10 +132,6 @@
     <p class="text-slate-500 text-[0.875rem] mt-1">Kisah-kisah yang menolak untuk kamu lupakan. Simpan keajaibannya di sini</p>
 </div>
 
-@if(session('success'))
-    <div class="alert-success">✓ {{ session('success') }}</div>
-@endif
-
 @if($favorites->isEmpty())
     <div class="empty-state">
         <svg xmlns="http://www.w3.org/2000/svg" width="52" height="52" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">

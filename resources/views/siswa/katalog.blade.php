@@ -495,13 +495,6 @@
     <p class="text-slate-500 text-[0.875rem] mt-1">Jelajahi koleksi cerita, seni, dan melodi yang akan membawamu bernostalgia ke dalam alam semesta</p>
 </div>
 
-@if(session('success'))
-    <div class="alert-success">✓ {{ session('success') }}</div>
-@endif
-@if(session('error'))
-    <div class="alert-danger">✗ {{ session('error') }}</div>
-@endif
-
 @if($activeCount >= 5)
 <div style="background:#fffbeb; border:1.5px solid #fde68a; border-radius:12px; padding:14px 18px; margin-bottom:20px; display:flex; align-items:flex-start; gap:12px;">
     <div style="flex-shrink:0; margin-top:2px;">

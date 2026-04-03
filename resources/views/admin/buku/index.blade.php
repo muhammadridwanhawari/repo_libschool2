@@ -246,9 +246,7 @@
     <a href="{{ route('admin.buku.create') }}" class="btn-tambah">+ Tambah Buku</a>
 </div>
 
-@if(session('success'))
-    <div class="alert-success">✓ {{ session('success') }}</div>
-@endif
+
 
 {{-- Statistic Cards --}}
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-bottom: 20px;">
