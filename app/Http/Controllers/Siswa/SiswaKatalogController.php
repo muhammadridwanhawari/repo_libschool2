@@ -168,10 +168,17 @@ class SiswaKatalogController extends Controller
             'pesan'  => 'nullable|string|max:1000',
         ]);
 
-        BookReview::updateOrCreate(
+        $review = BookReview::updateOrCreate(
             ['book_id' => $id, 'user_id' => Auth::id()],
             ['rating' => $request->rating, 'pesan' => $request->pesan]
         );
+
+        if ($review->wasRecentlyCreated) {
+            $user = \App\Models\User::find(Auth::id());
+            if ($user) {
+                $user->increment('points', 3);
+            }
+        }
 
         return redirect()->route('siswa.katalog.show', $id)
             ->with('success', 'Ulasan kamu berhasil disimpan!');

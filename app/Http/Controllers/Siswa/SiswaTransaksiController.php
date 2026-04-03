@@ -189,7 +189,7 @@ class SiswaTransaksiController extends Controller
             ->get();
 
         $estimasiAmount = $lateLoans->sum(function ($loan) {
-            return now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($loan->deadline)->startOfDay()) * 2000;
+            return abs(now()->startOfDay()->diffInDays(\Carbon\Carbon::parse($loan->deadline)->startOfDay())) * 2000;
         });
 
         return [

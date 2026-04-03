@@ -41,7 +41,7 @@ class PenjagaPengembalianController extends Controller
             $p->denda_estimasi = 0;
             $p->hari_terlambat = 0;
             if ($p->deadline && now()->startOfDay()->gt(Carbon::parse($p->deadline)->startOfDay())) {
-                $p->hari_terlambat = now()->startOfDay()->diffInDays(Carbon::parse($p->deadline)->startOfDay());
+                $p->hari_terlambat = abs(now()->startOfDay()->diffInDays(Carbon::parse($p->deadline)->startOfDay()));
                 $p->denda_estimasi = $p->hari_terlambat * 2000;
             }
         }
@@ -77,7 +77,7 @@ class PenjagaPengembalianController extends Controller
             $p->denda_estimasi = 0;
             $p->hari_terlambat = 0;
             if ($p->deadline && now()->startOfDay()->gt(Carbon::parse($p->deadline)->startOfDay())) {
-                $p->hari_terlambat = now()->startOfDay()->diffInDays(Carbon::parse($p->deadline)->startOfDay());
+                $p->hari_terlambat = abs(now()->startOfDay()->diffInDays(Carbon::parse($p->deadline)->startOfDay()));
                 $p->denda_estimasi = $p->hari_terlambat * 2000;
             }
         }
@@ -101,7 +101,7 @@ class PenjagaPengembalianController extends Controller
 
         // Hitung denda jika terlambat
         if ($borrowing->deadline && now()->startOfDay()->gt(Carbon::parse($borrowing->deadline)->startOfDay())) {
-            $hariTerlambat = now()->startOfDay()->diffInDays(Carbon::parse($borrowing->deadline)->startOfDay());
+            $hariTerlambat = abs(now()->startOfDay()->diffInDays(Carbon::parse($borrowing->deadline)->startOfDay()));
             $amount = $hariTerlambat * 2000; // Rp 2.000 per hari
 
             if (!$borrowing->fine) {
@@ -124,9 +124,20 @@ class PenjagaPengembalianController extends Controller
         $borrowing->book->increment('stock');
 
         // Award poin kepada siswa
-        if ($borrowing->user) {
-            $poin = ($hariTerlambat > 0) ? 5 : 10;
-            $borrowing->user->increment('points', $poin);
+        if ($borrowing->user_id) {
+            $user = \App\Models\User::find($borrowing->user_id);
+            if ($user) {
+                if ($hariTerlambat > 0) {
+                    if ($user->points < 5) {
+                        $user->points = 0;
+                        $user->save();
+                    } else {
+                        $user->decrement('points', 5);
+                    }
+                } else {
+                    $user->increment('points', 10);
+                }
+            }
         }
 
         return redirect()->route('penjaga.pengembalian')

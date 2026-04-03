@@ -389,6 +389,7 @@
         @endif
     </div>
     <div class="hero-info relative z-10">
+        <div class="hero-greeting" style="display:inline-block; background:rgba(255,255,255,0.25); padding:3px 10px; border-radius:12px; margin-bottom:8px; color:#2c3e50;">🌟 {{ strtoupper($userTitle) }}</div>
         <h1 class="hero-name">Selamat datang, {{ $user->username }} ✨</h1>
         <p class="hero-sub">Temukan cerita baru dan lanjutkan petualangan membacamu!</p>
     </div>
@@ -415,12 +416,14 @@
         </div>
 
         <!-- Poin Badge (Di bawah lonceng notif) -->
-        <div class="hero-points-badge shadow-sm border-white/20 relative z-10 w-full justify-center sm:w-auto">
+        <div class="hero-points-badge shadow-sm border-white/20 relative z-10 w-full justify-center sm:w-auto cursor-pointer transition-transform hover:scale-105" onclick="document.getElementById('modalPoin').classList.add('show')" title="Lihat Aturan Poin">
             <div class="hero-points-icon">⭐</div>
             <div>
                 <div class="hero-points-val text-[#f39c12]">{{ number_format($userPoints) }}</div>
                 <div class="hero-points-label text-[#5f6f73]">POIN</div>
             </div>
+            <!-- Ikon Bantuan -->
+            <div style="position:absolute; top:-6px; right:-6px; background:#fff; color:#5f6f73; border-radius:50%; width:22px; height:22px; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; box-shadow:0 2px 5px rgba(0,0,0,0.2); border:1px solid rgba(0,0,0,0.05);">?</div>
         </div>
     </div>
 </div>
@@ -438,6 +441,20 @@
             modalNotif.addEventListener('click', function(e) {
                 if (e.target === modalNotif) {
                     modalNotif.classList.remove('show');
+                }
+            });
+        }
+        
+        const modalPoin = document.getElementById('modalPoin');
+        const btnClosePoin = document.getElementById('btnClosePoin');
+
+        if (btnClosePoin && modalPoin) {
+            btnClosePoin.addEventListener('click', function() {
+                modalPoin.classList.remove('show');
+            });
+            modalPoin.addEventListener('click', function(e) {
+                if (e.target === modalPoin) {
+                    modalPoin.classList.remove('show');
                 }
             });
         }
@@ -482,7 +499,7 @@
                         </div>
                         <div class="hof-name">{{ strtoupper(explode(' ', $second->name)[0]) }}</div>
                         <div class="hof-xp">{{ number_format($second->points) }} POIN</div>
-                        <div class="hof-role-pill hof-role-2">SISWA</div>
+                        <div class="hof-role-pill hof-role-2">Pakar literasi</div>
                     @endif
                 </div>
                 <div class="hof-podium-base hof-base-2"></div>
@@ -505,7 +522,7 @@
                         </div>
                         <div class="hof-name hof-name-1">{{ strtoupper(explode(' ', $first->name)[0]) }}</div>
                         <div class="hof-xp">{{ number_format($first->points) }} POIN</div>
-                        <div class="hof-role-pill hof-role-1">SISWA</div>
+                        <div class="hof-role-pill hof-role-1">Duta literasi</div>
                     @endif
                 </div>
                 <div class="hof-podium-base hof-base-1"></div>
@@ -527,7 +544,7 @@
                         </div>
                         <div class="hof-name">{{ strtoupper(explode(' ', $third->name)[0]) }}</div>
                         <div class="hof-xp">{{ number_format($third->points) }} POIN</div>
-                        <div class="hof-role-pill hof-role-3">SISWA</div>
+                        <div class="hof-role-pill hof-role-3">Kontributor</div>
                     @endif
                 </div>
                 <div class="hof-podium-base hof-base-3"></div>
@@ -552,12 +569,12 @@
                             <div class="hof-list-name">{{ strtoupper($student->name) }}</div>
                             <div class="hof-list-role">
                                 <span class="hof-list-role-pill">SISWA</span>
-                                <span class="hof-list-role-text">• ANGGOTA AKTIF</span>
+                                <span class="hof-list-role-text">• PEMBACA AKTIF</span>
                             </div>
                         </div>
                         <div class="hof-list-points" style="justify-content: center;">
                             <div class="hof-list-xp">{{ number_format($student->points) }} POIN</div>
-                            <div class="hof-list-lvl">ANGGOTA AKTIF</div>
+                            <div class="hof-list-lvl">PEMBACA AKTIF</div>
                         </div>
                     </div>
                 @endforeach
@@ -642,6 +659,60 @@
         
         <div class="modal-footer">
             <button type="button" class="btn-cancel-modal" id="btnCloseNotif">Tutup Peringatan</button>
+        </div>
+    </div>
+</div>
+
+{{-- ═══ MODAL INFO POIN ═══ --}}
+<div class="modal-overlay" id="modalPoin">
+    <div class="modal-box">
+        <h2 id="modalPoinTitle">
+            <div style="display: flex; align-items: center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="#f39c12" stroke-width="2.5" viewBox="0 0 24 24" style="margin-right:8px;"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+                Aturan & Gelar Poin
+            </div>
+        </h2>
+        
+        <div style="max-height: 480px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; padding-right: 4px;">
+            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:16px;">
+                <h3 style="font-size:0.95rem; font-weight:800; color:#1e293b; margin:0 0 10px;">📋 Cara Mendapatkan Poin</h3>
+                <ul style="margin:0; padding-left:20px; font-size:0.85rem; color:#475569; line-height:1.6;">
+                    <li><strong style="color:#22c55e;">+10 Poin</strong>: Jika kamu mengembalikan buku <strong>Tepat Waktu</strong> secara patuh (tidak melebihi deadline).</li>
+                    <li><strong style="color:#3b82f6;">+3 Poin</strong>: Jika kamu memberikan <strong>Ulasan / Rating</strong> pada buku.</li>
+                    <li><strong style="color:#ef4444;">-5 Poin</strong>: Jika kamu mengembalikan buku <strong>Terlambat</strong> (melewati batas masa peminjaman).</li>
+                </ul>
+            </div>
+
+            <div style="background:#fff7ed; border:1px solid #ffedd5; border-radius:10px; padding:16px;">
+                <h3 style="font-size:0.95rem; font-weight:800; color:#9a3412; margin:0 0 12px;">🌟 Tingkatan Gelar Literasi</h3>
+                <p style="font-size:0.85rem; color:#c2410c; margin:0 0 12px;">Gelar profilmu ditentukan berdasarkan <strong>Peringkat Poin</strong> saat ini di antara siswa lain:</p>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:8px 12px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                        <span style="font-weight:800; font-size:0.85rem; color:#f59e0b;">#1 Duta Literasi</span>
+                        <span style="font-size:0.75rem; color:#64748b; font-weight:700;">Ranking 1</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:8px 12px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                        <span style="font-weight:800; font-size:0.85rem; color:#64748b;">#2 Pakar Literasi</span>
+                        <span style="font-size:0.75rem; color:#64748b; font-weight:700;">Ranking 2</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:8px 12px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                        <span style="font-weight:800; font-size:0.85rem; color:#d97706;">#3 Kontributor</span>
+                        <span style="font-size:0.75rem; color:#64748b; font-weight:700;">Ranking 3</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:8px 12px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                        <span style="font-weight:700; font-size:0.85rem; color:#3b82f6;">Pembaca Aktif</span>
+                        <span style="font-size:0.75rem; color:#64748b; font-weight:600;">Ranking 4 - 10</span>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; background:#fff; padding:8px 12px; border-radius:6px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                        <span style="font-weight:600; font-size:0.85rem; color:#94a3b8;">Pemula</span>
+                        <span style="font-size:0.75rem; color:#64748b; font-weight:600;">Ranking > 10</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="modal-footer">
+            <button type="button" class="btn-cancel-modal" id="btnClosePoin">Tutup Info</button>
         </div>
     </div>
 </div>

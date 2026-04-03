@@ -76,7 +76,7 @@ class FineController extends Controller
         $hariTerlambat = 0;
         $amount = 0;
         if ($denda->deadline && now()->startOfDay()->gt(Carbon::parse($denda->deadline)->startOfDay())) {
-            $hariTerlambat = now()->startOfDay()->diffInDays(Carbon::parse($denda->deadline)->startOfDay());
+            $hariTerlambat = abs(now()->startOfDay()->diffInDays(Carbon::parse($denda->deadline)->startOfDay()));
             $amount = $hariTerlambat * 2000;
 
             if (!$denda->fine) {
@@ -95,10 +95,21 @@ class FineController extends Controller
 
         $denda->book->increment('stock');
 
-        // Award poin: tepat waktu = +10, terlambat = +5
-        if ($denda->user) {
-            $poin = ($hariTerlambat > 0) ? 5 : 10;
-            $denda->user->increment('points', $poin);
+        // Award poin: tepat waktu = +10, terlambat = -5
+        if ($denda->user_id) {
+            $user = \App\Models\User::find($denda->user_id);
+            if ($user) {
+                if ($hariTerlambat > 0) {
+                    if ($user->points < 5) {
+                        $user->points = 0;
+                        $user->save();
+                    } else {
+                        $user->decrement('points', 5);
+                    }
+                } else {
+                    $user->increment('points', 10);
+                }
+            }
         }
 
         $msg = "Buku \"{$denda->book->title}\" berhasil dikembalikan.";

@@ -17,7 +17,7 @@ class SiswaHalamanController extends Controller
         $month = $now->month;
         $year = $now->year;
 
-        // Top 3 Siswa berdasarkan poin
+        // Top Siswa berdasarkan poin
         $topStudents = DB::table('users')
             ->select('id', 'name', 'avatar', 'points',
                 DB::raw('(SELECT COUNT(*) FROM borrowings WHERE borrowings.user_id = users.id AND MONTH(borrow_date) = ' . $month . ' AND YEAR(borrow_date) = ' . $year . ') as total_borrowed')
@@ -25,12 +25,28 @@ class SiswaHalamanController extends Controller
             ->where('role', 'siswa')
             ->where('points', '>', 0)
             ->orderByDesc('points')
+            ->orderByDesc('total_borrowed')
             ->limit(10)
             ->get();
 
-        // Data Stat Cards untuk Auth User
+        // Data Stat Cards untuk Auth User & Penentuan Gelar
         $userId = Auth::id();
-        $userPoints = \App\Models\User::find($userId)->points ?? 0;
+        $userModel = \App\Models\User::find($userId);
+        $userPoints = $userModel ? $userModel->points : 0;
+
+        // Cari status peringkat user saat ini
+        $userRankIndex = $topStudents->search(function ($student) use ($userId) {
+            return $student->id == $userId;
+        });
+
+        $userTitle = 'Pemula';
+        if ($userRankIndex !== false) {
+            $rank = $userRankIndex + 1;
+            if ($rank === 1) $userTitle = 'Duta literasi';
+            elseif ($rank === 2) $userTitle = 'Pakar literasi';
+            elseif ($rank === 3) $userTitle = 'Kontributor';
+            elseif ($rank >= 4 && $rank <= 10) $userTitle = 'Pembaca aktif';
+        }
         
         $totalSelesai = Borrowing::where('user_id', $userId)
             ->where('status', 'dikembalikan')
@@ -52,7 +68,7 @@ class SiswaHalamanController extends Controller
             ->get();
 
         $dendaEstimasi = $lateLoansEstimasi->sum(function ($loan) {
-            return now()->startOfDay()->diffInDays(Carbon::parse($loan->deadline)->startOfDay()) * 2000;
+            return abs(now()->startOfDay()->diffInDays(Carbon::parse($loan->deadline)->startOfDay())) * 2000;
         });
 
         $totalDenda = $dendaDariDB + $dendaEstimasi;
@@ -80,7 +96,7 @@ class SiswaHalamanController extends Controller
         return view('siswa.halaman.index', compact(
             'topStudents', 'now', 
             'totalSelesai', 'activeBorrowed', 'totalDenda', 'deadlineLoans',
-            'hasUnpaidFine', 'userPoints'
+            'hasUnpaidFine', 'userPoints', 'userTitle'
         ));
     }
 }
