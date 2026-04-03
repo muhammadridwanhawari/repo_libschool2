@@ -141,80 +141,79 @@
       </a>
     </div>
 
-    <div class="animate-fadeUpDelay hidden md:block relative w-full h-full min-h-[550px]">
+    <div class="animate-fadeUpDelay relative w-full h-[350px] sm:h-[450px] md:h-full md:min-h-[550px] mt-8 md:mt-0">
 
       {{-- "Talking to Strangers" — tengah-atas, sedikit condong kiri, foreground kiri --}}
       <img src="{{ asset('images/landing/books-herosection/Talking to Strangers.png') }}"
            alt="Talking to Strangers"
-           class="book-cover book-float-1"
-           style="width: 250px; top: 30px; left: 20%; z-index: 20;">
+           class="book-cover book-float-1 absolute z-20 w-[130px] sm:w-[180px] lg:w-[250px] top-[5%] md:top-[30px] left-[5%] md:left-[10%] lg:left-[20%]">
 
       {{-- "The Midnight Library" — kanan-atas, lebih kecil, sedikit condong kanan, di belakang --}}
       <img src="{{ asset('images/landing/books-herosection/The Midnight Library.png') }}"
            alt="The Midnight Library"
-           class="book-cover book-float-2"
-           style="width: 300px; top: 30px; right: 20%; z-index: 15;">
+           class="book-cover book-float-2 absolute z-10 w-[150px] sm:w-[200px] lg:w-[300px] top-[0%] md:top-[30px] right-[5%] md:right-[10%] lg:right-[20%]">
 
       {{-- "Dompet Ayah Sepatu Ibu" — besar di tengah-kiri bawah, paling depan --}}
       <img src="{{ asset('images/landing/books-herosection/Dompet Ayah Sepatu Ibu.png') }}"
            alt="Dompet Ayah Sepatu Ibu"
-           class="book-cover book-float-3"
-           style="width: 300px; bottom: 35px; left: 15%; z-index: 30;">
+           class="book-cover book-float-3 absolute z-30 w-[160px] sm:w-[220px] lg:w-[300px] bottom-[0%] md:bottom-[35px] left-[-2%] md:left-[5%] lg:left-[15%]">
 
       {{-- "The Visual MBA" — kanan-bawah, ukuran sedang, sedikit condong kanan --}}
       <img src="{{ asset('images/landing/books-herosection/The Visual MBA.png') }}"
            alt="The Visual MBA"
-           class="book-cover book-float-4"
-           style="width: 275px; bottom: 80px; right: 20%; z-index: 25;">
+           class="book-cover book-float-4 absolute z-20 w-[140px] sm:w-[190px] lg:w-[275px] bottom-[10%] md:bottom-[80px] right-[-2%] md:right-[5%] lg:right-[20%]">
            
     </div>
   </div>
 </section>
 
-<section id="fitur" class="py-20 px-5 md:px-8 lg:px-16 bg-white">
-  <h2 class="text-[clamp(24px,3vw,38px)] font-extrabold text-navy tracking-tight text-center mb-12">Fitur Utama Untuk Siswa</h2>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+<section id="fitur" class="py-20 px-5 md:px-8 lg:px-16 bg-white overflow-hidden">
+  <h2 class="text-[clamp(24px,3vw,38px)] font-extrabold text-navy tracking-tight text-center mb-12">Fitur Ungulan Aplikasi</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
 
-    {{-- Card 1: Mencari buku --}}
-    <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-[0_12px_40px_rgba(37,99,235,.12)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center">
-      <div class="w-[72px] h-[72px] rounded-2xl bg-[#4F80F5] flex items-center justify-center mb-5 shadow-md">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="11" cy="11" r="7" stroke="white" stroke-width="2.2"/>
-          <path d="M17 17L21 21" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-        </svg>
+    {{-- Card 1: Verifikasi Member --}}
+    <div class="bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-slate-100 hover:shadow-[0_20px_40px_rgba(37,99,235,.08)] hover:-translate-y-1 transition-all duration-500 flex flex-col overflow-hidden group">
+      <div class="w-full h-[220px] sm:h-[260px] md:h-[220px] overflow-hidden bg-slate-50 relative border-b border-slate-100 inline-block align-top">
+        <img src="{{ asset('images/landing/fitur/verifikasi akun.png') }}" 
+             alt="Verifikasi Member" 
+             class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700">
       </div>
-      <h3 class="text-lg font-bold text-navy mb-3">Mencari buku</h3>
-      <p class="text-sm leading-relaxed text-slate-500">cari koleksi buku sekolah hanya dengan satu ketukan di SmartPhone</p>
+      <div class="p-8 text-center flex-1 flex flex-col">
+        <h3 class="text-lg font-bold text-navy mb-4">Sistem Keamanan Verifikasi Member</h3>
+        <p class="text-[13.5px] leading-relaxed text-slate-500">
+          Berguna untuk mencegah orang luar, siswa fiktif, atau bot spammer masuk dan mengacak-acak persediaan buku perpustakaan digital sekolah.
+        </p>
+      </div>
     </div>
 
-    {{-- Card 2: Cek Ketersediaan --}}
-    <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-[0_12px_40px_rgba(37,99,235,.12)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center">
-      <div class="w-[72px] h-[72px] rounded-2xl bg-[#4F80F5] flex items-center justify-center mb-5 shadow-md">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 7h9" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-          <path d="M5 12h9" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-          <path d="M5 17h9" stroke="white" stroke-width="2.2" stroke-linecap="round"/>
-          <path d="M17 8l-2 2-1-1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M17 13l-2 2-1-1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M17 18l-2 2-1-1" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    {{-- Card 2: Sistem Poin & Leaderboard --}}
+    <div class="bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-slate-100 hover:shadow-[0_20px_40px_rgba(37,99,235,.08)] hover:-translate-y-1 transition-all duration-500 flex flex-col overflow-hidden group">
+      <div class="w-full h-[220px] sm:h-[260px] md:h-[220px] overflow-hidden bg-slate-50 relative border-b border-slate-100 inline-block align-top">
+        <img src="{{ asset('images/landing/fitur/profil dan sistem leaderboard.png') }}" 
+             alt="Sistem Poin dan Papan Peringkat" 
+             class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700">
       </div>
-      <h3 class="text-lg font-bold text-navy mb-3">Cek Ketersediaan</h3>
-      <p class="text-sm leading-relaxed text-slate-500">ketahui apakah buku sedang tersedia atau sedang di pinjam secara real time.</p>
+      <div class="p-8 text-center flex-1 flex flex-col">
+        <h3 class="text-lg font-bold text-navy mb-4">Sistem Poin & Papan Peringkat</h3>
+        <p class="text-[13.5px] leading-relaxed text-slate-500">
+          Membangun Motivasi (Engagement): Mengatasi rasa malas siswa. Dengan adanya pancingan berupa Poin dan Gelar, minat baca literasi siswa secara psikologis akan meningkat karena mereka merasa sedang 'bermain game' dan bersaing secara positif dengan teman-temannya di papan peringkat (Leaderboard).
+        </p>
+      </div>
     </div>
 
     {{-- Card 3: Booking Buku --}}
-    <div class="bg-white rounded-2xl p-8 border border-slate-200 shadow-sm hover:shadow-[0_12px_40px_rgba(37,99,235,.12)] hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center">
-      <div class="w-[72px] h-[72px] rounded-2xl bg-[#4F80F5] flex items-center justify-center mb-5 shadow-md">
-        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="4" y="3" width="14" height="18" rx="2" stroke="white" stroke-width="2.2"/>
-          <path d="M9 7h6" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          <path d="M12 11v5" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          <path d="M9.5 13.5L12 16l2.5-2.5" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+    <div class="bg-white rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.05)] border border-slate-100 hover:shadow-[0_20px_40px_rgba(37,99,235,.08)] hover:-translate-y-1 transition-all duration-500 flex flex-col overflow-hidden group">
+      <div class="w-full h-[220px] sm:h-[260px] md:h-[220px] overflow-hidden bg-slate-50 relative border-b border-slate-100 inline-block align-top">
+        <img src="{{ asset('images/landing/fitur/booking buku.png') }}" 
+             alt="Sistem Booking Buku Dari Rumah" 
+             class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-700">
       </div>
-      <h3 class="text-lg font-bold text-navy mb-3">Booking Buku</h3>
-      <p class="text-sm leading-relaxed text-slate-500">Amankan buku favoritmu! Sebelum orang lain meminjamnya.</p>
+      <div class="p-8 text-center flex-1 flex flex-col">
+        <h3 class="text-lg font-bold text-navy mb-4">Sistem Booking Buku Dari Rumah</h3>
+        <p class="text-[13.5px] leading-relaxed text-slate-500">
+          Dengan Fitur ini para murid sudah tidak akan khawatir tentang buku di akan mereka pinjam. Tinggal menekan tombol pinjam di buku yang akan di pinjam buku akan otomatis terbooking.
+        </p>
+      </div>
     </div>
 
   </div>
