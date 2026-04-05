@@ -1,132 +1,164 @@
-# LibSchool - Sistem Informasi Manajemen Perpustakaan Sekolah
+<div align="center">
+  <h1>Sistem Informasi Manajemen Perpustakaan Sekolah (LibSchool)</h1>
+  <p>Proyek aplikasi web manajemen sirkulasi perpustakaan modern dengan sentuhan Gamifikasi, Pembayaran Denda Digital, Otomasi Kalkulasi Denda, serta antarmuka yang bersih dan interaktif.</p>
+</div>
 
-LibSchool adalah sistem informasi manajemen perpustakaan modern berbasis web. Dibangun dengan framework Laravel 12 dan antarmuka dinamis Tailwind CSS, platform ini dirancang khusus untuk memenuhi standar profesional dalam mengelola sirkulasi buku, administrasi rak dan kategori, manajemen denda, hingga integrasi rekam jejak setiap anggota sekolah dalam satu ruang lingkup terpusat.
+---
 
-## Tinjauan Antarmuka dan Fitur Utama
+## Deskripsi Proyek
 
-Sistem ini mensyaratkan tiga jenis hak akses untuk menjaga privasi data dan melancarkan alur operasional. Berikut adalah ringkasan fitur utama yang dilengkapi dengan visualisasi antarmuka:
+**LibSchool** adalah sistem informasi perpustakaan berbasis web yang dibangun secara tangguh menggunakan framework Laravel 12 dan antarmuka dinamis Tailwind CSS. Platform ini dirancang khusus untuk memenuhi standar profesional dalam mengelola sirkulasi peminjaman buku, administrasi rak katalog, operasional denda, hingga integrasi rekam jejak setiap anggota sekolah dalam satu ruang lingkup terpusat. Proyek ini sangat cocok untuk digitalisasi perpustakaan instansi dengan keunggulan pada _UI/UX_ yang responsif, modern, dan alur konfirmasi yang transparan.
+
+## Fitur Unggulan Sistem
+
+Aplikasi ini menyajikan desain yang _responsive_ dengan dukungan fitur-fitur **advance / tingkat lanjut** sebagai berikut:
+
+### Fitur Baru & Integrasi Modern
+
+- **Sistem Gamifikasi (Papan Peringkat & Gelar Literasi)**: Mendorong semangat siswa untuk giat membaca! Sistem memberikan ekstra Poin (+10) untuk pengembalian yang tepat waktu dan penulisan ulasan. Namun, poin di korting (-5) untuk tiap keterlambatan. Poin diakumulasi menjadi peringkat (_Leaderboard_) tingkat sekolah yang dapat mendobrak level gelar dari "Pemula" hingga "Duta Literasi".
+- **Pembayaran Denda Digital & Verifikasi Bukti**: Terintegrasi secara penuh dengan prosedur bukti transfer kas. Siswa dapat melunasi denda keterlambatan secara _cashless_, kemudian mengunggah bukti struk atau *screenshot* (_Proof of Payment_) langsung via aplikasi agar divalidasi oleh layar Kasir Denda meja staf penjaga otomatis.
+- **Pembuat Laporan Otomatis (Generator PDF DomPDF)**: Dengan sekali penyetelan rekap kalender, semua arsip dan siklus transaksi dilaporkan ke format PDF legal terstruktur nan eksekutif untuk diserahkan ke kepala arsip bulanan.
+- **Deteksi Login Cerdas & Pertahanan Akses**: Fitur arsitektur _Role and Permission_ kokoh melindungi privasi akses silang. Mengarahkan akun _login_ sesuai teritorial peruntukannya (Admin, Staf, atau Anggota) serta memastikan anggota tak dapat menyusup perizinan admin lewat modifikasi parameter *URL*.
+
+### Panel Admin (Kepala / Administrator)
+
+- **Pusat Komando Analitik (Dashboard)**: Visualisasi metrik rekap rasio siswa, siklus pengembalian dan sirkulasi peminjaman berjalan yang berbentuk *Stat Cards* komprehensif.
+- **Otoritas Verifikasi Anggota (KYC Member)**: Tameng pendaftaran daring. Siswa baru tidak diperbolehkan "*Booking*" sebelum identitas registrasinya divalidasi dan di konfirmasi kebenarannya oleh Admin pusat.
+- **Manajemen Pengguna (CRUD) & Perizinan**: Otoritas pengangkatan atau pewarisan peran silang staf ke penjaga. Mendukung eksekusi tombol "_Reset Password Paksa_" apabila anggota lupa sandi mereka secara drastis.
+
+### Panel Petugas (Penjaga Perpustakaan / Sirkulasi)
+
+- **Persetujuan Sirkulasi (*Booking* Jarak Jauh)**: Penjaga menyortir dan menerbitkan rilis buku secara cepat. Tinggal validasi nomor *booking* dan tabrak tombol *Konfirmasi*.
+- **Kalkulasi Denda Harian Otomatis**: Tak perlu lagi pusing kalkulator manual! Saat anggota mengembalikan buku via petugas, sistem serentak mengurai total denda berdasar hari secara murni sebelum di finalisasi.
+- **Agenda Harian & Resolusi Pengaduan (*Inbox*)**: Cukup mengklik meja informasi pesan masukan, staf dan penjaga perpustakaan dapat melayani permintaan spesifik perihal koleksi buku dari siswa.
+
+### Panel Anggota (Siswa / Member)
+
+- **Sistem _Booking_ Jarak Jauh (Reservasi)**: Takut keburu ludes di rak? Siswa dapat mengajukan reservasi antrean dari _smartphone_ via katalog, lalu mengambil fisik rupa buku di ruang perpus keesokannya.
+- **Katalog Interaktif Terpadu**: Jelajahi etalase buku dengan _Hero Banner Slider_ estetik dari pustaka favorit berserta dukungan penyaringan (_filter_) canggih.
+- **Pelacakan Koleksi & KTA (*E-Card*)**: Panel meninjau jatuh tempo yang tertunda. Menyalin ke Rak Favorit digital, plus tombol instan guna cetak/unduh Kartu Tanda Anggota bernomor barcode unik secara digital.
+- **Ruang Ulasan & Permintaan Pustaka**: Mengunggah aspirasi lewat fitur proposal buku (*Propose Book*) untuk meminta di adakan ke koleksi perpus dan mendiskusikan *rating* reviu kepada kawan sesama pemustaka.
+
+---
+
+## Dokumentasi & Antarmuka (Preview)
+
+Berikut adalah beberapa pratinjau cuplikan resolusi antarmuka di sistem LibSchool yang difokuskan pada fungsionalitas dan estetika:
 
 ### 1. Halaman Beranda (Landing Page)
-<img src="public/images/readme.md image/landing-page.png" alt="Landing Page" width="100%">
-**Deskripsi:** Antarmuka awal yang dioptimalkan untuk menyambut pengunjung dengan tampilan elegan dan responsif pada berbagai perangkat layar.
-**Keunggulan:** Desain modern, struktur navigasi yang jelas, dan pemuatan elemen cepat. Pengunjung dapat langsung memperoleh gambaran singkat mengenai fasilitas sirkulasi perpustakaan sebelum masuk ke sistem.
+> Antarmuka awal untuk menyambut pengunjung publik dengan *layout* elegan serta mengedepankan kemudahan sirkulasi info perpustakaan.
+> <img src="public/images/readme.md image/landing-page.png" alt="Landing Page LibSchool" width="800">
 
 ### 2. Dashboard Administrator
-<img src="public/images/readme.md image/dashboard-admin.png" alt="Dashboard Administrator" width="100%">
-**Deskripsi:** Pusat kendali tingkat tertinggi yang diperuntukkan bagi manajer perpustakaan atau staf teknologi informasi sekolah.
-**Keunggulan:** Menyediakan kontrol penuh dan visualisasi data statistik yang komprehensif. Admin dapat mengelola persetujuan KYC siswa (verifikasi anggota), manajemen inventaris buku secara terperinci, mengekspor laporan kinerja ke format PDF menggunakan DomPDF, serta mengelola akses seluruh staf dan member.
+> Pusat kendali mutlak khusus pimpinan dan manajer dengan presentasi _Stat Cards_ operasional keseluruhan.
+> <img src="public/images/readme.md image/dashboard-admin.png" alt="Dashboard Administrasi" width="800">
 
-### 3. Dashboard Penjaga Perpustakaan
-<img src="public/images/readme.md image/dashboard-petugas.png" alt="Dashboard Penjaga Perpustakaan" width="100%">
-**Deskripsi:** Ruang kerja khusus untuk penjaga dalam menangani urusan operasional sirkulasi fisik perpustakaan dari hari ke hari.
-**Keunggulan:** Menyajikan tabel informasi real-time mengenai permintaan peminjaman dan jadwal pengembalian. Penjaga dipermudah dengan automasi sistem kalkulasi denda keterlambatan baku, serta pencatatan sirkulasi pergerakan inventaris yang transparan dan akurat.
+### 3. Dashboard Pelayanan Petugas
+> Ruang sirkulasi garda depan! Memonitor perputaran stok pinjaman masuk-keluar secara interaktif dan serba _real-time_.
+> <img src="public/images/readme.md image/dashboard-petugas.png" alt="Dashboard Panel Penjaga" width="800">
 
-### 4. Dashboard Siswa (Member)
-<img src="public/images/readme.md image/dashboard-siswa.png" alt="Dashboard Siswa" width="100%">
-**Deskripsi:** Portal interaktif mandiri yang dikhususkan bagi siswa (anggota aktif) untuk berpartisipasi dalam program literasi perpustakaan.
-**Keunggulan:** Menawarkan fitur penelusuran katalog cerdas. Siswa dapat melakukan pengecekan ketersediaan stok buku, mengajukan proses pemesanan (booking) sirkulasi dari jauh secara mandiri, melacak rekam jejak denda dan detail riwayat peminjaman mereka, serta menyimpan literatur favorit.
+### 4. Dashboard Siswa & Katalog Cerdas
+> Beranda gamifikasi interaktif yang merangkum skor poin, medali gelar siswa, serta pemaparan denda yang dikemas estetis.
+> <img src="public/images/readme.md image/dashboard-siswa.png" alt="Beranda Panel Siswa" width="800">
 
 ---
 
-## Fitur-fitur Lengkap Aplikasi
+## Teknologi Utama di Balik Sistem
 
-Aplikasi LibSchool membagi rentetan fiturnya menjadi 3 pilar jenis pengguna (Admin, Penjaga, dan Siswa). Berikut adalah penjelasan santai dan mudah dipahami untuk semua fitur yang ada:
+Proyek platform LibSchool ini mengadopsi stack tekonologi yang tangkas dan berpusat pada penyesuaian proses manajemen pustaka nan solid:
 
-### 1. Fitur Umum & Keamanan
-*   **Login & Register Mudah**: Pengguna bisa login dengan aman, siswa baru bisa mendaftar akun sekolah secara mandiri, dan ada fitur *Reset Password* via email kalau sewaktu-waktu lupa sandi.
-*   **Pendeteksi Login Otomatis**: Jika pengguna sudah pernah masuk (*login*) sebelumnya, ketika membuka website akan langsung diarahkan masuk ke dasbornya masing-masing tanpa harus login ulang, sangat efisien.
-*   **Pembatasan Akses (Aman dari Orang Iseng)**: Fitur keamanan kuat yang mencegah siswa menyusup ke halaman Admin, begitupun sebaliknya. Setiap orang hanya bisa melihat halaman yang memang sesuai porsinya.
+- **Bahasa & Backend Framework**: PHP (Laravel 12.x) - *Memerlukan ^PHP 8.2*
+- **Frontend / Styling Toolbox**: CSS Utility-First (Tailwind CSS v3 murni) yang sangat dapat dikustomisasi
+- **Database Server**: Relational DB (MySQL / MariaDB via PDO)
+- **State & Interactivity**: Blade Templating Engine & Alpine.js
+- **Assets Bundler Kompilasi**: Vite v6 terintegrasi (laravel-vite-plugin)
+- **Ekosistem Otentikasi**: Laravel Breeze v2 (Session & Cookie Authentication)
+- **Generator Dokumen Eksternal**: DomPDF (`barryvdh/laravel-dompdf`) guna pencetakan dokumen *Report* dan E-Card PDF.
 
-### 2. Fitur Khusus Siswa
-*   **Dasbor Pintar (Hero & Notifikasi)**: Tampilan beranda modern yang menyambut siswa dengan Profil *Hero Card*, akumulasi Poin, serta Gelar Literasi. Dilengkapi Lonceng Notifikasi yang otomatis memberi peringatan cerdas apabila terdapat buku yang mendekati *deadline* pengembalian atau ada tunggakan denda.
-*   **Papan Peringkat & Gelar Poin (Gamifikasi)**: Bersaing literasi dengan interaktif! Sistem memberikan ekstra Poin bagi siswa yang mengembalikan buku terpat waktu (+10) dan memberi rekomendasi ulasan (+3). Namun, poin dipotong (-5) jika menunggak telat. Akumulasi tersebut akan mendobrak *Leaderboard* peringkat siswa guna memperebutkan level gelar dari "Pemula" hingga "Duta Literasi"!
-*   **Katalog Interaktif Terpadu**: Eksplorasi koleksi perpustakaan dengan dukungan *Hero Banner Slider* yang estetik untuk "Buku Terfavorit". Siswa juga dibekali filter pencarian buku yang canggih dan dinamis.
-*   **Sistem Booking Jarak Jauh**: Takut kehilangan buku incaran karena dipinjam teman? Lakukan reservasi (*Booking*) dari rumah hanya lewat layar *smartphone*, dan ambil fisik bukunya di perpustakaan.
-*   **Ruang Opini & Ulasan**: Siswa yang telah tuntas membaca dapat menyematkan *Rating* bintang dan menulis ulasan publik untuk memandu minat baca kawan-kawan sekolah lainnya.
-*   **Rekam Jejak & Sistem Pembayaran Denda Digital**: Menyimpan dengan rapi rekam historis peminjaman. Aplikasi juga mengakomodasi penyelesaian denda telat; siswa diwajibkan mengunggah *Proof of Payment* (Bukti Pembayaran) langsung lewat aplikasi untuk divalidasi oleh pihak perpustakaan.
-*   **Formulir Pengajuan Buku Baru**: Tidak menemukan buku yang pas? Siswa punya hak prerogatif untuk mengirim draf proposal pengadaan buku baru yang nantinya akan ditinjau untuk dibeli oleh Penjaga perpustakaan.
-*   **Rak Favorit Pribadi & E-Card**: Simpan buku idaman ke sudut "*Favorite*" agar mudah dicari kelak. Mengunduh/mencetak Kartu Tanda Anggota Library (*E-Card*) dapat dilakukan secara digital dengan mudah.
-*   **Pengaturan Profil Lengkap**: Siswa diberikan kendali privasi lewat menu pengaturan untuk meng-update informasi akun pribadi, bebas mengganti foto *Avatar* mereka, hingga merubah kunci kata sandi (*reset password*) demi keamanan ganda secara mandiri.
-
-### 3. Fitur Khusus Penjaga Perpustakaan
-*   **Persetujuan Pinjam Buku (Klik Tombol)**: Tempat penjaga memeriksa kode booking dari anak-anak (Contoh: `BK-2026403-0001`). Setelah anak mengambil fisik bukunya di meja perpus, penjaga tinggal tekan "Konfirmasi" dan sah sudah dipinjam!
-*   **Kasir Denda Berjalan**: Disaat mendata anak yang mengembalikan buku melewati hari batas waktu (*deadline*), sistem yang akan memikirkan hitungan denda dan seketika langsung menghardik muncul di hadapan layar penjaga otomatis.
-*   **Catatan Aktivitas Staf Harian**: Rangkuman arus buku apa saja di luar rak, dan ada berapa buku yang tersimpan siang itu.
-*   **Buka Surat Keluhan (Inbox)**: Menerima, membaca, dan menyelesaikan laporan pertolongan yang masuk dari aplikasi si anak.
-### 4. Fitur Spesial Administrator (Kepala Perpustakaan)
-*   **Pusat Komando (Dashboard Analitik)**: Visualisasi level eksekutif yang merangkum keseluruhan total pergerakan koleksi buku, laju pendaftaran siswa baru, hingga metrik laporan aktif dalam bentuk *Stat Cards* komprehensif.
-*   **Manajemen Pengguna (CRUD)**: Otoritas mutlak untuk mencipta akun Penjaga/Siswa baru, memperbaiki rincian kesalahan alamat/biodata, hingga fitur "*Reset Password*" paksa bagi pengguna yang terkunci.
-*   **Portal Verifikasi Anggota (KYC Member)**: Tameng pertahanan dari pengunjung bodong. Siswa yang mendaftar secara daring belum diizinkan "*Booking*" buku sebelum berkasnya mendapatkan "Centang Verifikasi" manual dari Admin.
-*   **Kendali Hak Akses Khusus (Role & Permission)**: Kapabilitas luar biasa untuk mengubah peranan staf (*Downgrade* penjaga menjadi siswa) seketika! Admin dapat memecah tugas administratif dengan memberikan matriks perizinan modul (*Permission*) spesifik bagi staf tertentu.
-
-### 5. Pengelolaan Sirkulasi & Inventaris (Hak Akses: Admin & Penjaga)
-*   **Gudang Inventaris Buku Terpadu**: Fasilitas melengkapi profil beribu literatur secara mendalam, dari input Nomor Standar (ISBN), Sampul Muka (*Display Cover*), Sinopsis Cerita, Info Penerbit, Tahun Keluar, hingga pemetaan Posisi Rak Asli (*Location*).
-*   **Katalogisasi Ganda (Kategori & Seri Buku)**: Algoritma penyusunan maju yang tak hanya bertumpu pada "Filter Kategori" (misal: *Novel*, *Ensiklopedia*), namun perpustakaan dapat mengikat koleksi novel bernomor urut ke dalam himpunan "*Book Series*".
-*   **Meja Verifikasi Bukti Denda**: Fitur ruang rekonsiliasi yang disiapkan untuk staf dalam melakukan perbandingan antara struk foto Bukti Bayar Digital (*Proof of Payment*) lampiran siswa melawan besaran denda tagihan kasir sebelum dinyatakan lunas tuntas.
-*   **Pembuat Laporan Otomatis (Generator PDF)**: Dengan satu kali sentuhan tombol konfigurasi bulan/tahun kalender, sistem meringkas ribuan rekam jejak aktivitas sirkulasi dan mencetak dokumen legal elektronik format **PDF** yang menawan sebagai bahan laporan pengesahan bulanan.
 ---
 
-## Spesifikasi Teknis
+## Panduan Menjalankan Sistem (Setup Lokal)
 
-Platform LibSchool dikembangkan di atas arsitektur peranti lunak terkini guna memastikan keamanan, performa tinggi, serta kemudahan proses uji coba (development):
+Ikuti instruksi tahapan instalasi peranti tunjang di bawah untuk menjalankan layanan aplikasinya dari PC Anda:
 
-*   **Pondasi Backend:** Laravel 12 (Membutuhkan PHP versi ^8.2)
-*   **Akses Basis Data:** Konfigurasi standar mesin MySQL atau MariaDB
-*   **Perancangan Frontend:** Kombinasi Laravel Blade Templating Engine dan Alpine.js
-*   **Kerangka Gaya (Styling):** Tailwind CSS v3 murni
-*   **Pemoles Aset (Bundler):** Vite v6 terintegrasi (laravel-vite-plugin)
-*   **Infrastruktur Autentikasi:** Laravel Breeze v2 (Menggunakan session guard otentikasi konvensional)
-*   **Sistem Ekspor Dokumen:** barryvdh/laravel-dompdf (Generasi laporan analitik format PDF)
+1. **Clone repository ini dari basis kendali versi (Git):**
 
-## Panduan Instalasi Lokal
+    ```bash
+    git clone <URL_REPO_ANDA>
+    cd LIBSCHOOL
+    ```
 
-Langkah-langkah berikut akan membantu tahapan penyetelan (setup) awal bagi pengembang untuk menjalankan aplikasi LibSchool di lingkungan server mesin komputer lokal (seperti sistem XAMPP, Laragon, atau Herd). Pastikan Composer dan NodeJS telah terpasang dengan versi spesifikasi di atas.
+2. **Dapatkan Paket Pustaka lewat Dependensi Composer & Node Package Manager:**
 
-**1. Kloning Repositori**
-Unduh keseluruhan berkas kode sumber dari repositori ke dalam memori komputer dan masuk ke direktori proyek.
-```bash
-git clone <url-repositori>
-cd LIBSCHOOL
-```
+    ```bash
+    composer install
+    npm install
+    ```
 
-**2. Instalasi Dependensi Pihak Ketiga**
-Pasang pustaka bawaan framework PHP dan susun ekstensi modul node (Javascript) aplikasi.
-```bash
-composer install
-npm install
-```
+3. **Salin & Modifikasi Pembenihan Environment Variable:**
 
-**3. Konfigurasi Lingkungan Server**
-Gandakan berkas contoh konfigurasi *environment* dan hasilkan token kunci aplikasi.
-```bash
-cp .env.example .env
-php artisan key:generate
-```
-*(Catatan: Konfigurasi pengaturan koneksi database Anda di bagian `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` di dalam berkas `.env` sebelum ke tahap selanjutnya)*
+    ```bash
+    cp .env.example .env
+    ```
 
-**4. Migrasi Skema dan Pembenihan Data**
-Eksekusi struktur tabel rancangan sistem sekaligus memasukkan pangkalan data pengujian awalan (dummy data).
-```bash
-php artisan migrate:fresh --seed
-```
+4. **Konfigurasikan Data Database dalam file `.env`:**
+   Atur dan sesuaikan parameter kredensial `DB_DATABASE`, `DB_USERNAME`, dan *port* pangkalan data server Anda.
 
-**5. Pembuatan Tautan Direktori Berkas Publik**
-Untuk menjamin gambar pratinjau buku dan aset file lainnya dapat diakses pada ranah publik sistem antarmuka web.
-```bash
-php artisan storage:link
-```
+    ```env
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=db_libschool
+    DB_USERNAME=root
+    DB_PASSWORD=
+    ```
 
-**6. Menjalankan Server Publik**
-Buka dua terminal terpisah pada lingkungan direktori yang sama dan operasikan kedua mesin pelayan berikut ini:
+5. **Pembuatan Key Hash Internal Laravel:**
 
-Terminal Pertama (Menjalankan pelayan pengujian backend Laravel):
-```bash
-php artisan serve
-```
+    ```bash
+    php artisan key:generate
+    ```
 
-Terminal Kedua (Menjalankan proses pemantauan aset gaya (CSS/JS) web interaktif menggunakan Vite):
-```bash
-npm run dev
-```
+6. **Migrasikan Struktur Tabel Basis Data dan Suntik Data Dummy:**
+   _(Langkah ini teramat praktis! Otomatis men-generate basis pola klasifikasi, tatanan buku, serta akun dummy anggota lewat _Seeder_)._
 
-Akses sistem di peramban web melalui pranala: `http://localhost:8000`.
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
+
+7. **Aktifkan Storage Link (Untuk Unggah Gambar Cover/Bukti Bukti Bayar):**
+
+    ```bash
+    php artisan storage:link
+    ```
+
+8. **Proses Akhir: Menghidupkan Layanan Dua Serangkai**
+   Buka jendela terminal utama dan komando agar melayani basis mesin PHP:
+    ```bash
+    php artisan serve
+    ```
+    Buka jendela terminal kedua (Sangat vital demi merangkai dan menyaksikan kompilasi *Tailwind* secara langsung):
+    ```bash
+    npm run dev
+    ```
+    _Silakan mengakses portal di http://127.0.0.1:8000 via browser (peramban) kesayangan Anda._
+
+---
+
+## Basis Akun / Kredensial Demonstrasi
+
+Bilamana instalasi disusupkan lewat _flag_ `--seed` saat migrasi database, cobalah autentikasi simulasi pengujian (Demo) dengan deretan identitas di bawah:
+
+| Roles / Tingkat Otoritas | Alamat Email / Username | Password Sandi Standar |
+| :----------------------- | :---------------------- | :--------------------- |
+| **Admin Pusat Eksekutif**| `admin@gmail.com`       | `password`             |
+| **Petugas / Pustakawan** | `penjaga@gmail.com`     | `password`             |
+| **Anggota Siswa**        | `siswa@gmail.com`       | `password`             |
+
+_Catatan Edukasi: Pastikan kelak membiasakan pergantian mutlak kata kunci maupun pencopotan _seeder_ saat mentransformasi aplikasi LibSchool menjadi wujud komersial guna menghindari paparan kerentanan._
+
+---
+
+<p align="center">
+  <sub>Dibangun oleh pengembang sistem berdedikasi demi mendobrak digitalisasi arsip sirkulasi perbukuan, menjadikannya tertata, efisien dan kompetitif secara interaktif dalam lingkungan akademik sekolah.</sub>
+</p>
