@@ -90,9 +90,9 @@ Berikut adalah beberapa pratinjau cuplikan resolusi antarmuka di sistem LibSchoo
 > Ruang sirkulasi garda depan! Memonitor perputaran stok pinjaman masuk-keluar secara interaktif dan serba _real-time_.
 > <img src="public/images/readme.md image/dashboard-petugas.png" alt="Dashboard Panel Penjaga" width="800">
 
-### 3. Dashboard Siswa & Katalog Cerdas
-> Beranda gamifikasi interaktif yang merangkum skor poin, medali gelar siswa, serta pemaparan denda yang dikemas estetis.
-> <img src="public/images/readme.md image/katalog.png" alt="Beranda Panel Siswa" width="800">
+### 3. Tampilan Katalog Siswa Terpadu
+> Mengeksplorasi ribuan judul yang asyik! Memiliki struktur *layout hero banner slider* guna memprioritaskan fitur pencarian, sekaligus menjadi laman penyambutan siswa yang efisien.
+> <img src="public/images/readme.md image/katalog.png" alt="Beranda Katalog Siswa" width="800">
 
 ---
 
