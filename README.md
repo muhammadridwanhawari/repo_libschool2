@@ -1,4 +1,7 @@
 <div align="center">
+  <img src="public/images/readme.md image/landing-page.png" alt="Beranda Aplikasi LibSchool" width="100%">
+  <br>
+
   <h1>Sistem Informasi Manajemen Perpustakaan Sekolah (LibSchool)</h1>
   <p>Proyek aplikasi web manajemen sirkulasi perpustakaan modern dengan sentuhan Gamifikasi, Pembayaran Denda Digital, Otomasi Kalkulasi Denda, serta antarmuka yang bersih dan interaktif.</p>
 </div>
@@ -7,7 +10,7 @@
 
 ## Deskripsi Proyek
 
-**LibSchool** adalah sistem informasi perpustakaan berbasis web yang dibangun secara tangguh menggunakan framework Laravel 12 dan antarmuka dinamis Tailwind CSS. Platform ini dirancang khusus untuk memenuhi standar profesional dalam mengelola sirkulasi peminjaman buku, administrasi rak katalog, operasional denda, hingga integrasi rekam jejak setiap anggota sekolah dalam satu ruang lingkup terpusat. Proyek ini sangat cocok untuk digitalisasi perpustakaan instansi dengan keunggulan pada _UI/UX_ yang responsif, modern, dan alur konfirmasi yang transparan.
+**LibSchool** adalah sistem informasi perpustakaan berbasis web yang dibangun secara tangguh menggunakan framework Laravel 12 dan antarmuka dinamis Tailwind CSS. Platform ini dirancang khusus untuk memenuhi standar profesional dalam mengelola sirkulasi peminjaman buku, administrasi rak katalog, operasional denda, hingga integrasi rekam jejak setiap anggota sekolah dalam satu ruang lingkup terpusat. Proyek ini sangat cocok untuk digitalisasi perpustakaan instansi dengan keunggulan pada _UI/UX_ yang responsif, modern, dan alur konfirmasi yang transparan. Lebih dari itu, sistem ini juga dirancang dan disusun secara komprehensif guna memenuhi kualifikasi **UKK (Uji Kompetensi Keahlian)**, sekaligus sebagai ruang unjuk kebolehan arsitektur perangkat lunak terkini.
 
 ## Fitur Unggulan Sistem
 
@@ -19,6 +22,40 @@ Aplikasi ini menyajikan desain yang _responsive_ dengan dukungan fitur-fitur **a
 - **Pembayaran Denda Digital & Verifikasi Bukti**: Terintegrasi secara penuh dengan prosedur bukti transfer kas. Siswa dapat melunasi denda keterlambatan secara _cashless_, kemudian mengunggah bukti struk atau *screenshot* (_Proof of Payment_) langsung via aplikasi agar divalidasi oleh layar Kasir Denda meja staf penjaga otomatis.
 - **Pembuat Laporan Otomatis (Generator PDF DomPDF)**: Dengan sekali penyetelan rekap kalender, semua arsip dan siklus transaksi dilaporkan ke format PDF legal terstruktur nan eksekutif untuk diserahkan ke kepala arsip bulanan.
 - **Deteksi Login Cerdas & Pertahanan Akses**: Fitur arsitektur _Role and Permission_ kokoh melindungi privasi akses silang. Mengarahkan akun _login_ sesuai teritorial peruntukannya (Admin, Staf, atau Anggota) serta memastikan anggota tak dapat menyusup perizinan admin lewat modifikasi parameter *URL*.
+
+#### 📸 Ilustrasi Fitur Unggulan Modern
+
+**1. Sistem Gamifikasi (Poin & Gelar Literasi Siswa)**
+| Medali & Profil Poin Siswa | Klasemen Papan Peringkat (Leaderboard) |
+|:---:|:---:|
+| <img src="public/images/readme.md image/profil siswa.png" height="280"> | <img src="public/images/readme.md image/leader board.png" height="280"> |
+
+> **Penjelasan Integritas Alur:**
+> Gambar di panel kiri merupakan pusaka identitas literasi siswa. Di ruang ini, siswa dapat melihat pencapaian **Poin** berserta akumulasi medali lencana gelar yang tumbuh menilik kedisiplinan membaca. Sebagai pemantik kompetisi sehat, poin-poin tersebut diadu secara spektakuler pada tampilan **Leaderboard** klasemen tingkat Sekolah secara *real-time* (gambar kanan), memicu semangat seluruh siswa untuk berebut tahta puncak "Duta Literasi"!
+
+**2. Alur Pembayaran Denda Digital Terpadu**
+| Antarmuka *Upload* Struk (Panel Siswa) | Meja Validasi Kasir (Panel Petugas) |
+|:---:|:---:|
+| <img src="public/images/readme.md image/bayar denda.png" height="280"> | <img src="public/images/readme.md image/admin menyelesaikan denda.png" height="280"> |
+
+> **Penjelasan Integritas Alur:**
+> Tangkapan di sebelah kiri memperlihatkan **Panel Siswa** yang sedang menunggak denda. Siswa dapat menuntaskan denda secara daring dengan mengunggah *screenshot* / foto **Bukti Transfer** (_Proof of Payment_). Setelah terkirim, pada sisi kanan, gambar bukti tersebut akan langsung tertampil *real-time* berserta detail faktur tagihannya di layang depan **Panel Kasir Petugas** guna divalidasi keasliannya dan diterbitkan struk lunas!
+
+**3. Siklus Automasi Laporan Dokumen (DomPDF)**
+| Kolom Penyetelan Arsip Waktu | Hasil File Render PDF Eksekutif |
+|:---:|:---:|
+| <img src="public/images/readme.md image/laporan.png" height="280"> | <img src="public/images/readme.md image/laporan cetak pdf.png" height="280"> |
+
+> **Penjelasan Integritas Alur:**
+> Gambar kiri memperlihatkan **Filter Cetak**. Petugas hanya butuh menyaring arsip berdasarkan tanggal atau rentang bulan peminjaman. Sistem pelaporan akan menyapu ribuan laju data riwayat dan memadatinya ke dalam bentuk luaran laporan rekap sirkulasi **Berformat Arsip PDF** terstandar untuk diaudit secara instan oleh Kepala Perpustakaan (*Gambar Kanan*).
+
+**4. Pergerakan Sistem Peminjaman Daring (*Booking*)**
+| Kode Reservasi Berjalan (Panel Siswa) | Antrean Peminjaman Baru (Panel Petugas) |
+|:---:|:---:|
+| <img src="public/images/readme.md image/kode booking.png" height="200"> | <img src="public/images/readme.md image/konfirmasi peminjaman.png" height="200"> |
+
+> **Penjelasan Integritas Alur:**
+> Sangat memanjakan *Member/Siswa*. Tangkap gambar kiri memperlihatkan siswa yang takut kehabisan buku favorit di kelas, dapat melakukan *Booking* secara mandiri, sehingga memperoleh **Kode Reservasi Peminjaman**. Setelahnya (pada layar kanan), reservasinya akan muncul ke area monitor Petugas agar slot antreannya diamankan sementara hingga tiba waktunya siswa bersangkutan menjemput wujud buku tersebut di meja administrasi.
 
 ### Panel Admin (Kepala / Administrator)
 
@@ -45,21 +82,17 @@ Aplikasi ini menyajikan desain yang _responsive_ dengan dukungan fitur-fitur **a
 
 Berikut adalah beberapa pratinjau cuplikan resolusi antarmuka di sistem LibSchool yang difokuskan pada fungsionalitas dan estetika:
 
-### 1. Halaman Beranda (Landing Page)
-> Antarmuka awal untuk menyambut pengunjung publik dengan *layout* elegan serta mengedepankan kemudahan sirkulasi info perpustakaan.
-> <img src="public/images/readme.md image/landing-page.png" alt="Landing Page LibSchool" width="800">
-
-### 2. Dashboard Administrator
+### 1. Dashboard Administrator
 > Pusat kendali mutlak khusus pimpinan dan manajer dengan presentasi _Stat Cards_ operasional keseluruhan.
 > <img src="public/images/readme.md image/dashboard-admin.png" alt="Dashboard Administrasi" width="800">
 
-### 3. Dashboard Pelayanan Petugas
+### 2. Dashboard Pelayanan Petugas
 > Ruang sirkulasi garda depan! Memonitor perputaran stok pinjaman masuk-keluar secara interaktif dan serba _real-time_.
 > <img src="public/images/readme.md image/dashboard-petugas.png" alt="Dashboard Panel Penjaga" width="800">
 
-### 4. Dashboard Siswa & Katalog Cerdas
+### 3. Dashboard Siswa & Katalog Cerdas
 > Beranda gamifikasi interaktif yang merangkum skor poin, medali gelar siswa, serta pemaparan denda yang dikemas estetis.
-> <img src="public/images/readme.md image/dashboard-siswa.png" alt="Beranda Panel Siswa" width="800">
+> <img src="public/images/readme.md image/katalog.png" alt="Beranda Panel Siswa" width="800">
 
 ---
 
@@ -101,8 +134,8 @@ Ikuti instruksi tahapan instalasi peranti tunjang di bawah untuk menjalankan lay
     cp .env.example .env
     ```
 
-4. **Konfigurasikan Data Database dalam file `.env`:**
-   Atur dan sesuaikan parameter kredensial `DB_DATABASE`, `DB_USERNAME`, dan *port* pangkalan data server Anda.
+4. **Konfigurasikan Data Database & SMTP Email dalam file `.env`:**
+   Atur dan sesuaikan parameter kredensial `DB_DATABASE`, `DB_USERNAME`, *port* pangkalan data server, hingga pengaturan layanan `MAIL_MAILER` agar fitur *Lupa Kata Sandi* (Reset Password) dapat beroperasi sebagaimana mestinya.
 
     ```env
     DB_CONNECTION=mysql
@@ -111,6 +144,16 @@ Ikuti instruksi tahapan instalasi peranti tunjang di bawah untuk menjalankan lay
     DB_DATABASE=db_libschool
     DB_USERNAME=root
     DB_PASSWORD=
+
+    # Konfigurasi SMTP Email (Wajib untuk fitur Lupa Sandi)
+    MAIL_MAILER=smtp
+    MAIL_HOST=sandbox.smtp.mailtrap.io
+    MAIL_PORT=2525
+    MAIL_USERNAME=null
+    MAIL_PASSWORD=null
+    MAIL_ENCRYPTION=null
+    MAIL_FROM_ADDRESS="hello@libschool.com"
+    MAIL_FROM_NAME="${APP_NAME}"
     ```
 
 5. **Pembuatan Key Hash Internal Laravel:**
@@ -123,7 +166,7 @@ Ikuti instruksi tahapan instalasi peranti tunjang di bawah untuk menjalankan lay
    _(Langkah ini teramat praktis! Otomatis men-generate basis pola klasifikasi, tatanan buku, serta akun dummy anggota lewat _Seeder_)._
 
     ```bash
-    php artisan migrate:fresh --seed
+    php artisan migrate --seed
     ```
 
 7. **Aktifkan Storage Link (Untuk Unggah Gambar Cover/Bukti Bukti Bayar):**
@@ -149,11 +192,11 @@ Ikuti instruksi tahapan instalasi peranti tunjang di bawah untuk menjalankan lay
 
 Bilamana instalasi disusupkan lewat _flag_ `--seed` saat migrasi database, cobalah autentikasi simulasi pengujian (Demo) dengan deretan identitas di bawah:
 
-| Roles / Tingkat Otoritas | Alamat Email / Username | Password Sandi Standar |
+| Roles / Tingkat Otoritas |    Username Atribut     | Password Sandi Standar |
 | :----------------------- | :---------------------- | :--------------------- |
-| **Admin Pusat Eksekutif**| `admin@gmail.com`       | `password`             |
-| **Petugas / Pustakawan** | `penjaga@gmail.com`     | `password`             |
-| **Anggota Siswa**        | `siswa@gmail.com`       | `password`             |
+| **Admin Pusat Eksekutif**| `admin`                 | `password`             |
+| **Petugas / Pustakawan** | `penjaga`               | `password`             |
+| **Anggota Siswa**        | `siswa`                 | `password`             |
 
 _Catatan Edukasi: Pastikan kelak membiasakan pergantian mutlak kata kunci maupun pencopotan _seeder_ saat mentransformasi aplikasi LibSchool menjadi wujud komersial guna menghindari paparan kerentanan._
 
