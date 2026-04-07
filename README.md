@@ -110,77 +110,106 @@ Proyek platform LibSchool ini mengadopsi stack tekonologi yang tangkas dan berpu
 
 ---
 
+## Kebutuhan Sistem
+
+### 1.2.1 Software (Perangkat Lunak)
+
+- **Sistem Operasi:** Windows 10/11 atau Linux (Ubuntu 20.04+).
+- **Development Server:** XAMPP v8.2+ (sudah mencakup Apache, PHP 8.2+, dan phpMyAdmin).
+- **Database Service:** MySQL 5.7+ (berjalan melalui XAMPP Control Panel secara lokal).
+- **Database Manager:** phpMyAdmin (aplikasi GUI berbasis web untuk mengelola database, sudah terintegrasi dalam XAMPP).
+- **Dependency Manager PHP:** Composer 2.x (untuk mengelola dependensi Laravel).
+- **Dependency Manager JS:** NPM (Node.js v18 LTS atau lebih baru, untuk mengelola dependensi frontend dan build asset Vite).
+
+### 1.2.2 Hardware (Perangkat Keras Minimal Server/Lokal)
+
+- **CPU:** Intel Core i3 / AMD Ryzen 3 atau setara.
+- **RAM:** Minimal 4 GB.
+- **Penyimpanan:** Ruang kosong Harddisk/SSD minimal 1 GB.
+- **Jaringan:** Koneksi internet yang stabil untuk pengiriman email notifikasi melalui layanan SMTP Gmail (fitur reset password).
+
+---
+
 ## Panduan Menjalankan Sistem (Setup Lokal)
 
 Ikuti instruksi tahapan instalasi peranti tunjang di bawah untuk menjalankan layanan aplikasinya dari PC Anda:
 
-1. **Clone repository ini dari basis kendali versi (Git):**
+1. **Jalankan XAMPP — Aktifkan Service Apache & MySQL:**
+   Buka **XAMPP Control Panel**, lalu klik tombol **Start** pada modul **Apache** dan **MySQL**. Pastikan kedua indikator berwarna hijau sebelum melanjutkan ke langkah berikutnya.
+
+2. **Buat Database Baru via phpMyAdmin:**
+   Buka browser dan akses `http://localhost/phpmyadmin`, kemudian buat database baru dengan nama:
+   ```
+   libschool
+   ```
+
+3. **Clone repository ini dari basis kendali versi (Git):**
 
     ```bash
     git clone <URL_REPO_ANDA>
     cd LIBSCHOOL
     ```
 
-2. **Dapatkan Paket Pustaka lewat Dependensi Composer & Node Package Manager:**
+4. **Dapatkan Paket Pustaka lewat Dependensi Composer & Node Package Manager:**
 
     ```bash
     composer install
     npm install
     ```
 
-3. **Salin & Modifikasi Pembenihan Environment Variable:**
+5. **Salin & Modifikasi Pembenihan Environment Variable:**
 
     ```bash
-    cp .env.example .env
+    copy .env.example .env
     ```
 
-4. **Konfigurasikan Data Database & SMTP Email dalam file `.env`:**
+6. **Konfigurasikan Data Database & SMTP Email dalam file `.env`:**
    Atur dan sesuaikan parameter kredensial `DB_DATABASE`, `DB_USERNAME`, *port* pangkalan data server, hingga pengaturan layanan `MAIL_MAILER` agar fitur *Lupa Kata Sandi* (Reset Password) dapat beroperasi sebagaimana mestinya.
 
     ```env
     DB_CONNECTION=mysql
     DB_HOST=127.0.0.1
     DB_PORT=3306
-    DB_DATABASE=db_libschool
+    DB_DATABASE=libschool
     DB_USERNAME=root
     DB_PASSWORD=
 
     # Konfigurasi SMTP Email (Wajib untuk fitur Lupa Sandi)
+    # Gunakan Gmail App Password (bukan password akun Google biasa)
     MAIL_MAILER=smtp
-    MAIL_HOST=sandbox.smtp.mailtrap.io
-    MAIL_PORT=2525
-    MAIL_USERNAME=null
-    MAIL_PASSWORD=null
-    MAIL_ENCRYPTION=null
-    MAIL_FROM_ADDRESS="hello@libschool.com"
+    MAIL_HOST=smtp.gmail.com
+    MAIL_PORT=587
+    MAIL_USERNAME=email_anda@gmail.com
+    MAIL_PASSWORD="xxxx xxxx xxxx xxxx"
+    MAIL_FROM_ADDRESS="email_anda@gmail.com"
     MAIL_FROM_NAME="${APP_NAME}"
     ```
 
-5. **Pembuatan Key Hash Internal Laravel:**
+7. **Pembuatan Key Hash Internal Laravel:**
 
     ```bash
     php artisan key:generate
     ```
 
-6. **Migrasikan Struktur Tabel Basis Data dan Suntik Data Dummy:**
-   _(Langkah ini teramat praktis! Otomatis men-generate basis pola klasifikasi, tatanan buku, serta akun dummy anggota lewat _Seeder_)._
+8. **Migrasikan Struktur Tabel Basis Data dan Suntik Data Dummy:**
+   _(Langkah ini teramat praktis! Otomatis men-generate basis pola klasifikasi, tatanan buku, serta akun dummy anggota lewat Seeder)._
 
     ```bash
     php artisan migrate --seed
     ```
 
-7. **Aktifkan Storage Link (Untuk Unggah Gambar Cover/Bukti Bukti Bayar):**
+9. **Aktifkan Storage Link (Untuk Unggah Gambar Cover/Bukti Bayar):**
 
     ```bash
     php artisan storage:link
     ```
 
-8. **Proses Akhir: Menghidupkan Layanan Dua Serangkai**
-   Buka jendela terminal utama dan komando agar melayani basis mesin PHP:
+10. **Proses Akhir: Menghidupkan Layanan Dua Serangkai**
+    Buka jendela terminal utama dan jalankan server PHP Laravel:
     ```bash
     php artisan serve
     ```
-    Buka jendela terminal kedua (Sangat vital demi merangkai dan menyaksikan kompilasi *Tailwind* secara langsung):
+    Buka jendela terminal kedua (vital untuk kompilasi aset *Tailwind CSS* secara langsung):
     ```bash
     npm run dev
     ```
@@ -199,6 +228,42 @@ Bilamana instalasi disusupkan lewat _flag_ `--seed` saat migrasi database, cobal
 | **Anggota Siswa**        | `siswa`                 | `password`             |
 
 _Catatan Edukasi: Pastikan kelak membiasakan pergantian mutlak kata kunci maupun pencopotan _seeder_ saat mentransformasi aplikasi LibSchool menjadi wujud komersial guna menghindari paparan kerentanan._
+
+---
+
+## Tabel Hak Akses Pengguna
+
+Berikut adalah matriks hak akses seluruh modul dan fitur sistem berdasarkan peran (*role*) masing-masing pengguna:
+
+| Modul / Fitur | Guest (Tamu) | Siswa (Anggota) | Penjaga (Petugas) | Admin |
+| :--- | :---: | :---: | :---: | :---: |
+| Landing Page | ✓ | ✓ | ✓ | ✓ |
+| Registrasi & Login | ✓ | ✓ | ✓ | ✓ |
+| Reset & Lupa Password | ✓ | ✓ | ✓ | ✓ |
+| Dashboard & Profil | - | ✓ | ✓ | ✓ |
+| Eksplorasi Katalog Buku | - | ✓ | - | - |
+| Booking Buku (Reservasi) | - | ✓ | - | - |
+| Batal Booking | - | ✓ | - | - |
+| Riwayat Peminjaman Pribadi | - | ✓ | - | - |
+| Koleksi Favorit (Wishlist) | - | ✓ | - | - |
+| Ulasan & Rating Buku | - | ✓ | - | - |
+| Pengajuan / Usulan Buku Baru | - | ✓ | ✓ | ✓ |
+| Kartu Anggota Digital (E-Card) | - | ✓ | - | - |
+| Pembayaran Denda (Upload Bukti) | - | ✓ | - | - |
+| Gamifikasi (Poin & Leaderboard) | - | ✓ | - | - |
+| Proses Konfirmasi Booking | - | - | ✓ | - |
+| Proses Pengembalian & Hitung Denda | - | - | ✓ | ✓ |
+| Verifikasi Bukti Bayar Denda | - | - | ✓ | ✓ |
+| Riwayat Transaksi Seluruh | - | - | ✓ | ✓ |
+| Inbox & Kelola Pengajuan | - | - | ✓ | - |
+| Verifikasi Anggota Baru (KYC) | - | - | - | ✓ |
+| Manajemen Katalog Buku (CRUD) | - | - | ✓* | ✓ |
+| Manajemen Kategori & Series | - | - | ✓* | ✓ |
+| Laporan Sistem (Export PDF) | - | - | ✓* | ✓ |
+| Manajemen Pengguna | - | - | - | ✓ |
+| Manajemen Hak Akses | - | - | - | ✓ |
+
+> **Keterangan:** ✓\* = Penjaga hanya dapat mengakses modul tersebut apabila izin (*Permission*) telah diberikan secara eksplisit oleh Admin melalui fitur **Manajemen Hak Akses**.
 
 ---
 
