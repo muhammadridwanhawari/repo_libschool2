@@ -130,104 +130,170 @@ Proyek platform LibSchool ini mengadopsi stack tekonologi yang tangkas dan berpu
 
 ---
 
-## Panduan Menjalankan Sistem (Setup Lokal)
+## Panduan Instalasi dan Konfigurasi
 
-Ikuti instruksi tahapan instalasi peranti tunjang di bawah untuk menjalankan layanan aplikasinya dari PC Anda:
+### 1. Persiapan Perangkat Lunak
 
-1. **Jalankan XAMPP — Aktifkan Service Apache & MySQL:**
-   Buka **XAMPP Control Panel**, lalu klik tombol **Start** pada modul **Apache** dan **MySQL**. Pastikan kedua indikator berwarna hijau sebelum melanjutkan ke langkah berikutnya.
+Sebelum memulai instalasi, pastikan seluruh perangkat lunak berikut telah terpasang:
 
-2. **Buat Database Baru via phpMyAdmin:**
-   Buka browser dan akses `http://localhost/phpmyadmin`, kemudian buat database baru dengan nama:
-   ```
-   libschool
-   ```
+#### 1.1 XAMPP
+XAMPP adalah paket server lokal yang menyediakan Apache, MySQL, dan PHP dalam satu instalasi.
+- **Unduh**: https://www.apachefriends.org/download.html
+- **Versi yang dibutuhkan**: XAMPP dengan PHP **8.2 atau lebih baru**
+- Setelah instalasi, buka **XAMPP Control Panel** → klik **Start** pada **Apache** & **MySQL** → pastikan kedua indikator berwarna **hijau**.
 
-3. **Clone repository ini dari basis kendali versi (Git):**
+#### 1.2 Composer
+Composer adalah *dependency manager* untuk PHP yang digunakan Laravel.
+- **Unduh**: https://getcomposer.org/download/
+- Unduh `Composer-Setup.exe`, jalankan installer (otomatis mendeteksi PHP dari XAMPP).
+- Verifikasi: `composer --version` → pastikan menampilkan versi **Composer 2.x**.
 
-    ```bash
-    git clone <URL_REPO_ANDA>
-    cd LIBSCHOOL
-    ```
-
-4. **Dapatkan Paket Pustaka lewat Dependensi Composer & Node Package Manager:**
-
-    ```bash
-    composer install
-    npm install
-    ```
-
-5. **Salin & Modifikasi Pembenihan Environment Variable:**
-
-    ```bash
-    copy .env.example .env
-    ```
-
-6. **Konfigurasikan Data Database & SMTP Email dalam file `.env`:**
-   Atur dan sesuaikan parameter kredensial `DB_DATABASE`, `DB_USERNAME`, *port* pangkalan data server, hingga pengaturan layanan `MAIL_MAILER` agar fitur *Lupa Kata Sandi* (Reset Password) dapat beroperasi sebagaimana mestinya.
-
-    ```env
-    DB_CONNECTION=mysql
-    DB_HOST=127.0.0.1
-    DB_PORT=3306
-    DB_DATABASE=libschool
-    DB_USERNAME=root
-    DB_PASSWORD=
-
-    # Konfigurasi SMTP Email (Wajib untuk fitur Lupa Sandi)
-    # Gunakan Gmail App Password (bukan password akun Google biasa)
-    MAIL_MAILER=smtp
-    MAIL_HOST=smtp.gmail.com
-    MAIL_PORT=587
-    MAIL_USERNAME=email_anda@gmail.com
-    MAIL_PASSWORD="xxxx xxxx xxxx xxxx"
-    MAIL_FROM_ADDRESS="email_anda@gmail.com"
-    MAIL_FROM_NAME="${APP_NAME}"
-    ```
-
-7. **Pembuatan Key Hash Internal Laravel:**
-
-    ```bash
-    php artisan key:generate
-    ```
-
-8. **Migrasikan Struktur Tabel Basis Data dan Suntik Data Dummy:**
-   _(Langkah ini teramat praktis! Otomatis men-generate basis pola klasifikasi, tatanan buku, serta akun dummy anggota lewat Seeder)._
-
-    ```bash
-    php artisan migrate --seed
-    ```
-
-9. **Aktifkan Storage Link (Untuk Unggah Gambar Cover/Bukti Bayar):**
-
-    ```bash
-    php artisan storage:link
-    ```
-
-10. **Proses Akhir: Menghidupkan Layanan Dua Serangkai**
-    Buka jendela terminal utama dan jalankan server PHP Laravel:
-    ```bash
-    php artisan serve
-    ```
-    Buka jendela terminal kedua (vital untuk kompilasi aset *Tailwind CSS* secara langsung):
-    ```bash
-    npm run dev
-    ```
-    _Silakan mengakses portal di http://127.0.0.1:8000 via browser (peramban) kesayangan Anda._
+#### 1.3 Node.js & NPM
+Node.js diperlukan untuk kompilasi aset frontend (Tailwind CSS & Vite).
+- **Unduh**: https://nodejs.org (pilih versi **LTS 18.x atau 20.x**)
+- Verifikasi: `node --version` dan `npm --version`
 
 ---
 
-## Basis Akun / Kredensial Demonstrasi
+### 2. Instalasi Aplikasi
 
-Bilamana instalasi disusupkan lewat _flag_ `--seed` saat migrasi database, cobalah autentikasi simulasi pengujian (Demo) dengan deretan identitas di bawah:
+#### 2.1 Membuat Database
+1. Buka browser, akses **phpMyAdmin**: `http://localhost/phpmyadmin`
+2. Klik menu **"Database"** → pada kolom *Create database*, ketik:
+   ```
+   libschool
+   ```
+3. Pilih collation **`utf8mb4_unicode_ci`** → klik **Create**.
 
-| Roles / Tingkat Otoritas |    Username Atribut     | Password Sandi Standar |
-| :----------------------- | :---------------------- | :--------------------- |
-| **Admin Pusat Eksekutif**| `admin`                 | `password`             |
-| **Petugas / Pustakawan** | `penjaga`               | `password`             |
-| **Anggota Siswa**        | `siswa`                 | `password`             |
+#### 2.2 Clone Repository
+```bash
+git clone <URL_REPOSITORY>
+cd LIBSCHOOL
+```
+> Jika tidak menggunakan Git, ekstrak file ZIP proyek ke `C:\xampp\htdocs\LIBSCHOOL`.
 
-_Catatan Edukasi: Pastikan kelak membiasakan pergantian mutlak kata kunci maupun pencopotan _seeder_ saat mentransformasi aplikasi LibSchool menjadi wujud komersial guna menghindari paparan kerentanan._
+#### 2.3 Instalasi Dependensi PHP
+```bash
+composer install
+```
+
+#### 2.4 Instalasi Dependensi JavaScript
+```bash
+npm install
+```
+
+---
+
+### 3. Konfigurasi Environment
+
+#### 3.1 Salin File Environment
+```bash
+copy .env.example .env
+```
+
+#### 3.2 Generate Application Key
+```bash
+php artisan key:generate
+```
+Perintah ini otomatis mengisi nilai `APP_KEY` di dalam file `.env`.
+
+---
+
+### 4. Konfigurasi Database
+
+Buka file `.env`, sesuaikan bagian berikut:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=libschool
+DB_USERNAME=root
+DB_PASSWORD=
+```
+
+| Parameter | Nilai Default XAMPP | Keterangan |
+| :--- | :--- | :--- |
+| `DB_CONNECTION` | `mysql` | Driver database yang digunakan |
+| `DB_HOST` | `127.0.0.1` | Alamat server database lokal |
+| `DB_PORT` | `3306` | Port default MySQL |
+| `DB_DATABASE` | `libschool` | Nama database yang telah dibuat |
+| `DB_USERNAME` | `root` | Username default XAMPP |
+| `DB_PASSWORD` | *(kosong)* | Password default XAMPP kosong |
+
+---
+
+### 5. Konfigurasi SMTP Email (Gmail)
+
+Fitur **Reset Password** memerlukan konfigurasi layanan email via **Gmail SMTP**.
+
+#### 5.1 Mendapatkan Gmail App Password
+> ⚠️ Gmail tidak mengizinkan login langsung dengan password akun biasa. Wajib menggunakan **App Password**.
+
+1. Buka https://myaccount.google.com → pilih menu **"Keamanan"**.
+2. Aktifkan **Verifikasi 2 Langkah** jika belum aktif.
+3. Cari **"Sandi Aplikasi"** (App Passwords).
+4. Pilih **"Lainnya (Nama Kustom)"** → ketik `LibSchool` → klik **Buat**.
+5. Google menampilkan kode **16 karakter** — salin kode ini (hanya tampil sekali).
+
+#### 5.2 Isi Konfigurasi SMTP di File `.env`
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USERNAME=email_anda@gmail.com
+MAIL_PASSWORD="xxxx xxxx xxxx xxxx"
+MAIL_FROM_ADDRESS="email_anda@gmail.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+| Parameter | Nilai | Keterangan |
+| :--- | :--- | :--- |
+| `MAIL_HOST` | `smtp.gmail.com` | Server SMTP Gmail |
+| `MAIL_PORT` | `587` | Port SMTP dengan enkripsi TLS |
+| `MAIL_USERNAME` | `email_anda@gmail.com` | Alamat Gmail pengirim |
+| `MAIL_PASSWORD` | `xxxx xxxx xxxx xxxx` | App Password 16 karakter dari Google |
+| `MAIL_FROM_ADDRESS` | `email_anda@gmail.com` | Alamat pengirim di email |
+
+---
+
+### 6. Migrasi & Seeding Database
+
+#### 6.1 Jalankan Migrasi dan Seeder
+Membuat seluruh struktur tabel sekaligus mengisi data awal (akun demo, kategori, data contoh):
+```bash
+php artisan migrate --seed
+```
+
+#### 6.2 Aktifkan Storage Link
+Agar file yang diunggah (cover buku, bukti bayar denda) dapat diakses secara publik:
+```bash
+php artisan storage:link
+```
+
+---
+
+### 7. Menjalankan Aplikasi
+
+Aplikasi membutuhkan **dua layanan** yang berjalan secara bersamaan di dua jendela terminal terpisah.
+
+**Terminal 1** — Server PHP Laravel:
+```bash
+php artisan serve
+```
+
+**Terminal 2** — Kompilasi Aset Frontend (Vite + Tailwind CSS):
+```bash
+npm run dev
+```
+
+Setelah kedua layanan aktif, buka browser dan akses:
+```
+http://127.0.0.1:8000
+```
+
+> **Catatan**: Pastikan layanan **Apache** dan **MySQL** di XAMPP Control Panel selalu **aktif (hijau)** setiap kali menjalankan aplikasi.
 
 ---
 
@@ -264,6 +330,20 @@ Berikut adalah matriks hak akses seluruh modul dan fitur sistem berdasarkan pera
 | Manajemen Hak Akses | - | - | - | ✓ |
 
 > **Keterangan:** ✓\* = Penjaga hanya dapat mengakses modul tersebut apabila izin (*Permission*) telah diberikan secara eksplisit oleh Admin melalui fitur **Manajemen Hak Akses**.
+
+---
+
+## Basis Akun / Kredensial Demonstrasi
+
+Bilamana instalasi disusupkan lewat _flag_ `--seed` saat migrasi database, cobalah autentikasi simulasi pengujian (Demo) dengan deretan identitas di bawah:
+
+| Roles / Tingkat Otoritas | Username Atribut | Password Sandi Standar |
+| :--- | :--- | :--- |
+| **Admin Pusat Eksekutif** | `admin` | `password` |
+| **Petugas / Pustakawan** | `penjaga` | `password` |
+| **Anggota Siswa** | `siswa` | `password` |
+
+> **Catatan Keamanan:** Pastikan mengganti password default dan menghapus data *seeder* sebelum aplikasi digunakan di lingkungan produksi.
 
 ---
 
